@@ -67,7 +67,9 @@ git checkout zh-CN
 
 - 手动触发（可填版本号，**留空则自动采用官方最新 release tag 的版本号**——
   上游 main 分支的 package.json 不随发布更新，不能作为版本依据）；
-  已启用 `schedule` 每周一 UTC 0 点自动构建，注释掉即可关闭
+  已启用 `schedule` 每晚零点（北京时间，cron `0 16 * * *`）自动构建，注释掉即可关闭。
+  **无变化跳过**：zh-CN 当前提交与已发布的版本 tag 一致（上游、本地均无新改动）时，
+  自动跳过 build 与 release，不会重复发版；本地推送翻译修正后会自动重新打包
 - 三个 job 串联：
   1. `merge` —— 合并 origin/main 回推 `zh-CN` 分支，并解析出版本号
   2. `build` —— macos / ubuntu / windows 三平台矩阵并行打包（均未签名），

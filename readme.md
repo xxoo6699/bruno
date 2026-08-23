@@ -20,8 +20,9 @@
 >   提供 macOS（dmg/zip）、Linux（AppImage/deb/rpm）、Windows（exe）安装包，
 >   均含 x64 与 arm64 架构。所有包均未签名，macOS 首次打开需
 >   右键 → 打开以绕过 Gatekeeper。
-> - **自动跟进官方**：流水线每周一自动合并官方最新代码并重新打包发布，
->   版本号跟随官方 release tag；也可在 [Actions](https://github.com/xxoo6699/bruno/actions/workflows/zh-cn-build.yml)
+> - **自动跟进官方**：流水线每晚（北京时间零点）自动合并官方最新代码并重新打包发布，
+>   上游与本地均无更新时自动跳过；版本号跟随官方 release tag，
+>   也可在 [Actions](https://github.com/xxoo6699/bruno/actions/workflows/zh-cn-build.yml)
 >   页面手动触发。
 > - **翻译规范**见 [I18N_SPEC.md](I18N_SPEC.md)，合并上游与补翻流程见
 >   [docs/zh-maintenance.md](docs/zh-maintenance.md)。

@@ -2,7 +2,9 @@
 #
 # 适用于把 zh-CN 分支推送到自己的 GitHub fork 之后。
 # - 手动触发: Actions 页面 Run workflow，可填版本号（留空自动跟随上游）
-# - 定时触发: 每周一 UTC 0 点自动构建（注释掉 schedule 即可关闭）
+# - 定时触发: 每晚零点（北京时间，UTC 16:00）自动构建（注释掉 schedule 即可关闭）
+# - 无变化跳过: zh-CN 与已发布版本一致（上游、本地均无新提交）时，
+#   自动跳过构建与发布，不重复发版
 #
 # 流程: merge(合并上游 + 解析版本号) → build(macos/ubuntu/windows 三平台矩阵，
 # 各平台未签名出包) → release(汇总产物，发布 GitHub Release v<上游版本号>)
@@ -25,7 +27,8 @@ on:
         required: false
         default: ''
   schedule:
-    - cron: '0 0 * * 1'
+    # 每晚零点（北京时间，即 UTC 16:00）
+    - cron: '0 16 * * *'
 
 concurrency:
   group: zh-cn-build
@@ -38,6 +41,7 @@ jobs:
     timeout-minutes: 15
     outputs:
       version: ${{ steps.resolve.outputs.version }}
+      changed: ${{ steps.resolve.outputs.changed }}
     steps:
       - name: Checkout zh-CN branch
         uses: actions/checkout@v4
@@ -63,20 +67,37 @@ jobs:
         id: resolve
         run: |
           git fetch origin --tags --quiet
-          VERSION="${{ github.event.inputs.version }}"
-          if [ -z "$VERSION" ]; then
+          MANUAL="${{ github.event.inputs.version }}"
+          if [ -z "$MANUAL" ]; then
             # 上游 main 的 package.json 长期不随发布更新（停在旧大版本），
             # 真实版本以官方最新 release tag 为准
             VERSION=$(git tag --list 'v*' --sort=-v:refname | head -n1 | sed 's/^v//')
             echo "跟随上游最新 release: $VERSION"
           else
+            VERSION="$MANUAL"
             echo "使用手动指定版本: $VERSION"
           fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          # 无变化跳过：非手动指定版本、且 zh-CN 当前提交与该版本 tag 指向的
+          # 提交一致时，说明上游和本地都没有新改动，跳过构建与发布。
+          # （本地推送翻译修正后 HEAD 前移，下个周期会自动重新打包发布）
+          CHANGED=true
+          if [ -z "$MANUAL" ]; then
+            TAG_COMMIT=$(git rev-parse -q --verify "v${VERSION}^{commit}" 2>/dev/null || true)
+            if [ -n "$TAG_COMMIT" ] && [ "$TAG_COMMIT" = "$(git rev-parse HEAD)" ]; then
+              CHANGED=false
+              echo "zh-CN 与 v${VERSION} 发布时完全一致，跳过构建与发布"
+            fi
+          fi
+          {
+            echo "version=$VERSION"
+            echo "changed=$CHANGED"
+          } >> "$GITHUB_OUTPUT"
 
   build:
     name: Build ${{ matrix.platform }}
     needs: merge
+    if: needs.merge.outputs.changed == 'true'
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -138,6 +159,7 @@ jobs:
   release:
     name: Publish GitHub Release
     needs: [merge, build]
+    if: needs.merge.outputs.changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

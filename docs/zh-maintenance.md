@@ -65,7 +65,8 @@ git checkout zh-CN
 
 把仓库推到自己的 GitHub fork 后，`.github/workflows/zh-cn-build.yml` 提供：
 
-- 手动触发（可填版本号，**留空则自动跟随上游 package.json 的版本号**）；
+- 手动触发（可填版本号，**留空则自动采用官方最新 release tag 的版本号**——
+  上游 main 分支的 package.json 不随发布更新，不能作为版本依据）；
   已启用 `schedule` 每周一 UTC 0 点自动构建，注释掉即可关闭
 - 三个 job 串联：
   1. `merge` —— 合并 origin/main 回推 `zh-CN` 分支，并解析出版本号

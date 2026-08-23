@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本号（留空自动跟随上游 package.json）'
+        description: '版本号（留空自动取上游最新 release tag）'
         required: false
         default: ''
   schedule:
@@ -62,11 +62,13 @@ jobs:
       - name: Resolve version
         id: resolve
         run: |
+          git fetch origin --tags --quiet
           VERSION="${{ github.event.inputs.version }}"
           if [ -z "$VERSION" ]; then
-            VERSION=$(git show origin/main:packages/bruno-electron/package.json \
-              | python3 -c "import sys,json;print(json.load(sys.stdin)['version'])")
-            echo "跟随上游版本: $VERSION"
+            # 上游 main 的 package.json 长期不随发布更新（停在旧大版本），
+            # 真实版本以官方最新 release tag 为准
+            VERSION=$(git tag --list 'v*' --sort=-v:refname | head -n1 | sed 's/^v//')
+            echo "跟随上游最新 release: $VERSION"
           else
             echo "使用手动指定版本: $VERSION"
           fi

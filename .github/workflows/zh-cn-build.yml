@@ -1,0 +1,68 @@
+# 简体中文版自动化维护工作流
+#
+# 适用于把 zh-CN 分支推送到自己的 GitHub fork 之后。
+# - 手动触发: Actions 页面点击 Run workflow，可填入新版本号
+# - 定时触发: 取消注释 schedule 部分（每周一 UTC 0 点自动构建）
+#
+# 产物: 未签名 arm64 dmg/zip，在 Actions 的 Artifacts 里下载。
+# 审计结果（新增硬编码文案 / 缺失词条）也会作为 artifact 上传，
+# 若不为空说明本次合并引入了新文案，需要按 docs/zh-maintenance.md 补翻。
+
+name: zh-CN build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（留空沿用 package.json 当前值）'
+        required: false
+        default: ''
+  # schedule:
+  #   - cron: '0 0 * * 1'
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: Checkout zh-CN branch
+        uses: actions/checkout@v4
+        with:
+          ref: zh-CN
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Fetch upstream and merge origin/main into zh-CN
+        run: |
+          git config user.name "zh-CN bot"
+          git config user.email "bot@users.noreply.github.com"
+          ./scripts-dev/update-zh.sh "${{ github.event.inputs.version }}"
+        env:
+          UPSTREAM_REF: origin/main
+
+      - name: Upload localization audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: i18n-audit
+          path: |
+            /tmp/i18n_hardcoded.txt
+            /tmp/i18n_missing.json
+
+      - name: Commit merged updates back to zh-CN
+        run: |
+          git add -A
+          git diff --cached --quiet || git commit -m "chore: merge upstream + rebuild zh-CN [skip ci]"
+          git push origin zh-CN
+
+      - name: Upload dmg / zip artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bruno-zh-cn-${{ github.run_number }}
+          path: |
+            packages/bruno-electron/out/*.dmg
+            packages/bruno-electron/out/*.zip

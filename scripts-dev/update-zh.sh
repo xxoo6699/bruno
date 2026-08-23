@@ -120,15 +120,22 @@ step "6/7 拷贝 web 产物到 electron 壳"
 rm -rf packages/bruno-electron/out packages/bruno-electron/web
 mkdir -p packages/bruno-electron/web
 cp -r packages/bruno-app/dist/* packages/bruno-electron/web/
-sed -i '' -e 's@/static/@static/@g' packages/bruno-electron/web/*.html 2>/dev/null || true
-sed -i '' -e 's@/static/font@../../static/font@g' packages/bruno-electron/web/static/css/*.css 2>/dev/null || true
+# perl -pi 跨平台（macOS BSD sed 与 GNU sed 的 -i 语法不兼容）
+perl -pi -e 's@/static/@static/@g' packages/bruno-electron/web/*.html 2>/dev/null || true
+perl -pi -e 's@/static/font@../../static/font@g' packages/bruno-electron/web/static/css/*.css 2>/dev/null || true
 find packages/bruno-electron/web -name '*.map' -type f -delete
 
-step "7/7 electron-builder 打包（未签名 arm64 dmg + zip）"
+step "7/7 electron-builder 打包（未签名，--publish never 仅本地出包）"
+case "$(uname -s)" in
+  Darwin)               BUILDER_PLATFORM_ARGS='--mac' ;;
+  Linux)                BUILDER_PLATFORM_ARGS='--linux' ;;
+  MINGW*|MSYS*|CYGWIN*) BUILDER_PLATFORM_ARGS='--win' ;;
+  *) die "未知平台 $(uname -s)，无法选择 electron-builder 目标" ;;
+esac
+# ELECTRON_BUILDER_EXTRA_ARGS 可追加参数，如 --x64 只出 x64 包
 cd packages/bruno-electron
-# --publish never: 仅本地出包，避免 CI 中 electron-builder 尝试发布到 GitHub Release
-CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --publish never --config electron-builder-config.local.js
+CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder $BUILDER_PLATFORM_ARGS ${ELECTRON_BUILDER_EXTRA_ARGS:-} --publish never --config electron-builder-config.local.js
 
 echo
 echo "完成。产物位于 packages/bruno-electron/out/:"
-ls -lh out/*.dmg out/*.zip | awk '{print "  " $9 " (" $5 ")"}'
+ls -lh out/ | awk '{print "  " $9 " (" $5 ")"}'

@@ -54,21 +54,29 @@ git checkout zh-CN
 
 - **未签名**：本机没有 Apple 开发者证书，使用
   `packages/bruno-electron/electron-builder-config.local.js`（关闭签名/公证，
-  仅 arm64 dmg+zip）。首次打开需右键 → 打开绕过 Gatekeeper。
+  mac 出 x64+arm64 的 dmg/zip）。首次打开需右键 → 打开绕过 Gatekeeper。
 - **沙箱捆绑包**：`@usebruno/js` 的 `src/sandbox/bundle-browser-rollup.js`
   不入库，缺失会导致启动即崩（Cannot find module）。脚本已包含生成步骤：
   `npm run sandbox:bundle-libraries --workspace=packages/bruno-js`
 - **版本号**：`packages/bruno-electron/package.json`（关于页 + 安装包名）、
   `packages/bruno-app/package.json`（应用内显示）。
 
-## GitHub Actions 自动化（可选）
+## GitHub Actions 自动化（已启用）
 
 把仓库推到自己的 GitHub fork 后，`.github/workflows/zh-cn-build.yml` 提供：
 
-- 手动触发（可填版本号）；已启用 `schedule` 每周一 UTC 0 点自动构建，注释掉即可关闭
-- macos-14 runner 上完成合并、审计、构建、打包，产物在 Artifacts 下载
-- 审计结果作为 `i18n-audit` artifact 上传；不为空说明有新文案待补翻
-- 合并结果自动 commit 回 `zh-CN` 分支
+- 手动触发（可填版本号，**留空则自动跟随上游 package.json 的版本号**）；
+  已启用 `schedule` 每周一 UTC 0 点自动构建，注释掉即可关闭
+- 三个 job 串联：
+  1. `merge` —— 合并 origin/main 回推 `zh-CN` 分支，并解析出版本号
+  2. `build` —— macos / ubuntu / windows 三平台矩阵并行打包（均未签名），
+     产物以 `dist-mac` / `dist-linux` / `dist-win` artifact 上传
+  3. `release` —— 汇总全部安装包，发布 GitHub Release `v<版本号>`，
+     更新日志固定为「对官方版本 vX.Y.Z 进行汉化处理。」
+- 产物对齐官方 release：mac dmg/zip、linux AppImage/deb/rpm、win nsis exe
+  （各含 x64+arm64）。差异：无签名证书故全部未签名；不含官方的 mac pkg
+  （pkg 无法右键绕过 Gatekeeper，未签名无意义）
+- 审计结果作为 `i18n-audit` artifact 上传（取自 mac 平台）；不为空说明有新文案待补翻
 
 ## 工具速查（scripts-dev/）
 

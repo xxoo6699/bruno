@@ -1,12 +1,16 @@
 # 简体中文版自动化维护工作流
 #
 # 适用于把 zh-CN 分支推送到自己的 GitHub fork 之后。
-# - 手动触发: Actions 页面点击 Run workflow，可填入新版本号
+# - 手动触发: Actions 页面 Run workflow，可填版本号（留空自动跟随上游）
 # - 定时触发: 每周一 UTC 0 点自动构建（注释掉 schedule 即可关闭）
 #
-# 产物: 未签名 arm64 dmg/zip，在 Actions 的 Artifacts 里下载。
-# 审计结果（新增硬编码文案 / 缺失词条）也会作为 artifact 上传，
-# 若不为空说明本次合并引入了新文案，需要按 docs/zh-maintenance.md 补翻。
+# 流程: merge(合并上游 + 解析版本号) → build(macos/ubuntu/windows 三平台矩阵，
+# 各平台未签名出包) → release(汇总产物，发布 GitHub Release v<上游版本号>)
+#
+# 产物与官方 release 对齐: mac dmg/zip、linux AppImage/deb/rpm、win nsis exe，
+# 均含 x64 + arm64。差异仅两点——本机无签名证书故全部未签名，且不含官方
+# 的 mac pkg（pkg 无法像 dmg 一样右键绕过 Gatekeeper，未签名无意义）。
+# 审计结果作为 i18n-audit artifact 上传；若不为空说明有新文案待补翻。
 
 name: zh-CN build
 
@@ -17,15 +21,75 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本号（留空沿用 package.json 当前值）'
+        description: '版本号（留空自动跟随上游 package.json）'
         required: false
         default: ''
   schedule:
     - cron: '0 0 * * 1'
 
+concurrency:
+  group: zh-cn-build
+  cancel-in-progress: false
+
 jobs:
+  merge:
+    name: Merge upstream & resolve version
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - name: Checkout zh-CN branch
+        uses: actions/checkout@v4
+        with:
+          ref: zh-CN
+          fetch-depth: 0
+
+      - name: Fetch upstream and merge origin/main into zh-CN
+        run: |
+          git config user.name "zh-CN bot"
+          git config user.email "bot@users.noreply.github.com"
+          if git merge-base --is-ancestor origin/main HEAD; then
+            echo "已是最新，无需合并。"
+          elif git merge --no-edit origin/main; then
+            git push origin zh-CN
+          else
+            echo "以下文件存在冲突，请在本地按 docs/zh-maintenance.md 解决后重推:"
+            git diff --name-only --diff-filter=U
+            exit 2
+          fi
+
+      - name: Resolve version
+        id: resolve
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION=$(git show origin/main:packages/bruno-electron/package.json \
+              | python3 -c "import sys,json;print(json.load(sys.stdin)['version'])")
+            echo "跟随上游版本: $VERSION"
+          else
+            echo "使用手动指定版本: $VERSION"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
   build:
-    runs-on: macos-14
+    name: Build ${{ matrix.platform }}
+    needs: merge
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            platform: mac
+            audit: true
+          - os: ubuntu-latest
+            platform: linux
+            audit: false
+          - os: windows-latest
+            platform: win
+            audit: false
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout zh-CN branch
         uses: actions/checkout@v4
@@ -39,38 +103,59 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Fetch upstream and merge origin/main into zh-CN
-        run: |
-          git config user.name "zh-CN bot"
-          git config user.email "bot@users.noreply.github.com"
-          ./scripts-dev/update-zh.sh "${{ github.event.inputs.version }}"
-        env:
-          UPSTREAM_REF: origin/main
+      - name: Install, audit, build web app and package
+        shell: bash
+        run: ./scripts-dev/update-zh.sh "${{ needs.merge.outputs.version }}"
 
       - name: Collect localization audit results
-        if: always()
+        if: matrix.audit
         run: |
           mkdir -p i18n-audit
           cp /tmp/i18n_hardcoded.txt /tmp/i18n_missing.json i18n-audit/ || true
 
       - name: Upload localization audit results
-        if: always()
+        if: matrix.audit
         uses: actions/upload-artifact@v4
         with:
           name: i18n-audit
           path: i18n-audit/
 
-      - name: Commit merged updates back to zh-CN
-        run: |
-          rm -rf i18n-audit
-          git add -A
-          git diff --cached --quiet || git commit -m "chore: merge upstream + rebuild zh-CN [skip ci]"
-          git push origin zh-CN
-
-      - name: Upload dmg / zip artifacts
+      - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: bruno-zh-cn-${{ github.run_number }}
+          name: dist-${{ matrix.platform }}
+          if-no-files-found: error
           path: |
             packages/bruno-electron/out/*.dmg
             packages/bruno-electron/out/*.zip
+            packages/bruno-electron/out/*.exe
+            packages/bruno-electron/out/*.AppImage
+            packages/bruno-electron/out/*.deb
+            packages/bruno-electron/out/*.rpm
+
+  release:
+    name: Publish GitHub Release
+    needs: [merge, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download all packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: dist-*
+          path: dist
+          merge-multiple: true
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ needs.merge.outputs.version }}"
+          TAG="v${VERSION}"
+          ls -lh dist
+          # 重跑同版本号时先清掉旧 release/tag，保证资产始终对应最新构建
+          gh release delete "$TAG" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$TAG" dist/* \
+            --target zh-CN \
+            --title "Bruno v${VERSION} 简体中文版" \
+            --notes "对官方版本 v${VERSION} 进行汉化处理。"

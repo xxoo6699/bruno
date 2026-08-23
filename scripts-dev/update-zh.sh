@@ -13,7 +13,7 @@
 # 流程:
 #   1. git fetch origin && merge origin/main 到 zh-CN
 #      （冲突时列出文件并退出，解决后重跑本脚本）
-#   2. 依赖变化时 npm install；重建 8 个工作区依赖包 + QuickJS 沙箱捆绑包
+#   2. 缺少 node_modules 或依赖变化时 npm install；重建 8 个工作区依赖包 + QuickJS 沙箱捆绑包
 #   3. 汉化审计: 扫描新增硬编码文案 + 缺失词条，输出到 /tmp 供补齐
 #   4. 可选版本号更新
 #   5. rsbuild 生产构建 → 拷贝进 electron 壳 → electron-builder 出未签名 arm64 dmg/zip
@@ -65,7 +65,7 @@ fi
 
 # ---------- 2. 依赖与工作区包 ----------
 step "2/7 安装依赖并重建工作区包"
-if git diff --name-only "$BEFORE" HEAD | grep -q "^package-lock.json$"; then
+if [ ! -d node_modules ] || git diff --name-only "$BEFORE" HEAD | grep -q "^package-lock.json$"; then
   npm install
 fi
 npm run build:graphql-docs >/dev/null

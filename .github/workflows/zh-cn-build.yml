@@ -2,13 +2,16 @@
 #
 # 适用于把 zh-CN 分支推送到自己的 GitHub fork 之后。
 # - 手动触发: Actions 页面点击 Run workflow，可填入新版本号
-# - 定时触发: 取消注释 schedule 部分（每周一 UTC 0 点自动构建）
+# - 定时触发: 每周一 UTC 0 点自动构建（注释掉 schedule 即可关闭）
 #
 # 产物: 未签名 arm64 dmg/zip，在 Actions 的 Artifacts 里下载。
 # 审计结果（新增硬编码文案 / 缺失词条）也会作为 artifact 上传，
 # 若不为空说明本次合并引入了新文案，需要按 docs/zh-maintenance.md 补翻。
 
 name: zh-CN build
+
+permissions:
+  contents: write
 
 on:
   workflow_dispatch:
@@ -17,8 +20,8 @@ on:
         description: '版本号（留空沿用 package.json 当前值）'
         required: false
         default: ''
-  # schedule:
-  #   - cron: '0 0 * * 1'
+  schedule:
+    - cron: '0 0 * * 1'
 
 jobs:
   build:
@@ -44,17 +47,22 @@ jobs:
         env:
           UPSTREAM_REF: origin/main
 
+      - name: Collect localization audit results
+        if: always()
+        run: |
+          mkdir -p i18n-audit
+          cp /tmp/i18n_hardcoded.txt /tmp/i18n_missing.json i18n-audit/ || true
+
       - name: Upload localization audit results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: i18n-audit
-          path: |
-            /tmp/i18n_hardcoded.txt
-            /tmp/i18n_missing.json
+          path: i18n-audit/
 
       - name: Commit merged updates back to zh-CN
         run: |
+          rm -rf i18n-audit
           git add -A
           git diff --cached --quiet || git commit -m "chore: merge upstream + rebuild zh-CN [skip ci]"
           git push origin zh-CN

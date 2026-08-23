@@ -65,7 +65,7 @@ git checkout zh-CN
 
 把仓库推到自己的 GitHub fork 后，`.github/workflows/zh-cn-build.yml` 提供：
 
-- 手动触发（可填版本号）；取消注释 `schedule` 可改为每周自动构建
+- 手动触发（可填版本号）；已启用 `schedule` 每周一 UTC 0 点自动构建，注释掉即可关闭
 - macos-14 runner 上完成合并、审计、构建、打包，产物在 Artifacts 下载
 - 审计结果作为 `i18n-audit` artifact 上传；不为空说明有新文案待补翻
 - 合并结果自动 commit 回 `zh-CN` 分支

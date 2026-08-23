@@ -151,6 +151,8 @@ jobs:
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
+          # release job 不 checkout 仓库，用 GH_REPO 告诉 gh 操作哪个仓库
+          GH_REPO: ${{ github.repository }}
         run: |
           VERSION="${{ needs.merge.outputs.version }}"
           TAG="v${VERSION}"

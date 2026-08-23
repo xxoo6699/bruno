@@ -1,3 +1,37 @@
+<div align="center">
+
+## Bruno 简体中文版
+
+本仓库是 [Bruno](https://github.com/usebruno/bruno)（开源、离线优先的 API 调试 IDE）的
+**简体中文版**，在官方代码之上加入了完整的简体中文本地化与中英文一键切换能力。
+
+[⬇️ 下载简体中文版](https://github.com/xxoo6699/bruno/releases)
+· [🈶 汉化维护指南](docs/zh-maintenance.md)
+· [🔗 官方仓库](https://github.com/usebruno/bruno)
+
+</div>
+
+> [!NOTE]
+> **关于本仓库**
+>
+> - **这是什么**：官方 Bruno 的简体中文 fork。`zh-CN` 分支包含全部汉化改动
+>   （i18n 接线、中文词典、打包配置），`main` 分支与官方保持一致不做修改。
+> - **下载安装**：见 [Releases](https://github.com/xxoo6699/bruno/releases)。
+>   提供 macOS（dmg/zip）、Linux（AppImage/deb/rpm）、Windows（exe）安装包，
+>   均含 x64 与 arm64 架构。所有包均未签名，macOS 首次打开需
+>   右键 → 打开以绕过 Gatekeeper。
+> - **自动跟进官方**：流水线每周一自动合并官方最新代码并重新打包发布，
+>   版本号跟随官方 release tag；也可在 [Actions](https://github.com/xxoo6699/bruno/actions/workflows/zh-cn-build.yml)
+>   页面手动触发。
+> - **翻译规范**见 [I18N_SPEC.md](I18N_SPEC.md)，合并上游与补翻流程见
+>   [docs/zh-maintenance.md](docs/zh-maintenance.md)。
+
+---
+
+以下为官方原版 README。
+
+---
+
 <br />
 <img src="assets/images/logo-transparent.png" width="80"/>
 

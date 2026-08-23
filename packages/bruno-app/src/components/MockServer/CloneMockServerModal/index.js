@@ -3,6 +3,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import Portal from 'components/Portal';
 import Modal from 'components/Modal';
 import { loadMockResponses } from 'providers/ReduxStore/slices/mock-server/index';
@@ -29,6 +30,7 @@ const CloneMockServerModal = ({
   onClose
 }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const inputRef = useRef();
   const activeWorkspaceUid = useSelector((state) => state.workspaces.activeWorkspaceUid);
   const configuredInstances = useSelector((state) => getMockServerInstances(state), shallowEqual);
@@ -148,8 +150,8 @@ const CloneMockServerModal = ({
     <Portal>
       <Modal
         size="md"
-        title="Clone Mock Server"
-        confirmText="Clone"
+        title={t('Clone Mock Server')}
+        confirmText={t('Clone')}
         handleConfirm={() => formik.handleSubmit()}
         handleCancel={onClose}
         dataTestId="mock-server-clone-modal"
@@ -157,7 +159,7 @@ const CloneMockServerModal = ({
         <form className="bruno-form" onSubmit={(event) => event.preventDefault()}>
           <div>
             <label htmlFor="mock-server-clone-name" className="block font-medium">
-              Name
+              {t('Name')}
             </label>
             <input
               id="mock-server-clone-name"
@@ -181,7 +183,7 @@ const CloneMockServerModal = ({
 
           <div className="mt-4">
             <label htmlFor="mock-server-clone-port" className="block font-medium">
-              Port
+              {t('Port')}
             </label>
             <input
               id="mock-server-clone-port"
@@ -203,7 +205,7 @@ const CloneMockServerModal = ({
           </div>
 
           <p className="text-xs opacity-70 mt-4">
-            Clones mock responses and server settings. The clone starts stopped.
+            {t('Clones mock responses and server settings. The clone starts stopped.')}
           </p>
         </form>
       </Modal>

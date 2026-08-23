@@ -4,12 +4,14 @@ import Modal from 'components/Modal';
 import { exportBrunoEnvironment } from 'utils/exporters/bruno-environment';
 import { browseDirectory } from 'providers/ReduxStore/slices/collections/actions';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import StyledWrapper from './StyledWrapper';
 import Button from 'ui/Button';
 
 const ExportEnvironmentModal = ({ onClose, environments = [], environmentType }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   // Helper function to truncate environment names
   const truncateEnvName = (name) => {
@@ -108,25 +110,25 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
       setIsExporting(true);
 
       if (!filePath) {
-        toast.error('Please select a location to save the files');
+        toast.error(t('Please select a location to save the files'));
         return;
       }
 
       if (selectedCount === 0) {
-        toast.error('Please select at least one environment to export');
+        toast.error(t('Please select at least one environment to export'));
         return;
       }
 
       await exportBrunoEnvironment({ environments: selectedEnvs, environmentType, filePath, exportFormat });
 
       const successMessage = exportFormat === 'folder'
-        ? `Environments exported successfully to bruno-${environmentType}-environments folder`
-        : 'Environment(s) exported successfully';
+        ? t('Environments exported successfully to bruno-{{type}}-environments folder', { type: environmentType })
+        : t('Environment(s) exported successfully');
       toast.success(successMessage);
       onClose();
     } catch (error) {
       console.error('Export error:', error);
-      toast.error(error.message || 'Failed to export environments');
+      toast.error(error.message || t('Failed to export environments'));
     } finally {
       setIsExporting(false);
     }
@@ -137,7 +139,7 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
       <StyledWrapper>
         <Modal
           size="md"
-          title="Export Environments"
+          title={t('Export Environments')}
           hideFooter={true}
           handleCancel={onClose}
         >
@@ -148,14 +150,14 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                 <div className="flex flex-col h-full">
                   <div className="flex justify-between items-center mb-2 pb-1">
                     <h3 className="font-medium text-theme">
-                      {environmentType === 'global' ? 'Global Environments' : 'Collection Environments'}
+                      {environmentType === 'global' ? t('Global Environments') : t('Collection Environments')}
                     </h3>
                     <button
                       type="button"
                       onClick={handleSelectAll}
                       className="text-xs text-link px-1 py-0.5 rounded transition-colors"
                     >
-                      {environments.every((env) => selectedEnvironments[env.uid]) ? 'Deselect All' : 'Select All'}
+                      {environments.every((env) => selectedEnvironments[env.uid]) ? t('Deselect All') : t('Select All')}
                     </button>
                   </div>
                   <div className="flex flex-col gap-1 flex-1 overflow-y-auto">
@@ -177,12 +179,12 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                 <div className="flex flex-col h-full">
                   <div className="flex justify-between items-center mb-2 pb-1">
                     <h3 className="font-medium text-theme">
-                      {environmentType === 'global' ? 'Global Environments' : 'Collection Environments'}
+                      {environmentType === 'global' ? t('Global Environments') : t('Collection Environments')}
                     </h3>
                   </div>
                   <div className="flex items-center justify-center flex-1 p-4 text-center">
                     <span className="text-xs text-muted">
-                      No {environmentType === 'global' ? 'global' : 'collection'} environments
+                      {t('No {{type}} environments', { type: environmentType === 'global' ? t('global') : t('collection') })}
                     </span>
                   </div>
                 </div>
@@ -193,7 +195,7 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
             {selectedCount > 0 && (
               <div className="mb-4">
                 <label className="block font-medium mb-2 text-theme">
-                  Export Format
+                  {t('Export Format')}
                 </label>
                 <div className="space-y-2">
                   {exportFormatOptions.map((option) => (
@@ -208,8 +210,8 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                         className={`mt-0.5 mr-3 w-4 h-4 ${option.disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                       />
                       <div>
-                        <div className={`font-medium ${option.disabled ? 'text-muted' : 'text-theme'}`}>{option.label}</div>
-                        <div className="text-xs text-muted">{option.description}</div>
+                        <div className={`font-medium ${option.disabled ? 'text-muted' : 'text-theme'}`}>{t(option.label)}</div>
+                        <div className="text-xs text-muted">{t(option.description)}</div>
                       </div>
                     </label>
                   ))}
@@ -220,7 +222,7 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
             {/* Location Input Section */}
             <div className="mb-4">
               <label htmlFor="export-location" className="block font-medium mb-2 text-theme">
-                Location
+                {t('Location')}
               </label>
               <div className="flex flex-col relative items-center">
                 <input
@@ -232,7 +234,7 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                   onClick={browse}
                   onChange={(e) => setFilePath(e.target.value)}
                   disabled={isExporting || selectedCount <= 0}
-                  placeholder="Select a target location"
+                  placeholder={t('Select a target location')}
                   autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="off"
@@ -252,7 +254,7 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                 disabled={isExporting}
                 className="mt-2 mr-2"
               >
-                Cancel
+                {t('Cancel')}
               </Button>
               <Button
                 type="button"
@@ -261,7 +263,7 @@ const ExportEnvironmentModal = ({ onClose, environments = [], environmentType })
                 disabled={isExporting || selectedCount === 0}
                 className="mt-2"
               >
-                {isExporting ? 'Exporting...' : `Export ${selectedCount || ''} Environment${selectedCount !== 1 ? 's' : ''}`}
+                {isExporting ? t('Exporting...') : t('Export {{count}} Environments', { count: selectedCount })}
               </Button>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import get from 'lodash/get';
 import classnames from 'classnames';
@@ -15,6 +16,7 @@ import ScriptError from 'components/ResponsePane/ScriptError';
 import ScriptErrorIcon from 'components/ResponsePane/ScriptErrorIcon';
 
 const ResponsePane = ({ rightPaneWidth, item, collection }) => {
+  const { t } = useTranslation();
   const [selectedTab, setSelectedTab] = useState('response');
   const [showScriptErrorCard, setShowScriptErrorCard] = useState(false);
 
@@ -77,7 +79,7 @@ const ResponsePane = ({ rightPaneWidth, item, collection }) => {
       }
 
       default: {
-        return <div>404 | Not found</div>;
+        return <div>{t('404 | Not found')}</div>;
       }
     }
   };

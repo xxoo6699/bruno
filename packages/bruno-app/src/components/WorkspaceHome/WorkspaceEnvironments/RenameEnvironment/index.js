@@ -8,9 +8,11 @@ import { useDispatch } from 'react-redux';
 import { renameGlobalEnvironment } from 'providers/ReduxStore/slices/global-environments';
 import { validateName, validateNameError } from 'utils/common/regex';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const RenameEnvironment = ({ onClose, environment }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const globalEnvs = useSelector((state) => state?.globalEnvironments?.globalEnvironments);
   const inputRef = useRef();
 
@@ -27,14 +29,14 @@ const RenameEnvironment = ({ onClose, environment }) => {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(1, 'must be at least 1 character')
-        .max(255, 'Must be 255 characters or less')
+        .min(1, t('must be at least 1 character'))
+        .max(255, t('Must be 255 characters or less'))
         .test('is-valid-filename', function (value) {
           const isValid = validateName(value);
           return isValid ? true : this.createError({ message: validateNameError(value) });
         })
-        .required('name is required')
-        .test('duplicate-name', 'Environment already exists', validateEnvironmentName)
+        .required(t('name is required'))
+        .test('duplicate-name', t('Environment already exists'), validateEnvironmentName)
     }),
     onSubmit: (values) => {
       if (values.name === environment.name) {
@@ -42,11 +44,11 @@ const RenameEnvironment = ({ onClose, environment }) => {
       }
       dispatch(renameGlobalEnvironment({ name: values.name, environmentUid: environment.uid }))
         .then(() => {
-          toast.success('Environment renamed successfully');
+          toast.success(t('Environment renamed successfully'));
           onClose();
         })
         .catch((error) => {
-          toast.error('An error occurred while renaming the environment');
+          toast.error(t('An error occurred while renaming the environment'));
           console.error(error);
         });
     }
@@ -66,15 +68,15 @@ const RenameEnvironment = ({ onClose, environment }) => {
     <Portal>
       <Modal
         size="sm"
-        title="Rename Environment"
-        confirmText="Rename"
+        title={t('Rename Environment')}
+        confirmText={t('Rename')}
         handleConfirm={onSubmit}
         handleCancel={onClose}
       >
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="environment-name" className="block font-semibold">
-              Environment Name
+              {t('Environment Name')}
             </label>
             <input
               id="environment-name"

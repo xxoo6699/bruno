@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback, useMemo, useRef } from 'react';
 import { useFormik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { savePreferences, updateActivePreferencesTab } from 'providers/ReduxStore/slices/app';
 import StyledWrapper from './StyledWrapper';
 import * as Yup from 'yup';
@@ -70,6 +71,7 @@ const BETA_FEATURES = [
 ];
 
 const Beta = ({ close }) => {
+  const { t } = useTranslation();
   const preferences = useSelector((state) => state.app.preferences);
   const dispatch = useDispatch();
 
@@ -118,8 +120,8 @@ const Beta = ({ close }) => {
         }
       })
     )
-      .catch((err) => console.log(err) && toast.error('Failed to update beta preferences'));
-  }, [dispatch, preferences]);
+      .catch((err) => console.log(err) && toast.error(t('Failed to update beta preferences')));
+  }, [dispatch, preferences, t]);
 
   const handleSaveRef = useRef(handleSave);
   handleSaveRef.current = handleSave;
@@ -154,11 +156,11 @@ const Beta = ({ close }) => {
 
   return (
     <StyledWrapper>
-      <div className="section-header">Beta Features</div>
+      <div className="section-header">{t('Beta Features')}</div>
       <form onSubmit={formik.handleSubmit}>
         <div className="mb-6">
           <p className="text-gray-500 dark:text-gray-400 mb-4 text-wrap">
-            Beta features are experimental previews that may change before full release. Try them and share feedback.
+            {t('Beta features are experimental previews that may change before full release. Try them and share feedback.')}
           </p>
         </div>
 
@@ -167,11 +169,11 @@ const Beta = ({ close }) => {
             <div key={feature.id} className="beta-feature-item">
               <div className="beta-feature-header">
                 <span className="beta-feature-title select-none font-medium" id={`${feature.id}-label`}>
-                  {feature.label}
+                  {t(feature.label)}
                 </span>
               </div>
               <div className="beta-feature-description text-xs text-gray-500 dark:text-gray-400 flex">
-                {feature.description}
+                {t(feature.description)}
                 {feature.toggle && (
                   <div className="ml-auto">
                     <ToggleSwitch
@@ -191,7 +193,7 @@ const Beta = ({ close }) => {
                       className="beta-feature-link"
                       onClick={() => goToTab(feature.action.tab)}
                     >
-                      <span>{feature.action.label}</span>
+                      <span>{t(feature.action.label)}</span>
                       <IconArrowRight size={14} strokeWidth={1.5} />
                     </button>
                   )}
@@ -202,7 +204,7 @@ const Beta = ({ close }) => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <span>View docs</span>
+                      <span>{t('View docs')}</span>
                       <IconExternalLink size={14} strokeWidth={1.5} />
                     </a>
                   )}
@@ -214,7 +216,7 @@ const Beta = ({ close }) => {
 
         {!hasAnyBetaFeatures && (
           <div className="no-features-message">
-            <p>No beta features are currently available</p>
+            <p>{t('No beta features are currently available')}</p>
           </div>
         )}
       </form>

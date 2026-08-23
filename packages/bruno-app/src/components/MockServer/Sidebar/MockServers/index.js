@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,6 +40,7 @@ const StatusDot = styled.span`
 `;
 
 const MockServerItem = React.memo(({
+
   instance,
   collection,
   workspaceCollections,
@@ -50,7 +52,9 @@ const MockServerItem = React.memo(({
   onRename,
   onClone,
   onDelete
+
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const workspaceInstances = useSelector((state) => getMockServerInstances(state, instance.workspaceUid));
   const serverState = useSelector((state) => state.mockServer.servers[instance.uid]);
@@ -203,7 +207,7 @@ const MockServerItem = React.memo(({
         >
           <ActionIcon
             style={{ width: 16, minWidth: 16 }}
-            label="Toggle mock responses"
+            label={t('Toggle mock responses')}
             onClick={handleChevronClick}
           >
             <IconChevronRight
@@ -221,7 +225,7 @@ const MockServerItem = React.memo(({
         </div>
         <div className="pr-2">
           <MenuDropdown items={menuItems} placement="bottom-end">
-            <ActionIcon label="Mock server actions" className="mock-server-actions">
+            <ActionIcon label={t('Mock server actions')} className="mock-server-actions">
               <IconDots size={18} aria-hidden="true" />
             </ActionIcon>
           </MenuDropdown>
@@ -242,7 +246,7 @@ const MockServerItem = React.memo(({
             ))}
           </div>
         ) : (
-          <div className="pl-9 empty-mock-server-message">No mock responses yet</div>
+          <div className="pl-9 empty-mock-server-message">{t('No mock responses yet')}</div>
         )
       ) : null}
     </>
@@ -252,6 +256,7 @@ const MockServerItem = React.memo(({
 MockServerItem.displayName = 'MockServerItem';
 
 const MockServers = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [editingInstance, setEditingInstance] = useState(null);
   const [renamingInstance, setRenamingInstance] = useState(null);
@@ -323,8 +328,8 @@ const MockServers = () => {
     return (
       <StyledWrapper>
         <div className="text-xs text-center placeholder py-4">
-          <div>No mock servers yet.</div>
-          <div className="mt-2">Use the + button to create one.</div>
+          <div>{t('No mock servers yet.')}</div>
+          <div className="mt-2">{t('Use the + button to create one.')}</div>
         </div>
       </StyledWrapper>
     );

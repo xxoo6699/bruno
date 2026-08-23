@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18n';
 import React, { useState } from 'react';
 import { IconChevronRight } from '@tabler/icons';
 import Modal from 'components/Modal';
@@ -50,7 +52,7 @@ const ConfirmSyncModal = ({ groups, onCancel, onSync, isSyncing }) => {
   return (
     <Modal
       size="md"
-      title="Confirm Sync"
+      title={i18n.t('Confirm Sync')}
       handleCancel={onCancel}
       hideFooter={true}
     >

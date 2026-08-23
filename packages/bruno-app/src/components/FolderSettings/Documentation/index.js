@@ -1,6 +1,7 @@
 import get from 'lodash/get';
 import { updateFolderDocs } from 'providers/ReduxStore/slices/collections';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { saveFolderRoot } from 'providers/ReduxStore/slices/collections/actions';
 import Button from 'ui/Button';
 import StyledWrapper from './StyledWrapper';
@@ -10,6 +11,7 @@ import DocsEditor from 'components/Documentation/DocsEditor';
 
 const Documentation = ({ collection, folder }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { isEditing, setEditing } = useDocsEditingState();
   const docs = folder.draft ? get(folder, 'draft.docs', '') : get(folder, 'root.docs', '');
 
@@ -56,7 +58,7 @@ const Documentation = ({ collection, folder }) => {
       {isEditing && (
         <div className="mt-6 flex-shrink-0">
           <Button type="submit" size="sm" onClick={onSave}>
-            Save
+            {t('Save')}
           </Button>
         </div>
       )}

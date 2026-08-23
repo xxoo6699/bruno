@@ -1,5 +1,6 @@
 import React, { useState, useMemo, forwardRef, useImperativeHandle, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { IconBookmark } from '@tabler/icons';
 import { addResponseExample } from 'providers/ReduxStore/slices/collections';
 import { saveRequest } from 'providers/ReduxStore/slices/collections/actions';
@@ -27,6 +28,7 @@ const getTitleText = ({ isResponseTooLarge, isStreamingResponse }) => {
 
 const ResponseBookmark = forwardRef(({ item, collection, responseSize, children }, ref) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [showSaveResponseExampleModal, setShowSaveResponseExampleModal] = useState(false);
   const response = item.response || {};
   const elementRef = useRef(null);
@@ -47,14 +49,14 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
 
   const handleSaveClick = (e) => {
     if (!response || response.error) {
-      toast.error('No valid response to save as example');
+      toast.error(t('No valid response to save as example'));
       e.preventDefault();
       e.stopPropagation();
       return;
     }
 
     if (isResponseTooLarge) {
-      toast.error('Response size exceeds 5MB limit. Cannot save as example.');
+      toast.error(t('Response size exceeds 5MB limit. Cannot save as example.'));
       e.preventDefault();
       e.stopPropagation();
       return;
@@ -124,7 +126,7 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
     }));
 
     setShowSaveResponseExampleModal(false);
-    toast.success(`Example "${name}" created successfully`);
+    toast.success(t('Example "{{name}}" created successfully', { name }));
   };
 
   const disabledMessage = getTitleText({
@@ -138,7 +140,7 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
         ref={elementRef}
         onClick={handleSaveClick}
         title={
-          !children ? disabledMessage : (isDisabled ? disabledMessage : null)
+          !children ? t(disabledMessage) : (isDisabled ? t(disabledMessage) : null)
         }
         className={classnames({
           'opacity-50 cursor-not-allowed': isDisabled && !children
@@ -158,7 +160,7 @@ const ResponseBookmark = forwardRef(({ item, collection, responseSize, children 
         isOpen={showSaveResponseExampleModal}
         onClose={() => setShowSaveResponseExampleModal(false)}
         onSave={saveAsExample}
-        title="Save Response as Example"
+        title={t('Save Response as Example')}
         initialName={getInitialExampleName(item)}
       />
     </>

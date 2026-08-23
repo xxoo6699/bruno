@@ -1,9 +1,11 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ReactPlayer from 'react-player';
 
 const VideoPreview = React.memo(({ contentType, dataBuffer }) => {
   const [videoUrl, setVideoUrl] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const videoType = contentType.split(';')[0];
@@ -14,7 +16,7 @@ const VideoPreview = React.memo(({ contentType, dataBuffer }) => {
     return () => URL.revokeObjectURL(url);
   }, [contentType, dataBuffer]);
 
-  if (!videoUrl) return <div>Loading video...</div>;
+  if (!videoUrl) return <div>{t('Loading video...')}</div>;
 
   return (
     <ReactPlayer

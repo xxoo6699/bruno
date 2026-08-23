@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import Modal from 'components/Modal';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +13,7 @@ import Portal from 'ui/Portal';
 
 const RemoveCollection = ({ onClose, collectionUid }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const collection = useSelector((state) => findCollectionByUid(state.collections.collections, collectionUid));
 
   // Detect drafts in the collection
@@ -23,20 +25,20 @@ const RemoveCollection = ({ onClose, collectionUid }) => {
 
   const onConfirm = () => {
     if (!collection) {
-      toast.error('Collection not found');
+      toast.error(t('Collection not found'));
       onClose();
       return;
     }
     dispatch(removeCollection(collection.uid))
       .then(() => {
-        toast.success('Collection removed from workspace');
+        toast.success(t('Collection removed from workspace'));
         onClose();
       })
-      .catch(() => toast.error('An error occurred while removing the collection'));
+      .catch(() => toast.error(t('An error occurred while removing the collection')));
   };
 
   if (!collection) {
-    return <div>Collection not found</div>;
+    return <div>{t('Collection not found')}</div>;
   }
 
   // If there are drafts, show the draft confirmation modal
@@ -50,19 +52,19 @@ const RemoveCollection = ({ onClose, collectionUid }) => {
       <Portal>
         <Modal
           size="sm"
-          title="Remove Collection"
-          confirmText="Remove"
+          title={t('Remove Collection')}
+          confirmText={t('Remove')}
           confirmButtonColor="danger"
           handleConfirm={onConfirm}
           handleCancel={onClose}
         >
-          <p className="mb-4">Are you sure you want to close following collection in Bruno?</p>
+          <p className="mb-4">{t('Are you sure you want to close following collection in Bruno?')}</p>
           <div className="collection-info-card">
             <div className="collection-name">{collection.name}</div>
             <div className="collection-path">{collection.pathname}</div>
           </div>
           <p className="mt-4 text-muted text-sm">
-            It will still be available in the filesystem at the above location and can be re-opened later.
+            {t('It will still be available in the filesystem at the above location and can be re-opened later.')}
           </p>
         </Modal>
       </Portal>

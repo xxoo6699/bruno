@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { updateRequestPaneTabWidth } from 'providers/ReduxStore/slices/tabs';
 import {
@@ -32,6 +33,7 @@ const MIN_TOP_PANE_HEIGHT = 210;
 const MIN_BOTTOM_PANE_HEIGHT = 150;
 
 const MockResponse = ({ instance, collection, responseUid }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const collections = useSelector((state) => state.collections.collections);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -400,22 +402,22 @@ const MockResponse = ({ instance, collection, responseUid }) => {
   };
 
   if (isLoading) {
-    return <div className="p-4 text-sm opacity-70">Loading mock response...</div>;
+    return <div className="p-4 text-sm opacity-70">{t('Loading mock response...')}</div>;
   }
 
   if (!storedResponse) {
     return (
       <div className="p-4">
-        <div className="font-medium">Mock response not found</div>
+        <div className="font-medium">{t('Mock response not found')}</div>
         <div className="text-sm mt-2 opacity-70">
-          It may have been deleted. Return to the mock server dashboard and refresh responses.
+          {t('It may have been deleted. Return to the mock server dashboard and refresh responses.')}
         </div>
       </div>
     );
   }
 
   if (!item || !editorCollection) {
-    return <div className="p-4 text-sm opacity-70">Loading mock response...</div>;
+    return <div className="p-4 text-sm opacity-70">{t('Loading mock response...')}</div>;
   }
 
   return (

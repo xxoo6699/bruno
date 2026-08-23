@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18n';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import find from 'lodash/find';
@@ -94,7 +96,7 @@ const OpenAPISpecTab = ({ collection, tabUid }) => {
     return (
       <div className="flex items-center justify-center h-full gap-2 opacity-50">
         <IconLoader2 size={20} className="animate-spin" />
-        <span>Loading spec...</span>
+        <span>{i18n.t('Loading spec...')}</span>
       </div>
     );
   }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import StyledWrapper from './StyledWrapper';
 import { updateCollectionPresets } from 'providers/ReduxStore/slices/collections';
 import { saveCollectionSettings } from 'providers/ReduxStore/slices/collections/actions';
@@ -13,6 +14,7 @@ import { requestTypeItems } from './constants';
 
 const PresetsSettings = ({ collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const initialPresets = { requestType: DEFAULT_PRESET_REQUEST_TYPE, requestUrl: '' };
 
   // Get presets from draft.brunoConfig if it exists, otherwise from brunoConfig
@@ -45,7 +47,7 @@ const PresetsSettings = ({ collection }) => {
   };
 
   const defaultEnvironmentItems = [
-    { id: '', label: 'None', onClick: () => handleDefaultEnvironmentChange('') },
+    { id: '', label: t('None'), onClick: () => handleDefaultEnvironmentChange('') },
     ...environments.map((env) => ({
       id: env.name,
       label: env.name,
@@ -69,10 +71,10 @@ const PresetsSettings = ({ collection }) => {
     <StyledWrapper className="h-full w-full">
       <div className="bruno-form">
         <div className="preset-field">
-          <label className="preset-field-label">Default Request Type</label>
-          <p className="preset-field-subtitle">Selected by default for new requests.</p>
+          <label className="preset-field-label">{t('Default Request Type')}</label>
+          <p className="preset-field-subtitle">{t('Selected by default for new requests.')}</p>
           <SegmentedControl
-            ariaLabel="Default Request Type"
+            ariaLabel={t('Default Request Type')}
             name="requestType"
             value={requestType}
             onChange={handleRequestTypeChange}
@@ -82,14 +84,14 @@ const PresetsSettings = ({ collection }) => {
         </div>
 
         <div className="preset-field">
-          <label className="preset-field-label" htmlFor="request-url">Default Base URL</label>
-          <p className="preset-field-subtitle">Pre-fills the URL field for new requests.</p>
+          <label className="preset-field-label" htmlFor="request-url">{t('Default Base URL')}</label>
+          <p className="preset-field-subtitle">{t('Pre-fills the URL field for new requests.')}</p>
           <input
             id="request-url"
             data-testid="presets-request-url"
             type="text"
             name="requestUrl"
-            placeholder="Request URL"
+            placeholder={t('Request URL')}
             className="block textbox preset-input"
             autoComplete="off"
             autoCorrect="off"
@@ -101,8 +103,8 @@ const PresetsSettings = ({ collection }) => {
         </div>
 
         <div className="preset-field">
-          <label className="preset-field-label" htmlFor="default-environment">Default Environment</label>
-          <p className="preset-field-subtitle">Selected when this collection is shared and first opened.</p>
+          <label className="preset-field-label" htmlFor="default-environment">{t('Default Environment')}</label>
+          <p className="preset-field-subtitle">{t('Selected when this collection is shared and first opened.')}</p>
           <div className="default-env-dropdown">
             <MenuDropdown
               items={defaultEnvironmentItems}
@@ -116,7 +118,7 @@ const PresetsSettings = ({ collection }) => {
                 id="default-environment"
                 className="default-env-trigger flex items-center justify-between cursor-pointer"
               >
-                <span className="truncate">{defaultEnvironmentName || 'None'}</span>
+                <span className="truncate">{defaultEnvironmentName || t('None')}</span>
                 <IconCaretDown className="caret" size={14} strokeWidth={2} />
               </button>
             </MenuDropdown>
@@ -125,7 +127,7 @@ const PresetsSettings = ({ collection }) => {
 
         <div className="mt-6">
           <Button type="button" size="sm" data-testid="presets-save-btn" onClick={handleSave}>
-            Save
+            {t('Save')}
           </Button>
         </div>
       </div>

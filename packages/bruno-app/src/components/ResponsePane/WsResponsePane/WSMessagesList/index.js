@@ -5,6 +5,7 @@ import { IconExclamationCircle, IconChevronRight, IconInfoCircle, IconChevronDow
 import CodeEditor from 'components/CodeEditor/index';
 import { useTheme } from 'providers/Theme';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Virtuoso } from 'react-virtuoso';
 
 const getContentMeta = (content) => {
@@ -177,6 +178,7 @@ const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
 });
 
 const WSMessagesList = ({ messages = [] }) => {
+  const { t } = useTranslation();
   const virtuosoRef = useRef(null);
   const [scrollerElement, setScrollerElement] = useState(null);
   const [openMessages, setOpenMessages] = useState(new Set());
@@ -240,7 +242,7 @@ const WSMessagesList = ({ messages = [] }) => {
   }, []);
 
   if (!messages.length) {
-    return <StyledWrapper><div className="empty-state">No messages yet.</div></StyledWrapper>;
+    return <StyledWrapper><div className="empty-state">{t('No messages yet.')}</div></StyledWrapper>;
   }
 
   return (

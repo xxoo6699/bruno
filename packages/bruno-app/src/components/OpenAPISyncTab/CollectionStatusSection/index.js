@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import {
   IconCheck,
@@ -18,6 +19,7 @@ import ExpandableEndpointRow from '../EndpointChangeSection/ExpandableEndpointRo
 import useEndpointActions from '../hooks/useEndpointActions';
 
 const CollectionStatusSection = ({
+
   collection,
   collectionDrift,
   reloadDrift,
@@ -27,7 +29,9 @@ const CollectionStatusSection = ({
   onOpenEndpoint,
   isLoading,
   onTabSelect
+
 }) => {
+  const { t } = useTranslation();
   const {
     pendingAction, setPendingAction,
     confirmPendingAction,
@@ -110,7 +114,7 @@ const CollectionStatusSection = ({
       {hasDrift && (
         <div className="sync-info-notice mt-4">
           <IconInfoCircle size={14} className="sync-info-icon" />
-          <span><span className="whats-updated-title">What's tracked:</span> Changes to parameters, headers, body and auth compared to the synced spec. Your variables, scripts, tests, assertions, settings etc. are not tracked here.</span>
+          <span><span className="whats-updated-title">What's tracked:</span> {t('Changes to parameters, headers, body and auth compared to the synced spec. Your variables, scripts, tests, assertions, settings etc. are not tracked here.')}</span>
         </div>
       )}
 
@@ -118,7 +122,7 @@ const CollectionStatusSection = ({
         <div className="mt-5">
           {/* Modified in Collection */}
           <EndpointChangeSection
-            title="Modified in Collection"
+            title={t('Modified in Collection')}
             type="modified"
             endpoints={collectionDrift.modified || []}
             expandableLayout
@@ -127,10 +131,10 @@ const CollectionStatusSection = ({
             renderItem={(endpoint, idx) =>
               renderDriftRow(endpoint, idx, (
                 <>
-                  <Button size="xs" variant="ghost" onClick={() => onOpenEndpoint(endpoint.id)} title="Open in tab" icon={<IconExternalLink size={14} />}>
+                  <Button size="xs" variant="ghost" onClick={() => onOpenEndpoint(endpoint.id)} title={t('Open in tab')} icon={<IconExternalLink size={14} />}>
                     Open
                   </Button>
-                  <Button size="xs" variant="ghost" onClick={() => handleResetEndpoint(endpoint)} title="Reset to spec" icon={<IconArrowBackUp size={14} />}>
+                  <Button size="xs" variant="ghost" onClick={() => handleResetEndpoint(endpoint)} title={t('Reset to spec')} icon={<IconArrowBackUp size={14} />}>
                     Reset
                   </Button>
                 </>
@@ -140,7 +144,7 @@ const CollectionStatusSection = ({
                 size="xs"
                 variant="outline"
                 onClick={handleResetAllModified}
-                title="Reset all modified endpoints to match the spec"
+                title={t('Reset all modified endpoints to match the spec')}
                 icon={<IconArrowBackUp size={14} />}
               >
                 Reset All
@@ -150,7 +154,7 @@ const CollectionStatusSection = ({
 
           {/* Deleted from Collection */}
           <EndpointChangeSection
-            title="Deleted from Collection"
+            title={t('Deleted from Collection')}
             type="missing"
             endpoints={collectionDrift.missing || []}
             expandableLayout
@@ -158,7 +162,7 @@ const CollectionStatusSection = ({
             sectionKey="drift-missing"
             renderItem={(endpoint, idx) =>
               renderDriftRow(endpoint, idx, (
-                <Button size="xs" variant="ghost" onClick={() => handleAddMissingEndpoint(endpoint)} title="Restore to collection" icon={<IconPlus size={14} />}>
+                <Button size="xs" variant="ghost" onClick={() => handleAddMissingEndpoint(endpoint)} title={t('Restore to collection')} icon={<IconPlus size={14} />}>
                   Restore
                 </Button>
               ))}
@@ -167,7 +171,7 @@ const CollectionStatusSection = ({
                 size="xs"
                 variant="outline"
                 onClick={handleAddAllMissing}
-                title="Add all deleted endpoints back to collection"
+                title={t('Add all deleted endpoints back to collection')}
                 icon={<IconPlus size={14} />}
               >
                 Restore All
@@ -177,7 +181,7 @@ const CollectionStatusSection = ({
 
           {/* Added to Collection */}
           <EndpointChangeSection
-            title="Added to Collection"
+            title={t('Added to Collection')}
             type="local-only"
             endpoints={collectionDrift.localOnly || []}
             expandableLayout
@@ -186,10 +190,10 @@ const CollectionStatusSection = ({
             renderItem={(endpoint, idx) =>
               renderDriftRow(endpoint, idx, (
                 <>
-                  <Button size="xs" variant="ghost" onClick={() => onOpenEndpoint(endpoint.id)} title="Open in tab" icon={<IconExternalLink size={14} />}>
+                  <Button size="xs" variant="ghost" onClick={() => onOpenEndpoint(endpoint.id)} title={t('Open in tab')} icon={<IconExternalLink size={14} />}>
                     Open
                   </Button>
-                  <Button size="xs" variant="ghost" color="danger" onClick={() => handleDeleteEndpoint(endpoint)} title="Delete endpoint" icon={<IconTrash size={14} />}>
+                  <Button size="xs" variant="ghost" color="danger" onClick={() => handleDeleteEndpoint(endpoint)} title={t('Delete endpoint')} icon={<IconTrash size={14} />}>
                     Delete
                   </Button>
                 </>
@@ -200,7 +204,7 @@ const CollectionStatusSection = ({
                 variant="outline"
                 color="danger"
                 onClick={handleDeleteAllLocalOnly}
-                title="Delete all locally added endpoints"
+                title={t('Delete all locally added endpoints')}
                 icon={<IconTrash size={14} />}
               >
                 Delete All
@@ -211,8 +215,8 @@ const CollectionStatusSection = ({
       ) : isLoading ? (
         <div className="sync-review-empty-state mt-5">
           <IconLoader2 size={40} className="empty-state-icon animate-spin" />
-          <h4>Checking for updates</h4>
-          <p>Comparing your collection with the last synced spec...</p>
+          <h4>{t('Checking for updates')}</h4>
+          <p>{t('Comparing your collection with the last synced spec...')}</p>
         </div>
       ) : !hasStoredSpec ? (
         <div className="sync-review-empty-state mt-5">
@@ -222,13 +226,13 @@ const CollectionStatusSection = ({
             ? 'The last synced spec is missing. Go to the \'Spec Updates\' tab to restore it, or sync the collection if updates are available to track future changes.'
             : 'Once you sync your collection with the spec, local changes will appear here.'}
           </p>
-          <Button variant="outline" size="sm" className="mt-4" onClick={() => onTabSelect('spec-updates')}>Go to Spec Updates</Button>
+          <Button variant="outline" size="sm" className="mt-4" onClick={() => onTabSelect('spec-updates')}>{t('Go to Spec Updates')}</Button>
         </div>
       ) : (
         <div className="sync-review-empty-state mt-5">
           <IconCheck size={40} className="empty-state-icon" />
-          <h4>No changes in collection</h4>
-          <p>The collection endpoints match the last synced spec. Nothing to review.</p>
+          <h4>{t('No changes in collection')}</h4>
+          <p>{t('The collection endpoints match the last synced spec. Nothing to review.')}</p>
         </div>
       )}
       {/* Action confirmation modal */}

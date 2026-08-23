@@ -4,17 +4,19 @@ import toast from 'react-hot-toast';
 import Modal from 'components/Modal/index';
 import { deleteEnvironment } from 'providers/ReduxStore/slices/collections/actions';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import StyledWrapper from './StyledWrapper';
 
 const DeleteEnvironment = ({ onClose, environment, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const onConfirm = () => {
     dispatch(deleteEnvironment(environment.uid, collection.uid))
       .then(() => {
-        toast.success('Environment deleted successfully');
+        toast.success(t('Environment deleted successfully'));
         onClose();
       })
-      .catch(() => toast.error('An error occurred while deleting the environment'));
+      .catch(() => toast.error(t('An error occurred while deleting the environment')));
   };
 
   return (
@@ -22,13 +24,14 @@ const DeleteEnvironment = ({ onClose, environment, collection }) => {
       <StyledWrapper>
         <Modal
           size="md"
-          title="Delete Environment"
-          confirmText="Delete"
+          title={t('Delete Environment')}
+          confirmText={t('Delete')}
           handleConfirm={onConfirm}
           handleCancel={onClose}
           confirmButtonColor="danger"
         >
-          Are you sure you want to delete <span className="font-medium">{environment.name}</span>?
+          {t('Are you sure you want to delete')} <span className="font-medium">{environment.name}</span>?
+
         </Modal>
       </StyledWrapper>
     </Portal>

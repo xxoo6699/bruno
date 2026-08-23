@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { get } from 'lodash';
 import { updateRequestBody } from 'providers/ReduxStore/slices/collections';
 import { IconPlus } from '@tabler/icons';
@@ -13,6 +14,7 @@ const getSelectedIndex = (messages) => {
 };
 
 const WSBody = ({ item, collection, handleRun, onAddMessage }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const messagesContainerRef = useRef(null);
   const pinScrollRef = useRef(null);
@@ -242,10 +244,10 @@ const WSBody = ({ item, collection, handleRun, onAddMessage }) => {
     return (
       <StyledWrapper>
         <div className="empty-state">
-          <p>No WebSocket messages available</p>
+          <p>{t('No WebSocket messages available')}</p>
           <button className="add-message-link" data-testid="ws-add-message" onClick={onAddMessage}>
             <IconPlus size={14} strokeWidth={1.5} />
-            <span>Add message</span>
+            <span>{t('Add message')}</span>
           </button>
         </div>
       </StyledWrapper>

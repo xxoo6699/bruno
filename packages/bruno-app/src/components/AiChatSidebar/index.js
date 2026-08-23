@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18n';
 import {
   IconX,
   IconPlayerStop,
@@ -126,10 +128,10 @@ const formatRelativeTime = (timestamp) => {
   const minute = 60 * 1000;
   const hour = 60 * minute;
   const day = 24 * hour;
-  if (diff < minute) return 'just now';
-  if (diff < hour) return `${Math.floor(diff / minute)}m ago`;
-  if (diff < day) return `${Math.floor(diff / hour)}h ago`;
-  if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
+  if (diff < minute) return i18n.t('just now');
+  if (diff < hour) return i18n.t('{{count}}m ago', { count: Math.floor(diff / minute) });
+  if (diff < day) return i18n.t('{{count}}h ago', { count: Math.floor(diff / hour) });
+  if (diff < 7 * day) return i18n.t('{{count}}d ago', { count: Math.floor(diff / day) });
   return new Date(timestamp).toLocaleDateString();
 };
 
@@ -159,7 +161,7 @@ const HistoryPopover = ({ items, activeId, onPick, onDelete, onClose }) => {
   return (
     <div className="history-popover" ref={popoverRef} role="menu">
       {items.length === 0 ? (
-        <div className="history-popover__empty">No past conversations</div>
+        <div className="history-popover__empty">{i18n.t('No past conversations')}</div>
       ) : (
         items.map((item) => (
           <div
@@ -168,7 +170,7 @@ const HistoryPopover = ({ items, activeId, onPick, onDelete, onClose }) => {
             role="menuitem"
           >
             <button className="history-popover__title" onClick={() => onPick(item.id)} title={item.title}>
-              <span className="history-popover__title-text">{item.title || '(untitled)'}</span>
+              <span className="history-popover__title-text">{item.title || i18n.t('(untitled)')}</span>
               <span className="history-popover__meta">{formatRelativeTime(item.updatedAt)}</span>
             </button>
             <button
@@ -176,8 +178,8 @@ const HistoryPopover = ({ items, activeId, onPick, onDelete, onClose }) => {
               onClick={(e) => {
                 e.stopPropagation(); onDelete(item.id);
               }}
-              title="Delete conversation"
-              aria-label="Delete conversation"
+              title={i18n.t('Delete conversation')}
+              aria-label={i18n.t('Delete conversation')}
             >
               <IconTrash size={12} />
             </button>
@@ -190,6 +192,7 @@ const HistoryPopover = ({ items, activeId, onPick, onDelete, onClose }) => {
 
 const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
   const dispatch = useDispatch();
+
   const isPopout = variant === 'popout';
   const [input, _setInput] = useState(() => draftInputCache);
   const setInput = useCallback((value) => {
@@ -668,8 +671,8 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
   };
 
   const selectedModelLabel = useMemo(() => {
-    if (selectedModel === AUTO_MODEL_ID) return 'Auto';
-    return availableModels.find((m) => m.id === selectedModel)?.label || 'Auto';
+    if (selectedModel === AUTO_MODEL_ID) return i18n.t('Auto');
+    return availableModels.find((m) => m.id === selectedModel)?.label || i18n.t('Auto');
   }, [availableModels, selectedModel]);
 
   const ModelSelectorTrigger = forwardRef((props, ref) => (
@@ -683,7 +686,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
 
   const modelMenuItems = useMemo(
     () => [
-      { id: AUTO_MODEL_ID, label: 'Auto', onClick: () => handleModelSelect(AUTO_MODEL_ID) },
+      { id: AUTO_MODEL_ID, label: i18n.t('Auto'), onClick: () => handleModelSelect(AUTO_MODEL_ID) },
       ...availableModels.map((model) => ({
         id: model.id,
         label: model.label,
@@ -707,7 +710,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
             {stage.icon === 'code' && <IconCode size={12} />}
             {stage.icon === 'send' && <IconCornerDownLeft size={12} />}
           </div>
-          <span className="processing-label">{stage.label}</span>
+          <span className="processing-label">{i18n.t(stage.label)}</span>
           <div className="processing-dots"><span></span><span></span><span></span></div>
         </div>
         <div className="processing-bar"><div className="processing-bar-fill"></div></div>
@@ -734,7 +737,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
               {showThinking && (
                 <div className="message-status">
                   <span className="message-status__spinner" />
-                  <span>Thinking…</span>
+                  <span>{i18n.t('Thinking…')}</span>
                 </div>
               )}
 
@@ -774,7 +777,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
               {showWorking && (
                 <div className="message-status">
                   <span className="message-status__spinner" />
-                  <span>Working…</span>
+                  <span>{i18n.t('Working…')}</span>
                 </div>
               )}
 
@@ -788,10 +791,10 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
                     key={`write-${writeIdx}`}
                     originalCode={write.originalContent || ''}
                     newCode={write.content}
-                    contentTypeLabel={CONTENT_TYPE_LABELS[write.type] || write.type}
+                    contentTypeLabel={i18n.t(CONTENT_TYPE_LABELS[write.type] || write.type)}
                     warning={
-                      notRead ? 'Content was not read first — changes may overwrite unrelated edits'
-                        : isStale ? 'Content has been modified since AI read it'
+                      notRead ? i18n.t('Content was not read first — changes may overwrite unrelated edits')
+                        : isStale ? i18n.t('Content has been modified since AI read it')
                           : null
                     }
                     disableAccept={isStale || notRead}
@@ -813,7 +816,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
               )}
 
               {!isStreaming && msg.cancelled && (
-                <div className="message-cancelled"><em>Cancelled</em></div>
+                <div className="message-cancelled"><em>{i18n.t('Cancelled')}</em></div>
               )}
             </>
           )}
@@ -827,14 +830,14 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
     return (
       <div className="empty-state">
         <div className="empty-icon"><IconSparkles size={20} /></div>
-        <h3>AI Assistant</h3>
-        <p>Ask me to generate or modify code, tests, scripts, and docs.</p>
+        <h3>{i18n.t('AI Assistant')}</h3>
+        <p>{i18n.t('Ask me to generate or modify code, tests, scripts, and docs.')}</p>
         <div className="suggestions">
-          <p className="suggestions-title">Try asking:</p>
+          <p className="suggestions-title">{i18n.t('Try asking:')}</p>
           <div className="suggestion-chips">
             {suggestions.map((s, i) => (
               <button key={i} className="suggestion-chip" onClick={() => handleSuggestionClick(s.prompt)}>
-                {s.label}
+                {i18n.t(s.label)}
               </button>
             ))}
           </div>
@@ -847,7 +850,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
   if (!aiContext) return null;
 
   const placeholders = PLACEHOLDER_BY_TYPE[contentType] || PLACEHOLDER_BY_TYPE.app;
-  const placeholder = currentContent ? placeholders.filled : placeholders.empty;
+  const placeholder = currentContent ? i18n.t(placeholders.filled) : i18n.t(placeholders.empty);
   const historyCount = historyList?.length || 0;
 
   return (
@@ -862,7 +865,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
           onMouseDown={handleResizeStart}
           role="separator"
           aria-orientation="vertical"
-          aria-label="Resize AI sidebar"
+          aria-label={i18n.t('Resize AI sidebar')}
         >
           <div className="drag-border" />
         </div>
@@ -883,7 +886,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
                 placement="bottom-start"
                 selectedItemId={activeTabUid}
               >
-                <button className="chat-switcher-btn" title="Switch chat">
+                <button className="chat-switcher-btn" title={i18n.t('Switch chat')}>
                   <IconChevronDown size={14} />
                 </button>
               </MenuDropdown>
@@ -893,7 +896,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
             <button
               className="icon-btn"
               onClick={handleNewChat}
-              title="New Session"
+              title={i18n.t('New Session')}
               disabled={isLoading || messages.length === 0}
             >
               <IconPlus size={14} />
@@ -902,7 +905,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
               <button
                 className={`icon-btn ${historyOpen ? 'is-active' : ''}`}
                 onClick={() => setHistoryOpen((v) => !v)}
-                title="History"
+                title={i18n.t('History')}
                 disabled={historyCount === 0}
               >
                 <IconHistory size={14} />
@@ -920,12 +923,12 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
             <button
               className="icon-btn"
               onClick={handleTogglePopout}
-              title={isPopout ? 'Dock to sidebar' : 'Open in new window'}
+              title={isPopout ? i18n.t('Dock to sidebar') : i18n.t('Open in new window')}
               data-testid="ai-popout-toggle"
             >
               {isPopout ? <IconLayoutSidebarRightExpand size={14} /> : <IconExternalLink size={14} />}
             </button>
-            <button className="icon-btn close-btn" onClick={handleClose} title="Close">
+            <button className="icon-btn close-btn" onClick={handleClose} title={i18n.t('Close')}>
               <IconX size={14} />
             </button>
           </div>
@@ -950,7 +953,7 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
         <div className="ai-sidebar-input">
           {availableModels.length === 0 ? (
             <div className="no-models-warning">
-              No AI models available. Configure a provider and enable models in Preferences &gt; AI.
+              {i18n.t('No AI models available. Configure a provider and enable models in Preferences > AI.')}
             </div>
           ) : (
             <div className="input-container">
@@ -977,18 +980,18 @@ const AiChatSidebar = ({ collection, variant = 'sidebar' }) => {
                     rounded="sm"
                     icon={<IconPlayerStop size={12} />}
                     onClick={handleStop}
-                    title="Stop generating"
+                    title={i18n.t('Stop generating')}
                   >
-                    Stop
+                    {i18n.t('Stop')}
                   </Button>
                 ) : (
                   <button
                     className="send-btn"
                     onClick={handleSubmit}
-                    title="Send (Enter)"
+                    title={i18n.t('Send (Enter)')}
                     disabled={!input.trim()}
                   >
-                    Send <IconCornerDownLeft size={12} />
+                    {i18n.t('Send')} <IconCornerDownLeft size={12} />
                   </button>
                 )}
               </div>

@@ -1,12 +1,15 @@
-module.exports = function aboutBruno({ version }) {
+module.exports = function aboutBruno({ version, locale }) {
   const currentYear = new Date().getFullYear();
+  const isZhCn = locale === 'zh-CN';
+  const pageTitle = isZhCn ? '关于 Bruno' : 'About Bruno';
+  const tagline = isZhCn ? '开源的 API 探索与测试 IDE' : 'Opensource IDE for exploring and testing APIs';
   return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-        <title>About Bruno</title>
+        <title>${pageTitle}</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -168,6 +171,7 @@ module.exports = function aboutBruno({ version }) {
           </g>
         </svg>
       <h2 class="title">Bruno ${version}</h2>
+      <div class="description">${tagline}</div>
       <footer class="footer">
           ©${currentYear} Bruno Software Inc
       </footer>

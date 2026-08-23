@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'providers/Theme';
@@ -11,6 +12,7 @@ import InfoTip from 'components/InfoTip';
 import StyledWrapper from './StyledWrapper';
 
 const ResponseExampleParams = ({ editMode, item, collection, exampleUid }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const tabs = useSelector((state) => state.tabs.tabs);
@@ -195,7 +197,7 @@ const ResponseExampleParams = ({ editMode, item, collection, exampleUid }) => {
 
   return (
     <StyledWrapper className="w-full mt-4">
-      <div className="mb-3 title text-xs font-bold">Query parameters</div>
+      <div className="mb-3 title text-xs font-bold">{t('Query parameters')}</div>
       <EditableTable
         tableId="example-query-params"
         columns={queryColumns}
@@ -223,7 +225,7 @@ const ResponseExampleParams = ({ editMode, item, collection, exampleUid }) => {
       {pathParams && pathParams.length > 0 && (
         <>
           <div className="mb-3 title text-xs font-bold flex items-stretch mt-4">
-            <span>Path parameters</span>
+            <span>{t('Path parameters')}</span>
             <InfoTip infotipId="path-param-InfoTip">
               <div>
                 Path variables are automatically added whenever the

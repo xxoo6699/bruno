@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import cn from 'classnames';
 import InfoTip from 'components/InfoTip/index';
 import SingleLineEditor from 'components/SingleLineEditor';
@@ -29,6 +30,7 @@ const ERRORS = {
 };
 
 const WSSettingsPane = ({ item, collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const requestPreferences = useSelector((state) => state.app.preferences.request);
@@ -56,14 +58,14 @@ const WSSettingsPane = ({ item, collection }) => {
     <StyledWrapper className="flex flex-col gap-4 w-full">
       <section className="grid gap-4 items-center grid-cols-2">
         <div>
-          <label className="font-medium mb-2">Timeout</label>
+          <label className="font-medium mb-2">{t('Timeout')}</label>
           <InfoTip
             infotipId="setting-connection-timeout"
             className="tooltip-mod max-w-lg"
             content={(
               <div>
                 <p>
-                  <span>Timeout in milliseconds</span>
+                  <span>{t('Timeout in milliseconds')}</span>
                 </p>
               </div>
             )}
@@ -91,7 +93,7 @@ const WSSettingsPane = ({ item, collection }) => {
         </div>
 
         <div>
-          <label className="font-medium mb-2">Keep Alive Interval</label>
+          <label className="font-medium mb-2">{t('Keep Alive Interval')}</label>
           <InfoTip
             infotipId="setting-keep-alive"
             className="tooltip-mod max-w-lg"
@@ -102,7 +104,7 @@ const WSSettingsPane = ({ item, collection }) => {
                     Keep the websocket alive by sending ping requests to the server at every interval (in millseconds)
                   </span>
                 </p>
-                <p className="mt-2">0 (zero) = off</p>
+                <p className="mt-2">{t('0 (zero) = off')}</p>
               </div>
             )}
           />

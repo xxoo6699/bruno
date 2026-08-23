@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import get from 'lodash/get';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'providers/Theme';
 import { IconUpload } from '@tabler/icons';
 import {
@@ -26,6 +27,7 @@ const fileBasename = (filePath) =>
   filePath ? path.basename(normalizePath(String(filePath))) : '';
 
 const MultipartFormParams = ({ item, collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const wrapperRef = useRef(null);
@@ -206,7 +208,7 @@ const MultipartFormParams = ({ item, collection }) => {
               data-testid="multipart-file-upload"
               className="upload-btn ml-1"
               onClick={() => handleBrowseFiles(row, onChange)}
-              title="Select File"
+              title={t('Select File')}
             >
               <IconUpload size={16} />
             </button>

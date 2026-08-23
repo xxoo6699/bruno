@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import get from 'lodash/get';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import GrpcAuthMode from './GrpcAuthMode';
 import BearerAuth from '../../Auth/BearerAuth';
 import BasicAuth from '../../Auth/BasicAuth';
@@ -17,6 +18,7 @@ import { AUTH_MODES_GRPC } from 'utils/common/constants';
 
 const GrpcAuth = ({ item, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const authMode = item.draft ? get(item, 'draft.request.auth.mode') : get(item, 'request.auth.mode');
 
   const request = item.draft
@@ -48,7 +50,7 @@ const GrpcAuth = ({ item, collection }) => {
   const getAuthView = () => {
     switch (authMode) {
       case 'none': {
-        return <div>No Auth</div>;
+        return <div>{t('No Auth')}</div>;
       }
       case 'basic': {
         return <BasicAuth collection={collection} item={item} updateAuth={updateAuth} request={request} save={save} />;
@@ -80,7 +82,7 @@ const GrpcAuth = ({ item, collection }) => {
           return (
             <>
               <div className="flex flex-row w-full gap-2">
-                <div>Inherited auth not supported by gRPC. Using no auth instead.</div>
+                <div>{t('Inherited auth not supported by gRPC. Using no auth instead.')}</div>
               </div>
             </>
           );

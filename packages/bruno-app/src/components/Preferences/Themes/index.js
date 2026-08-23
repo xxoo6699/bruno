@@ -1,5 +1,6 @@
 import React from 'react';
 import { rgba } from 'polished';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'providers/Theme';
 import themes, { getLightThemes, getDarkThemes } from 'themes/index';
 import { IconBrightnessUp, IconMoon, IconDeviceDesktop } from '@tabler/icons';
@@ -25,17 +26,19 @@ const ThemePreview = ({ themeId, isDark }) => {
 };
 
 const ThemeVariantCard = ({ theme, isSelected, onClick }) => {
+  const { t } = useTranslation();
   const isDark = theme.mode === 'dark';
 
   return (
     <div className={`theme-variant-card ${isSelected ? 'selected' : ''}`} onClick={onClick}>
       <ThemePreview themeId={theme.id} isDark={isDark} />
-      <span className="theme-variant-name">{theme.name}</span>
+      <span className="theme-variant-name">{t(theme.name)}</span>
     </div>
   );
 };
 
 const Themes = () => {
+  const { t } = useTranslation();
   const {
     storedTheme,
     setStoredTheme,
@@ -60,7 +63,7 @@ const Themes = () => {
 
   const renderThemeVariants = (themes, selectedVariant, onSelect, label) => (
     <div className="theme-variant-section">
-      <div className="theme-variant-label">{label}</div>
+      <div className="theme-variant-label">{t(label)}</div>
       <div className="theme-variants">
         {themes.map((theme) => (
           <ThemeVariantCard
@@ -78,7 +81,7 @@ const Themes = () => {
     <StyledWrapper>
       <div className="flex flex-col gap-4 w-full appearance-container">
         <div>
-          <div className="section-header">Appearance</div>
+          <div className="section-header">{t('Appearance')}</div>
         </div>
 
         <div className="flex gap-3 theme-mode-selector justify-start">
@@ -94,7 +97,7 @@ const Themes = () => {
               >
                 <div className="flex items-center justify-start gap-2">
                   <Icon size={16} strokeWidth={1.5} />
-                  <span>{mode.label}</span>
+                  <span>{t(mode.label)}</span>
                 </div>
               </button>
             );

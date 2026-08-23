@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import Tippy from '@tippyjs/react';
 import { IconX, IconArrowBackUp, IconPlayerStop } from '@tabler/icons';
@@ -63,6 +64,7 @@ const PREVIEW_LABELS = {
 const isValidType = (t) => SUGGESTIONS[t] !== undefined;
 
 const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, variables, onApply }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -95,8 +97,8 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
   const isAiEnabled = get(preferences, 'ai.enabled', false);
 
   const suggestions = useMemo(() => SUGGESTIONS[scriptType] || [], [scriptType]);
-  const title = TITLES[scriptType] || 'Generate with AI';
-  const previewLabel = PREVIEW_LABELS[scriptType] || 'Preview · replaces current script';
+  const title = t(TITLES[scriptType] || 'Generate with AI');
+  const previewLabel = t(PREVIEW_LABELS[scriptType] || 'Preview · replaces current script');
 
   const close = useCallback(() => {
     tippyRef.current?.hide();
@@ -132,10 +134,10 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
         if (result?.content) {
           setGenerated(result.content);
         } else {
-          setError('No content was generated. Try rephrasing your prompt.');
+          setError(t('No content was generated. Try rephrasing your prompt.'));
         }
       } catch (err) {
-        setError(err?.message || 'Failed to generate script');
+        setError(err?.message || t('Failed to generate script'));
       } finally {
         streamIdRef.current = null;
         setIsLoading(false);
@@ -192,7 +194,7 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
                 <IconSparkles size={12} strokeWidth={1.75} />
                 {title}
               </span>
-              <button className="popup-close" onClick={close} type="button" aria-label="Close">
+              <button className="popup-close" onClick={close} type="button" aria-label={t('Close')}>
                 <IconX size={14} />
               </button>
             </div>
@@ -210,7 +212,7 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
                         handleGenerate();
                       }
                     }}
-                    placeholder="Describe what you want to generate..."
+                    placeholder={t('Describe what you want to generate...')}
                     rows={3}
                     disabled={isLoading}
                   />
@@ -225,7 +227,7 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
                           onClick={() => handleGenerate(s.prompt)}
                           disabled={isLoading}
                         >
-                          {s.label}
+                          {t(s.label)}
                         </button>
                       ))}
                     </div>
@@ -238,10 +240,10 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
                   {isLoading ? (
                     <span className="popup-loading">
                       <span className="loading-spinner" />
-                      Generating...
+                      {t('Generating...')}
                     </span>
                   ) : (
-                    <span className="popup-hint">Enter to generate · Shift+Enter for newline</span>
+                    <span className="popup-hint">{t('Enter to generate · Shift+Enter for newline')}</span>
                   )}
                   {isLoading ? (
                     <Button
@@ -251,9 +253,9 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
                       rounded="sm"
                       icon={<IconPlayerStop size={12} />}
                       onClick={handleStop}
-                      title="Stop generating"
+                      title={t('Stop generating')}
                     >
-                      Stop
+                      {t('Stop')}
                     </Button>
                   ) : (
                     <button
@@ -262,7 +264,7 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
                       onClick={() => handleGenerate()}
                       disabled={!prompt.trim()}
                     >
-                      Generate
+                      {t('Generate')}
                     </button>
                   )}
                 </div>
@@ -281,11 +283,11 @@ const AIAssist = ({ scriptType, currentScript, requestContext, docsContext, vari
                 <div className="popup-footer">
                   <button className="btn-secondary" type="button" onClick={handleBackToPrompt}>
                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                      <IconArrowBackUp size={12} /> Back
+                      <IconArrowBackUp size={12} /> {t('Back')}
                     </span>
                   </button>
                   <button className="btn-generate" type="button" onClick={handleApply}>
-                    Apply
+                    {t('Apply')}
                   </button>
                 </div>
               </>

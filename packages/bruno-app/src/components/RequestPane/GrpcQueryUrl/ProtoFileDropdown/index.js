@@ -3,6 +3,7 @@ import { IconFile, IconChevronDown } from '@tabler/icons';
 import { getBasename } from 'utils/common/path';
 import { useTheme } from 'providers/Theme';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { updateRequestProtoPath } from 'providers/ReduxStore/slices/collections';
 import { openCollectionSettings } from 'providers/ReduxStore/slices/collections/actions';
 import toast from 'react-hot-toast';
@@ -25,6 +26,7 @@ const ProtoFileDropdown = ({
 }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('protofiles'); // 'protofiles' or 'importpaths'
   const protoFileManagement = useProtoFileManagement(collection, protoFilePath);
   const invalidProtoFiles = protoFileManagement.protoFiles.filter((file) => !file.exists);
@@ -148,10 +150,10 @@ const ProtoFileDropdown = ({
           <div className="proto-file-dropdown-content">
             <div className="proto-file-dropdown-mode-section" data-testid="grpc-mode-toggle">
               <div className="proto-file-dropdown-mode-controls">
-                <span>Mode</span>
+                <span>{t('Mode')}</span>
                 <div className="proto-file-dropdown-mode-options">
                   <span className={`proto-file-dropdown-mode-option ${!isReflectionMode ? 'proto-file-dropdown-mode-option--active' : ''}`} style={{ color: !isReflectionMode ? theme.primary.text : undefined }}>
-                    Proto File
+                    {t('Proto File')}
                   </span>
                   <ToggleSwitch
                     isOn={isReflectionMode}
@@ -160,7 +162,7 @@ const ProtoFileDropdown = ({
                     activeColor={theme.primary.solid}
                   />
                   <span className={`proto-file-dropdown-mode-option ${isReflectionMode ? 'proto-file-dropdown-mode-option--active' : ''}`} style={{ color: isReflectionMode ? theme.primary.text : undefined }}>
-                    Reflection
+                    {t('Reflection')}
                   </span>
                 </div>
               </div>
@@ -204,7 +206,7 @@ const ProtoFileDropdown = ({
 
             {isReflectionMode && (
               <div className="proto-file-dropdown-reflection-message">
-                Using server reflection to discover gRPC methods.
+                {t('Using server reflection to discover gRPC methods.')}
               </div>
             )}
           </div>

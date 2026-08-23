@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import MenuDropdown from 'ui/MenuDropdown';
@@ -34,6 +35,7 @@ const LANGUAGES = [
 ];
 
 const EditorCodeBlock = ({ node, updateAttributes, editor }) => {
+  const { t } = useTranslation();
   const language = node.attrs.language || 'auto';
   const isAutoLanguage = language === 'auto';
   const preRef = useRef(null);
@@ -135,8 +137,8 @@ const EditorCodeBlock = ({ node, updateAttributes, editor }) => {
           className="editor-code-block-copy flex items-center justify-center cursor-pointer p-1 rounded transition-colors duration-150"
           data-testid="code-block-copy-btn"
           onClick={handleCopy}
-          title="Copy code"
-          aria-label="Copy code"
+          title={t('Copy code')}
+          aria-label={t('Copy code')}
         >
           {copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
         </button>

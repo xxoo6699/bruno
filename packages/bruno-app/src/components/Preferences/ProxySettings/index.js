@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import debounce from 'lodash/debounce';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { savePreferences, refreshPacCache } from 'providers/ReduxStore/slices/app';
 
 import StyledWrapper from './StyledWrapper';
@@ -12,6 +13,7 @@ import { useState } from 'react';
 import SystemProxy from './SystemProxy';
 
 const ProxySettings = ({ close }) => {
+  const { t } = useTranslation();
   const preferences = useSelector((state) => state.app.preferences);
   const dispatch = useDispatch();
 
@@ -21,7 +23,7 @@ const ProxySettings = ({ close }) => {
     pac: Yup.object({
       source: Yup.string()
         .optional()
-        .test('pac-url', 'Specify a valid PAC URL', (value) => {
+        .test('pac-url', t('Specify a valid PAC URL'), (value) => {
           if (!value) return true;
           try {
             const u = new URL(value);
@@ -39,7 +41,7 @@ const ProxySettings = ({ close }) => {
       port: Yup.number()
         .min(1)
         .max(65535)
-        .typeError('Specify port between 1 and 65535')
+        .typeError(t('Specify port between 1 and 65535'))
         .nullable()
         .transform((_, val) => (val ? Number(val) : null)),
       auth: Yup.object({
@@ -86,12 +88,12 @@ const ProxySettings = ({ close }) => {
             proxy: validatedProxy
           })
         ).catch(() => {
-          toast.error('Failed to save preferences');
+          toast.error(t('Failed to save preferences'));
         });
       })
       .catch((error) => {
       });
-  }, [dispatch, preferences, proxySchema]);
+  }, [dispatch, preferences, proxySchema, t]);
 
   const onUpdateRef = useRef(onUpdate);
   onUpdateRef.current = onUpdate;
@@ -105,8 +107,8 @@ const ProxySettings = ({ close }) => {
 
   const handleRefreshPac = () => {
     dispatch(refreshPacCache())
-      .then(() => toast.success('PAC cache refreshed'))
-      .catch(() => toast.error('Failed to refresh PAC cache'));
+      .then(() => toast.success(t('PAC cache refreshed')))
+      .catch(() => toast.error(t('Failed to refresh PAC cache')));
   };
 
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -133,11 +135,11 @@ const ProxySettings = ({ close }) => {
 
   return (
     <StyledWrapper>
-      <div className="section-header">Proxy Settings</div>
+      <div className="section-header">{t('Proxy Settings')}</div>
       <form className="bruno-form" onSubmit={formik.handleSubmit}>
         <div className="mb-3 flex items-center mt-2">
           <label className="settings-label" htmlFor="protocol">
-            Mode
+            {t('Mode')}
           </label>
           <div className="flex items-center">
             <label className="flex items-center cursor-pointer" data-testid="off-proxy-mode">
@@ -152,7 +154,7 @@ const ProxySettings = ({ close }) => {
                 }}
                 className="mr-1 cursor-pointer"
               />
-              Off
+              {t('Off')}
             </label>
             <label className="flex items-center ml-4 cursor-pointer" data-testid="manual-proxy-mode">
               <input
@@ -167,7 +169,7 @@ const ProxySettings = ({ close }) => {
                 }}
                 className="mr-1 cursor-pointer"
               />
-              On
+              {t('On')}
             </label>
             <label className="flex items-center ml-4 cursor-pointer" data-testid="system-proxy-mode">
               <input
@@ -182,7 +184,7 @@ const ProxySettings = ({ close }) => {
                 }}
                 className="mr-1 cursor-pointer"
               />
-              System Proxy
+              {t('System Proxy')}
             </label>
             <label className="flex items-center ml-4 cursor-pointer" data-testid="pac-proxy-mode">
               <input
@@ -210,7 +212,7 @@ const ProxySettings = ({ close }) => {
           <>
             <div className="mb-3 flex items-center">
               <label className="settings-label" htmlFor="protocol">
-                Protocol
+                {t('Protocol')}
               </label>
               <div className="flex items-center">
                 <label className="flex items-center">
@@ -261,7 +263,7 @@ const ProxySettings = ({ close }) => {
             </div>
             <div className="mb-3 flex items-center">
               <label className="settings-label" htmlFor="config.hostname">
-                Hostname
+                {t('Hostname')}
               </label>
               <input
                 id="config.hostname"
@@ -281,7 +283,7 @@ const ProxySettings = ({ close }) => {
             </div>
             <div className="mb-3 flex items-center">
               <label className="settings-label" htmlFor="config.port">
-                Port
+                {t('Port')}
               </label>
               <input
                 id="config.port"
@@ -301,7 +303,7 @@ const ProxySettings = ({ close }) => {
             </div>
             <div className="mb-3 flex items-center">
               <label className="settings-label" htmlFor="config.auth.disabled">
-                Auth
+                {t('Auth')}
               </label>
               <input
                 id="config.auth.disabled"
@@ -317,7 +319,7 @@ const ProxySettings = ({ close }) => {
             <div>
               <div className="mb-3 flex items-center">
                 <label className="settings-label" htmlFor="config.auth.username">
-                  Username
+                  {t('Username')}
                 </label>
                 <input
                   id="config.auth.username"
@@ -337,7 +339,7 @@ const ProxySettings = ({ close }) => {
               </div>
               <div className="mb-3 flex items-center">
                 <label className="settings-label" htmlFor="config.auth.password">
-                  Password
+                  {t('Password')}
                 </label>
                 <div className="textbox flex flex-row items-center w-[13.2rem] h-[2.25rem] relative">
                   <input
@@ -367,7 +369,7 @@ const ProxySettings = ({ close }) => {
             </div>
             <div className="mb-3 flex items-center">
               <label className="settings-label" htmlFor="config.bypassProxy">
-                Proxy Bypass
+                {t('Proxy Bypass')}
               </label>
               <input
                 id="config.bypassProxy"
@@ -411,7 +413,7 @@ const ProxySettings = ({ close }) => {
                       formik.setFieldValue('pac.source', '');
                     }}
                   >
-                    File
+                    {t('File')}
                   </button>
                 </div>
                 {pacInputMode === 'url' ? (
@@ -440,12 +442,12 @@ const ProxySettings = ({ close }) => {
                             formik.setFieldValue('pac.source', fileUrl);
                           }
                         })
-                        .catch(() => toast.error('Failed to open file picker'));
+                        .catch(() => toast.error(t('Failed to open file picker')));
                     }}
                   >
                     {formik.values.pac.source
                       ? decodeURIComponent(formik.values.pac.source.split('/').pop())
-                      : 'Select File'}
+                      : t('Select File')}
                   </button>
                 )}
                 {formik.touched.pac?.source && formik.errors.pac?.source ? (
@@ -454,8 +456,8 @@ const ProxySettings = ({ close }) => {
               </div>
               <p className="pac-hint">
                 {pacInputMode === 'url'
-                  ? 'Enter the URL to your PAC file'
-                  : 'Supports .pac files for automatic proxy configuration'}
+                  ? t('Enter the URL to your PAC file')
+                  : t('Supports .pac files for automatic proxy configuration')}
               </p>
               {formik.values.pac.source ? (
                 <span
@@ -463,7 +465,7 @@ const ProxySettings = ({ close }) => {
                   onClick={handleRefreshPac}
                 >
                   <IconRefresh size={14} strokeWidth={1.5} className="mr-1" />
-                  Refetch
+                  {t('Refetch')}
                 </span>
               ) : null}
             </div>

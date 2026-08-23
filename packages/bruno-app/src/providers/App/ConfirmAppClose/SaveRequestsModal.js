@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import each from 'lodash/each';
 import filter from 'lodash/filter';
 import groupBy from 'lodash/groupBy';
@@ -18,6 +19,7 @@ import Button from 'ui/Button';
 import toast from 'react-hot-toast';
 
 const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [] }) => {
+  const { t } = useTranslation();
   const MAX_UNSAVED_ITEMS_TO_SHOW = 5;
   const collections = useSelector((state) => state.collections.collections);
   const tabs = useSelector((state) => state.tabs.tabs);
@@ -198,7 +200,7 @@ const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [
         const invalidNames = getInvalidVariableNames(draft.variables);
         if (invalidNames.length > 0) {
           hasSkippedEnvs = true;
-          toast.error(`Cannot save environment "${draft.name}": invalid variable name(s) — ${invalidNames.join(', ')}`);
+          toast.error(t('Cannot save environment "{{name}}": invalid variable name(s) — {{names}}', { name: draft.name, names: invalidNames.join(', ') }));
           continue;
         }
 
@@ -214,8 +216,8 @@ const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [
           hasSkippedEnvs = true;
           toast.error(
             isEnvironmentValidationError(err)
-              ? `Cannot save environment "${draft.name}": ${err.message}`
-              : `Failed to save environment "${draft.name}"`
+              ? t('Cannot save environment "{{name}}": {{message}}', { name: draft.name, message: err.message })
+              : t('Failed to save environment "{{name}}"', { name: draft.name })
           );
         }
       }
@@ -242,9 +244,9 @@ const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [
   return (
     <Modal
       size="md"
-      title="Unsaved changes"
-      confirmText="Save and Close"
-      cancelText="Close without saving"
+      title={t('Unsaved changes')}
+      confirmText={t('Save and Close')}
+      cancelText={t('Close without saving')}
       handleCancel={onClose}
       disableEscapeKey={true}
       disableCloseOnOutsideClick={true}
@@ -253,11 +255,10 @@ const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [
     >
       <div className="flex items-center">
         <IconAlertTriangle size={32} strokeWidth={1.5} className="text-yellow-600" />
-        <h1 className="ml-2 text-lg font-medium">Hold on..</h1>
+        <h1 className="ml-2 text-lg font-medium">{t('Hold on..')}</h1>
       </div>
       <p className="mt-4">
-        Do you want to save the changes you made to the following{' '}
-        <span className="font-medium">{totalDraftsCount}</span> {pluralizeWord('item', totalDraftsCount)}?
+        {t('Do you want to save the changes you made to the following {{count}} items?', { count: totalDraftsCount })}
       </p>
 
       <ul className="mt-4">
@@ -265,22 +266,22 @@ const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [
           let prefix;
           switch (item.type) {
             case 'collection':
-              prefix = 'Collection: ';
+              prefix = t('Collection: ');
               break;
             case 'folder':
-              prefix = 'Folder: ';
+              prefix = t('Folder: ');
               break;
             case 'collection-environment':
-              prefix = 'Collection Environment: ';
+              prefix = t('Collection Environment: ');
               break;
             case 'global-environment':
-              prefix = 'Global Environment: ';
+              prefix = t('Global Environment: ');
               break;
             case 'app':
-              prefix = 'App: ';
+              prefix = t('App: ');
               break;
             default:
-              prefix = 'Request: ';
+              prefix = t('Request: ');
           }
           return (
             <li key={`${item.type}-${item.collectionUid || item.uid}-${index}`} className="mt-1 text-xs">
@@ -293,23 +294,22 @@ const SaveRequestsModal = ({ onClose, forceCloseTabs = false, tabUidsToClose = [
 
       {totalDraftsCount > MAX_UNSAVED_ITEMS_TO_SHOW && (
         <p className="mt-1 text-xs">
-          ...{totalDraftsCount - MAX_UNSAVED_ITEMS_TO_SHOW} additional{' '}
-          {pluralizeWord('item', totalDraftsCount - MAX_UNSAVED_ITEMS_TO_SHOW)} not shown
+          {t('...{{count}} additional items not shown', { count: totalDraftsCount - MAX_UNSAVED_ITEMS_TO_SHOW })}
         </p>
       )}
 
       <div className="flex justify-between mt-6">
         <div>
           <Button color="danger" onClick={closeWithoutSave}>
-            Don't Save
+            {t('Don\'t Save')}
           </Button>
         </div>
         <div className="flex gap-2">
           <Button color="secondary" variant="ghost" onClick={onClose}>
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button onClick={closeWithSave}>
-            {totalDraftsCount > 1 ? 'Save All' : 'Save'}
+            {totalDraftsCount > 1 ? t('Save All') : t('Save')}
           </Button>
         </div>
       </div>

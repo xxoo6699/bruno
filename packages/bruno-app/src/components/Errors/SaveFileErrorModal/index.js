@@ -2,10 +2,12 @@ import React from 'react';
 import Portal from 'components/Portal';
 import Modal from 'components/Modal';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import StyledWrapper from './StyledWrapper';
 
 const SaveFileErrorModal = ({ error }) => {
   const [showModal, setShowModal] = useState(true);
+  const { t } = useTranslation();
   return (
     <>
       {showModal ? (
@@ -13,7 +15,7 @@ const SaveFileErrorModal = ({ error }) => {
           <StyledWrapper>
             <Modal
               size="sm"
-              title="Save File Error"
+              title={t('Save File Error')}
               hideFooter={true}
               hideCancel={true}
               handleCancel={() => {

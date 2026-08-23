@@ -1,13 +1,16 @@
 import React, { useState, useMemo } from 'react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { IconAlertCircle, IconBrandGithub, IconCopy, IconX } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
+import i18n from 'i18n';
 
 const GITHUB_ISSUES_URL = 'https://github.com/usebruno/bruno/issues/new';
 const MAX_URL_LENGTH = 8000;
 
 const ImportIssuesToastContent = ({ t, issues, summary }) => {
   const [includeItems, setIncludeItems] = useState(false);
+  const { t: translate } = useTranslation();
   const hasSourceItems = issues.some((i) => i.sourceItem);
 
   const issuesSummary = issues.map((i) => `[${i.severity.toUpperCase()}] ${i.path} — ${i.message}`).join('\n');
@@ -63,9 +66,9 @@ const ImportIssuesToastContent = ({ t, issues, summary }) => {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(issuesSummary);
-      toast.success('Copied to clipboard', { duration: 2000 });
+      toast.success(translate('Copied to clipboard'), { duration: 2000 });
     } catch (err) {
-      toast.error('Failed to copy to clipboard', { duration: 3000 });
+      toast.error(translate('Failed to copy to clipboard'), { duration: 3000 });
     }
   };
 
@@ -81,9 +84,9 @@ const ImportIssuesToastContent = ({ t, issues, summary }) => {
 
     try {
       await navigator.clipboard.writeText(body);
-      toast.success('Issue details copied — paste them into the GitHub issue body', { duration: 5000 });
+      toast.success(translate('Issue details copied — paste them into the GitHub issue body'), { duration: 5000 });
     } catch (err) {
-      toast.error('Failed to copy to clipboard', { duration: 3000 });
+      toast.error(translate('Failed to copy to clipboard'), { duration: 3000 });
     }
     const params = new URLSearchParams({ title, labels: 'bug' });
     window.open(`${GITHUB_ISSUES_URL}?${params.toString()}`, '_blank');
@@ -102,14 +105,14 @@ const ImportIssuesToastContent = ({ t, issues, summary }) => {
         <button
           type="button"
           className="toast-close"
-          aria-label="Close toast"
+          aria-label={translate('Close toast')}
           data-testid="import-issues-toast-close"
           onClick={() => toast.dismiss(t.id)}
         >
           <IconX size={14} />
         </button>
-        <div className="toast-title" data-testid="import-issues-toast-title">Imported with issues: {summary}</div>
-        <div className="toast-hint">Open DevTools console to see which items failed and why.</div>
+        <div className="toast-title" data-testid="import-issues-toast-title">{translate('Imported with issues: {{summary}}', { summary })}</div>
+        <div className="toast-hint">{translate('Open DevTools console to see which items failed and why.')}</div>
         {hasSourceItems && (
           <label className="toast-checkbox">
             <input
@@ -119,25 +122,25 @@ const ImportIssuesToastContent = ({ t, issues, summary }) => {
               data-testid="import-issues-include-items-checkbox"
             />
             <div className="toast-checkbox-text">
-              <span className="toast-checkbox-label">Include failed request data</span>
-              <span className="toast-checkbox-desc">Attaches the raw Postman request items that failed. May contain API keys, tokens, or internal URLs.</span>
+              <span className="toast-checkbox-label">{translate('Include failed request data')}</span>
+              <span className="toast-checkbox-desc">{translate('Attaches the raw Postman request items that failed. May contain API keys, tokens, or internal URLs.')}</span>
             </div>
           </label>
         )}
         {isUrlTooLong && (
           <div className="toast-warning" data-testid="import-issues-url-too-long-warning">
             <IconAlertCircle size={14} className="toast-warning-icon" />
-            <span>Issue details are too long to embed in the URL. Clicking &quot;Report on GitHub&quot; will copy them to your clipboard — paste it once the GitHub issue page opens.</span>
+            <span>{translate('Issue details are too long to embed in the URL. Clicking "Report on GitHub" will copy them to your clipboard — paste it once the GitHub issue page opens.')}</span>
           </div>
         )}
         <div className="toast-actions">
           <button className="toast-btn" onClick={handleReport} data-testid="import-issues-report-btn">
             <IconBrandGithub size={13} />
-            Report on GitHub
+            {translate('Report on GitHub')}
           </button>
           <button className="toast-btn" onClick={handleCopy} data-testid="import-issues-copy-btn">
             <IconCopy size={13} />
-            Copy Issues
+            {translate('Copy Issues')}
           </button>
         </div>
       </div>
@@ -159,8 +162,8 @@ export const showImportIssuesToast = (issues) => {
   const errors = issues.filter((i) => i.severity === 'error');
   const warnings = issues.filter((i) => i.severity === 'warning');
   const parts = [];
-  if (errors.length > 0) parts.push(`${errors.length} item(s) skipped`);
-  if (warnings.length > 0) parts.push(`${warnings.length} warning(s)`);
+  if (errors.length > 0) parts.push(i18n.t('{{count}} item(s) skipped', { count: errors.length }));
+  if (warnings.length > 0) parts.push(i18n.t('{{count}} warning(s)', { count: warnings.length }));
   const summary = parts.join(', ');
 
   activeImportToastId = toast.custom(

@@ -5,9 +5,11 @@ import useQueryBuilder from 'hooks/useQueryBuilder';
 import QueryBuilderTree from './QueryBuilderTree';
 import ErrorBoundary from './ErrorBoundary';
 import Button from 'ui/Button';
+import { useTranslation } from 'react-i18next';
 import StyledWrapper from './StyledWrapper';
 
 const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, variablesValue, loadSchema, isSchemaLoading, schemaError }) => {
+  const { t } = useTranslation();
   const {
     selections,
     expandedPaths,
@@ -87,7 +89,7 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
           {schemaError ? (
             <>
               <IconAlertTriangle size={32} strokeWidth={1.5} className="empty-state-icon warning" />
-              <div className="empty-state-title">Failed to Load Schema</div>
+              <div className="empty-state-title">{t('Failed to Load Schema')}</div>
               <div className="empty-state-description">{schemaError.message}</div>
               <div className="empty-state-actions">
                 <Button
@@ -99,7 +101,7 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
                   disabled={isSchemaLoading}
                   onClick={() => loadSchema('introspection')}
                 >
-                  Try Again
+                  {t('Try Again')}
                 </Button>
                 <Button
                   variant="outline"
@@ -109,15 +111,15 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
                   disabled={isSchemaLoading}
                   onClick={() => loadSchema('file')}
                 >
-                  Upload Schema File
+                  {t('Upload Schema File')}
                 </Button>
               </div>
             </>
           ) : (
             <>
-              <div className="empty-state-title">No Schema Loaded</div>
+              <div className="empty-state-title">{t('No Schema Loaded')}</div>
               <div className="empty-state-description">
-                Load a GraphQL schema to explore operations and build queries visually.
+                {t('Load a GraphQL schema to explore operations and build queries visually.')}
               </div>
               <div className="empty-state-actions">
                 <Button
@@ -129,7 +131,7 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
                   disabled={isSchemaLoading}
                   onClick={() => loadSchema('introspection')}
                 >
-                  Load from Introspection
+                  {t('Load from Introspection')}
                 </Button>
                 <Button
                   variant="outline"
@@ -139,7 +141,7 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
                   disabled={isSchemaLoading}
                   onClick={() => loadSchema('file')}
                 >
-                  Upload Schema File
+                  {t('Upload Schema File')}
                 </Button>
               </div>
             </>
@@ -157,8 +159,8 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
           <div className="sync-error-text">
             {syncError === 'multiple_operations' ? (
               <>
-                <strong>Multiple operations detected</strong>
-                <span>The Query Builder supports a single operation at a time. Combine into one operation to sync.</span>
+                <strong>{t('Multiple operations detected')}</strong>
+                <span>{t('The Query Builder supports a single operation at a time. Combine into one operation to sync.')}</span>
               </>
             ) : null}
           </div>
@@ -173,7 +175,7 @@ const QueryBuilder = ({ schema, onQueryChange, editorValue, onVariablesChange, v
         <div className="query-builder-search">
           <input
             type="text"
-            placeholder="Search operations..."
+            placeholder={t('Search operations...')}
             value={searchText}
             className="mousetrap"
             onChange={(e) => setSearchText(e.target.value)}

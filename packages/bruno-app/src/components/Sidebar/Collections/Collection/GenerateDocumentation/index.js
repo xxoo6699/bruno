@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState, Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import * as FileSaver from 'file-saver';
@@ -52,20 +53,24 @@ const buildHtmlDocument = (collectionName, escapedYamlContent) => `<!DOCTYPE htm
 </body>
 </html>`;
 
-const CollectionNotFound = ({ onClose }) => (
-  <Portal>
-    <Modal size="md" title="Generate Documentation" confirmText="Close" handleConfirm={onClose} hideCancel>
-      <StyledWrapper className="w-[500px]">
-        <div className="flex items-center gap-2 text-warning">
-          <IconAlertTriangle size={16} className="shrink-0" />
-          <span>Collection not found. It may have been deleted or is no longer available.</span>
-        </div>
-      </StyledWrapper>
-    </Modal>
-  </Portal>
-);
+const CollectionNotFound = ({ onClose }) => {
+  const { t } = useTranslation();
+  return (
+    <Portal>
+      <Modal size="md" title={t('Generate Documentation')} confirmText={t('Close')} handleConfirm={onClose} hideCancel>
+        <StyledWrapper className="w-[500px]">
+          <div className="flex items-center gap-2 text-warning">
+            <IconAlertTriangle size={16} className="shrink-0" />
+            <span>{t('Collection not found. It may have been deleted or is no longer available.')}</span>
+          </div>
+        </StyledWrapper>
+      </Modal>
+    </Portal>
+  );
+};
 
 const GenerateDocumentation = ({ onClose, collectionUid }) => {
+  const { t } = useTranslation();
   const { version } = useApp();
   const collection = useSelector((state) =>
     findCollectionByUid(state.collections.collections, collectionUid)
@@ -164,11 +169,11 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
       const fileName = `${sanitizeName(collection.name)}-documentation.html`;
       FileSaver.saveAs(new Blob([htmlContent], { type: 'text/html' }), fileName);
 
-      toast.success('Documentation generated successfully');
+      toast.success(t('Documentation generated successfully'));
       onClose();
     } catch (error) {
       console.error('Error generating documentation:', error);
-      toast.error('Failed to generate documentation');
+      toast.error(t('Failed to generate documentation'));
     }
   }, [collection, version, onClose, currentVersion, selectedEnvUids]);
 
@@ -180,9 +185,9 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
     <Portal>
       <Modal
         size="md"
-        title="Generate Documentation"
-        confirmText={isLoading ? 'Loading...' : 'Generate'}
-        cancelText="Cancel"
+        title={t('Generate Documentation')}
+        confirmText={isLoading ? t('Loading...') : t('Generate')}
+        cancelText={t('Cancel')}
         handleConfirm={isLoading ? undefined : handleGenerate}
         handleCancel={onClose}
         confirmDisabled={isLoading}
@@ -191,23 +196,23 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
           {isLoading ? (
             <div className="flex items-center justify-center gap-3 py-8">
               <IconLoader2 size={20} className="animate-spin" />
-              <span>Loading collection...</span>
+              <span>{t('Loading collection...')}</span>
             </div>
           ) : (
             <div className="content">
               <h3 className="title flex items-center gap-2 mt-2 font-medium">
                 <IconBook size={18} />
-                <span>Interactive API Documentation</span>
+                <span>{t('Interactive API Documentation')}</span>
               </h3>
               <p className="description mb-4">
-                Generate a standalone HTML file that can be hosted anywhere or shared with your team.
+                {t('Generate a standalone HTML file that can be hosted anywhere or shared with your team.')}
               </p>
 
               <ul className="features flex flex-col list-none gap-2 p-0 mb-4">
                 {FEATURES.map((feature) => (
                   <li key={feature} className="flex items-center gap-2.5">
                     <IconCheck size={16} className="check-icon flex-shrink-0" />
-                    <span>{feature}</span>
+                    <span>{t(feature)}</span>
                   </li>
                 ))}
               </ul>
@@ -219,7 +224,7 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
                     <div className="card-divider" />
                     <div className="env-section">
                       <EnvironmentSelectionList
-                        title="Environments to include"
+                        title={t('Environments to include')}
                         environments={environments}
                         selectedUids={selectedEnvUids}
                         onToggle={toggleEnv}
@@ -231,7 +236,7 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
               </div>
 
               <p className="note m-0">
-                The generated file loads Bruno's JavaScript and CSS files from a CDN, which requires an internet connection.
+                {t('The generated file loads Bruno\'s JavaScript and CSS files from a CDN, which requires an internet connection.')}
               </p>
             </div>
           )}

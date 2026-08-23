@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
@@ -21,6 +22,7 @@ const FORM_BODY_TYPES = ['formUrlEncoded', 'multipartForm'];
 const ALL_BODY_TYPES = Object.keys(BODY_TYPE_LABELS);
 
 const VisualDiffBody = ({ oldData, newData, showSide }) => {
+  const { t } = useTranslation();
   const oldBody = get(oldData, 'request.body', {});
   const newBody = get(newData, 'request.body', {});
 
@@ -81,7 +83,7 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
             <th style={{ width: '30px' }}></th>
             <th className="checkbox-cell"></th>
             <th style={{ width: '40%' }}>Key</th>
-            <th>Value</th>
+            <th>{t('Value')}</th>
           </tr>
         </thead>
         <tbody>
@@ -135,8 +137,8 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
           <tr>
             <th style={{ width: '30px' }}></th>
             <th className="checkbox-cell"></th>
-            <th>File Path</th>
-            <th style={{ width: '100px' }}>Content Type</th>
+            <th>{t('File Path')}</th>
+            <th style={{ width: '100px' }}>{t('Content Type')}</th>
           </tr>
         </thead>
         <tbody>
@@ -221,13 +223,13 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
       <>
         {(currentQuery || otherQuery) && (
           <div>
-            <div className="diff-section-header">Query</div>
+            <div className="diff-section-header">{t('Query')}</div>
             <div className="code-diff-content">{renderLineDiff(queryDiff)}</div>
           </div>
         )}
         {(currentVariables || otherVariables) && (
           <div>
-            <div className="diff-section-header">Variables</div>
+            <div className="diff-section-header">{t('Variables')}</div>
             <div className="code-diff-content">{renderLineDiff(variablesDiff)}</div>
           </div>
         )}
@@ -304,8 +306,8 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
             <thead>
               <tr>
                 <th style={{ width: '30px' }}></th>
-                <th style={{ width: '40%' }}>Field</th>
-                <th>Value</th>
+                <th style={{ width: '40%' }}>{t('Field')}</th>
+                <th>{t('Value')}</th>
               </tr>
             </thead>
             <tbody>
@@ -317,7 +319,7 @@ const VisualDiffBody = ({ oldData, newData, showSide }) => {
                     </span>
                   )}
                 </td>
-                <td className="key-cell">Body Mode</td>
+                <td className="key-cell">{t('Body Mode')}</td>
                 <td className="value-cell">{BODY_TYPE_LABELS[currentMode] || currentMode}</td>
               </tr>
             </tbody>

@@ -1,4 +1,5 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconUpload, IconX, IconFile, IconChevronDown } from '@tabler/icons';
 import Dropdown from 'components/Dropdown';
 import ToolHint from 'components/ToolHint';
@@ -8,12 +9,13 @@ import Wrapper, { OverflowList } from './StyledWrapper';
 const basename = (filePath) => (filePath ? path.basename(normalizePath(String(filePath))) : '');
 
 const FileEntry = ({ filePath, toolhintId, editMode, onRemove, variant }) => {
+  const { t } = useTranslation();
   const [overRemove, setOverRemove] = useState(false);
   const isChip = variant === 'chip';
 
   return (
     <ToolHint
-      text={overRemove ? 'Remove file' : filePath}
+      text={overRemove ? t('Remove file') : filePath}
       toolhintId={toolhintId}
       place={overRemove ? 'bottom-end' : 'bottom-start'}
       positionStrategy="fixed"
@@ -54,6 +56,7 @@ const UPLOAD_RESERVE = 28;
 const MORE_CHIP_RESERVE = 56;
 
 const MultipartFileChipsCell = ({ files, onRemove, onAdd, editMode = true }) => {
+  const { t } = useTranslation();
   const containerRef = useRef(null);
   const tooltipPrefix = useRef(`mp-tip-${Math.random().toString(36).slice(2, 10)}`).current;
   const [visibleCount, setVisibleCount] = useState(files.length);
@@ -185,7 +188,7 @@ const MultipartFileChipsCell = ({ files, onRemove, onAdd, editMode = true }) => 
           data-testid="multipart-file-upload"
           className="upload-btn ml-1"
           onClick={onAdd}
-          title="Add files"
+          title={t('Add files')}
         >
           <IconUpload size={16} />
         </button>

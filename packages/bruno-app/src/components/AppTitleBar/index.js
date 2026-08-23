@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconCheck, IconChevronDown, IconFolder, IconHome, IconPin, IconPinned, IconPlus, IconDownload, IconSettings, IconMinus, IconSquare, IconX, IconCopy } from '@tabler/icons';
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -41,6 +42,7 @@ export const getWorkspaceDisplayName = (name) => {
 
 const AppTitleBar = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const osClass = getOsClass();
@@ -280,7 +282,7 @@ const AppTitleBar = () => {
         <div className="titlebar-left">
           {showWindowControls && <AppMenu />}
 
-          <ActionIcon onClick={handleHomeClick} label="Home" size="lg" className="home-button">
+          <ActionIcon onClick={handleHomeClick} label={t('Home')} size="lg" className="home-button">
             <IconHome size={16} stroke={1.5} />
           </ActionIcon>
 
@@ -307,7 +309,7 @@ const AppTitleBar = () => {
             {/* Toggle sidebar */}
             <ActionIcon
               onClick={handleToggleSidebar}
-              label={sidebarCollapsed ? 'Show sidebar' : 'Hide sidebar'}
+              label={sidebarCollapsed ? t('Show sidebar') : t('Hide sidebar')}
               size="lg"
               data-testid="toggle-sidebar-button"
             >
@@ -317,7 +319,7 @@ const AppTitleBar = () => {
             {/* Toggle devtools */}
             <ActionIcon
               onClick={handleToggleDevtools}
-              label={isConsoleOpen ? 'Hide devtools' : 'Show devtools'}
+              label={isConsoleOpen ? t('Hide devtools') : t('Show devtools')}
               size="lg"
               data-testid="toggle-devtools-button"
             >
@@ -332,21 +334,21 @@ const AppTitleBar = () => {
               <button
                 className="window-control-btn minimize"
                 onClick={handleMinimize}
-                aria-label="Minimize"
+                aria-label={t('Minimize')}
               >
                 <IconMinus size={16} stroke={1} />
               </button>
               <button
                 className="window-control-btn maximize"
                 onClick={handleMaximize}
-                aria-label={isMaximized ? 'Restore' : 'Maximize'}
+                aria-label={isMaximized ? t('Restore') : t('Maximize')}
               >
                 {isMaximized ? <IconCopy size={14} stroke={1} /> : <IconSquare size={14} stroke={1} />}
               </button>
               <button
                 className="window-control-btn close"
                 onClick={handleClose}
-                aria-label="Close"
+                aria-label={t('Close')}
               >
                 <IconX size={16} stroke={1} />
               </button>

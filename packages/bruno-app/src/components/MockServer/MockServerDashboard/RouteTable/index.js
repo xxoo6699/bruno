@@ -8,8 +8,10 @@ import MockSearchInput from 'components/MockServer/MockSearchInput';
 import MethodBadge from 'ui/MethodBadge';
 import { buildMockRouteTable, countMatchedRouteHits } from 'utils/mock-server/mock-responses';
 import StyledWrapper from './StyledWrapper';
+import { useTranslation } from 'react-i18next';
 
 const RouteTable = ({ mockServerUid }) => {
+  const { t } = useTranslation();
   const responses = useSelector((state) => state.mockServer.mockResponses[mockServerUid]) || [];
   const requestLogs = useSelector((state) => state.mockServer.requestLogs[mockServerUid]) || [];
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,8 +84,8 @@ const RouteTable = ({ mockServerUid }) => {
                 e.stopPropagation();
                 handleCopyRouteUrl(row.uid, value);
               }}
-              title="Copy route URL"
-              aria-label="Copy route URL"
+              title={t('Copy route URL')}
+              aria-label={t('Copy route URL')}
             >
               {copiedRouteUid === row.uid
                 ? <IconCheck size={13} strokeWidth={2} />
@@ -134,13 +136,13 @@ const RouteTable = ({ mockServerUid }) => {
       <div className="flex items-center gap-2 mb-4">
         <MockSearchInput
           className="flex-1"
-          placeholder="Search routes"
+          placeholder={t('Search routes')}
           value={searchQuery}
           onChange={setSearchQuery}
           data-testid="mock-server-route-search"
         />
         <FilterDropdown
-          label="Method"
+          label={t('Method')}
           options={methodOptions}
           value={methodFilter}
           onChange={setMethodFilter}
@@ -161,7 +163,7 @@ const RouteTable = ({ mockServerUid }) => {
       />
 
       {filteredRoutes.length === 0 && routes.length > 0 && (
-        <div className="text-xs text-muted mt-4 empty-state">No routes match your filter.</div>
+        <div className="text-xs text-muted mt-4 empty-state">{t('No routes match your filter.')}</div>
       )}
     </StyledWrapper>
   );

@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useMemo } from 'react';
 import classnames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { find, get } from 'lodash';
 import { updateRequestPaneTab } from 'providers/ReduxStore/slices/tabs';
 import QueryParams from 'components/RequestPane/QueryParams';
@@ -53,6 +54,7 @@ const TAB_PANELS = {
 
 const HttpRequestPane = ({ item, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
 
@@ -123,17 +125,17 @@ const HttpRequestPane = ({ item, collection }) => {
   const allTabs = useMemo(
     () => TAB_CONFIG
       .filter(({ key }) => key !== 'app' || appTabEnabled)
-      .map(({ key, label }) => ({ key, label, indicator: indicators[key] })),
-    [indicators, appTabEnabled]
+      .map(({ key, label }) => ({ key, label: t(label), indicator: indicators[key] })),
+    [indicators, appTabEnabled, t]
   );
 
   const tabPanel = useMemo(() => {
     const Component = TAB_PANELS[effectiveTab];
-    return Component ? <Component key={item.uid} item={item} collection={collection} /> : <div className="mt-4">404 | Not found</div>;
-  }, [effectiveTab, item, collection]);
+    return Component ? <Component key={item.uid} item={item} collection={collection} /> : <div className="mt-4">{t('404 | Not found')}</div>;
+  }, [effectiveTab, item, collection, t]);
 
   if (!activeTabUid || !focusedTab?.uid || !requestPaneTab) {
-    return <div className="pb-4 px-4">An error occurred!</div>;
+    return <div className="pb-4 px-4">{t('An error occurred!')}</div>;
   }
 
   let rightContent = null;

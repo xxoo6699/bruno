@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +16,7 @@ import { sanitizeName, validateName, validateNameError } from 'utils/common/rege
 import get from 'lodash/get';
 
 const CreateWorkspace = ({ onClose }) => {
+  const { t } = useTranslation();
   const inputRef = useRef();
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -92,7 +94,7 @@ const CreateWorkspace = ({ onClose }) => {
   return (
     <Modal
       size="md"
-      title="Create Workspace"
+      title={t('Create Workspace')}
       description="Give your new workspace a name and choose its type to get started."
       confirmText={isSubmitting ? 'Creating...' : 'Create Workspace'}
       handleConfirm={formik.handleSubmit}

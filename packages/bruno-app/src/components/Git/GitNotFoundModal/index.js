@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import Modal from 'components/Modal/index';
 import Portal from 'components/Portal/index';
@@ -29,6 +30,7 @@ const getDownloadUrl = (os) => {
 };
 
 const GitNotFoundModal = ({ onClose }) => {
+  const { t } = useTranslation();
   const osName = getOSName();
   const downloadUrl = getDownloadUrl(osName);
 
@@ -36,12 +38,12 @@ const GitNotFoundModal = ({ onClose }) => {
     <Portal>
       <Modal
         size="sm"
-        title="Git Not Found"
+        title={t('Git Not Found')}
         handleCancel={onClose}
         hideFooter={true}
       >
         <div>
-          <p>Git was not detected on your system. You need to install Git to proceed.</p>
+          <p>{t('Git was not detected on your system. You need to install Git to proceed.')}</p>
           <p className="mt-2">
             You can download Git for <strong>{osName}</strong> here:
           </p>

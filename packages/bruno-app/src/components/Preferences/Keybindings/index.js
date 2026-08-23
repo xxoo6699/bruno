@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'providers/Theme';
 
 import StyledWrapper from './StyledWrapper';
@@ -261,6 +262,7 @@ const ERROR = {
 };
 
 const Keybindings = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const preferences = useSelector((state) => state.app.preferences);
   const { theme } = useTheme();
@@ -417,13 +419,13 @@ const Keybindings = () => {
     const sig = comboSignature(arr);
 
     if (!sig) {
-      return { code: ERROR.EMPTY, message: `Shortcut can’t be empty.` };
+      return { code: ERROR.EMPTY, message: t(`Shortcut can’t be empty.`) };
     }
 
     if (isOnlyModifiers(arr)) {
       return {
         code: ERROR.ONLY_MODIFIERS,
-        message: 'Add a non-modifier key (e.g. Ctrl + K).'
+        message: t('Add a non-modifier key (e.g. Ctrl + K).')
       };
     }
 
@@ -432,8 +434,8 @@ const Keybindings = () => {
         code: ERROR.MISSING_REQUIRED_MOD,
         message:
           os === 'mac'
-            ? 'macOS shortcuts must include at least one modifier (command/alt/shift/ctrl).'
-            : 'Windows shortcuts must include at least one modifier (ctrl/alt/shift).'
+            ? t('macOS shortcuts must include at least one modifier (command/alt/shift/ctrl).')
+            : t('Windows shortcuts must include at least one modifier (ctrl/alt/shift).')
       };
     }
 
@@ -441,21 +443,21 @@ const Keybindings = () => {
     if (nonModifierCount > 1) {
       return {
         code: ERROR.MULTIPLE_NON_MODIFIERS,
-        message: 'Only one non-modifier key allowed (e.g. Cmd + Shift + K).'
+        message: t('Only one non-modifier key allowed (e.g. Cmd + Shift + K).')
       };
     }
 
     if (RESERVED_BY_OS[os]?.has(sig)) {
       return {
         code: ERROR.RESERVED,
-        message: 'This shortcut is reserved by the OS.'
+        message: t('This shortcut is reserved by the OS.')
       };
     }
 
     if (buildUsedSignatures(action).has(sig)) {
       return {
         code: ERROR.DUPLICATE,
-        message: 'This shortcut is already in use.'
+        message: t('This shortcut is already in use.')
       };
     }
 
@@ -549,7 +551,7 @@ const Keybindings = () => {
     };
 
     dispatch(savePreferences(updatedPreferences));
-    toast.success('All shortcuts have been reset to default');
+    toast.success(t('All shortcuts have been reset to default'));
   };
 
   const startEditing = (action) => {
@@ -656,7 +658,7 @@ const Keybindings = () => {
       setDraftByAction((prev) => ({ ...prev, [action]: [] }));
       setErrorByAction((prev) => ({
         ...prev,
-        [action]: { code: ERROR.EMPTY, message: `Shortcut can't be empty.` }
+        [action]: { code: ERROR.EMPTY, message: t(`Shortcut can't be empty.`) }
       }));
       return;
     }
@@ -763,7 +765,7 @@ const Keybindings = () => {
   return (
     <StyledWrapper className="w-full">
       <div className="section-header">
-        <span>Keybindings</span>
+        <span>{t('Keybindings')}</span>
 
         <div className="section-actions">
           <ToggleSwitch
@@ -779,7 +781,7 @@ const Keybindings = () => {
             data-testid="reset-all-keybindings-btn"
             disabled={!hasCustomizedKeybindings}
           >
-            Reset Default
+            {t('Reset Default')}
           </button>
         </div>
       </div>
@@ -790,15 +792,15 @@ const Keybindings = () => {
             <table>
               <thead>
                 <tr>
-                  <td>Command</td>
-                  <td>Keybinding</td>
+                  <td>{t('Command')}</td>
+                  <td>{t('Keybinding')}</td>
                 </tr>
               </thead>
               <tbody>
                 {groupedKeyMappings.map((section, sectionIndex) => (
                   <Fragment key={section.heading}>
                     <tr className="section-heading-row">
-                      <td colSpan={2}>{section.heading}</td>
+                      <td colSpan={2}>{t(section.heading)}</td>
                     </tr>
                     {section.rows.map((row, rowIndex) => {
                       const { action } = row;
@@ -829,7 +831,7 @@ const Keybindings = () => {
                             setHoveredAction((prev) => (prev === action ? null : prev))}
                           onClick={() => !isReadOnly && !isEditing && startEditing(action)}
                         >
-                          <td data-testid={`keybinding-name-${action}`}>{row.name}</td>
+                          <td data-testid={`keybinding-name-${action}`}>{t(row.name)}</td>
 
                           <td>
                             <div className="keybinding-row">
@@ -892,7 +894,7 @@ const Keybindings = () => {
                                       onClick={(e) => {
                                         e.stopPropagation(); resetRowToDefault(action);
                                       }}
-                                      title="Reset to default"
+                                      title={t('Reset to default')}
                                     >
                                       <IconReload size={14} stroke={1.5} />
                                     </button>
@@ -902,7 +904,7 @@ const Keybindings = () => {
                                     <span
                                       className="pencil-icon"
                                       data-testid={`keybinding-edit-${action}`}
-                                      title="Customize keys"
+                                      title={t('Customize keys')}
                                     >
                                       <IconPencil size={14} stroke={1.5} />
                                     </span>
@@ -913,7 +915,7 @@ const Keybindings = () => {
                                       type="button"
                                       className="edit-btn"
                                       data-testid={`keybinding-locked-${action}`}
-                                      title="Reserved shortcut"
+                                      title={t('Reserved shortcut')}
                                     >
                                       <IconLock size={14} stroke={1.5} />
                                     </button>
@@ -936,7 +938,7 @@ const Keybindings = () => {
             </table>
           </div>
         ) : (
-          <div className="empty-state">No key bindings available</div>
+          <div className="empty-state">{t('No key bindings available')}</div>
         )}
       </div>
     </StyledWrapper>

@@ -1,5 +1,6 @@
 import { useTheme } from '../../../../providers/Theme';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { setIsOpeningCollection } from 'providers/ReduxStore/slices/app';
 
 import styled from 'styled-components';
@@ -12,6 +13,7 @@ const LinkStyle = styled.span`
 const CreateOrOpenCollection = ({ onCreateClick }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleOpenCollection = () => {
     dispatch(setIsOpeningCollection(true));
@@ -22,21 +24,21 @@ const CreateOrOpenCollection = ({ onCreateClick }) => {
       theme={theme}
       onClick={onCreateClick}
     >
-      Create
+      {t('Create')}
     </LinkStyle>
   );
   const OpenLink = () => (
     <LinkStyle className="underline text-link cursor-pointer" theme={theme} onClick={() => handleOpenCollection(true)}>
-      Open
+      {t('Open')}
     </LinkStyle>
   );
 
   return (
     <StyledWrapper className="px-2 mt-4">
       <div className="text-xs text-center">
-        <div>No collections found.</div>
+        <div>{t('No collections found.')}</div>
         <div className="mt-2">
-          <CreateLink /> or <OpenLink /> Collection.
+          <CreateLink /> {t('or')} <OpenLink /> {t('Collection.')}
         </div>
       </div>
     </StyledWrapper>

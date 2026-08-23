@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'components/Modal';
@@ -26,6 +27,7 @@ import { formatIpcError } from 'utils/common/error';
 import get from 'lodash/get';
 
 const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOpen = false, onClose, closeAfterSave = false }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const latestCollection = useSelector((state) =>
@@ -475,7 +477,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                             ref={(node) => node?.focus()}
                             type="text"
                             className="new-collection-input"
-                            placeholder="Enter collection name"
+                            placeholder={t('Enter collection name')}
                             value={newCollection.name}
                             onChange={(e) => setNewCollection((prev) => ({ ...prev, name: e.target.value }))}
                             onKeyDown={(e) => {
@@ -507,7 +509,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                             <input
                               type="text"
                               className="new-collection-input cursor-pointer"
-                              placeholder="Select location"
+                              placeholder={t('Select location')}
                               value={newCollection.location}
                               readOnly
                               onClick={handleBrowseCollectionLocation}
@@ -533,7 +535,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                                 Choose the file format for storing requests in this collection.
                               </p>
                               <p className="mt-2">
-                                <strong>OpenCollection (YAML):</strong> Industry-standard YAML format (.yml files)
+                                <strong>{t('OpenCollection (YAML):')}</strong> Industry-standard YAML format (.yml files)
                               </p>
                               <p className="mt-1">
                                 <strong>BRU:</strong> Bruno's native file format (.bru files)
@@ -545,8 +547,8 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                             value={newCollection.format}
                             onChange={(e) => setNewCollection((prev) => ({ ...prev, format: e.target.value }))}
                           >
-                            <option value="yml">OpenCollection (YAML)</option>
-                            <option value="bru">BRU Format (.bru)</option>
+                            <option value="yml">{t('OpenCollection (YAML)')}</option>
+                            <option value="bru">{t('BRU Format (.bru)')}</option>
                           </select>
                         </div>
 
@@ -574,8 +576,8 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                   </ul>
                 ) : (
                   <div className="collection-empty-state">
-                    <p>No Collections Yet</p>
-                    <p className="collection-empty-state-subtitle">Collections help you organize your requests. Create your first one to save this request.</p>
+                    <p>{t('No Collections Yet')}</p>
+                    <p className="collection-empty-state-subtitle">{t('Collections help you organize your requests. Create your first one to save this request.')}</p>
                     <Button
                       type="button"
                       color="primary"
@@ -607,7 +609,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                   <SearchInput
                     searchText={searchText}
                     setSearchText={setSearchText}
-                    placeholder="Search for folder"
+                    placeholder={t('Search for folder')}
                     autoFocus={false}
                   />
                 </div>
@@ -641,7 +643,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                               ref={(node) => node?.focus()}
                               type="text"
                               className="new-folder-input"
-                              placeholder="Untitled new folder"
+                              placeholder={t('Untitled new folder')}
                               value={newFolderName}
                               onChange={(e) => handleNewFolderNameChange(e.target.value)}
                               onKeyDown={(e) => {
@@ -660,7 +662,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                                 type="button"
                                 className="new-folder-action-btn"
                                 onClick={handleCancelNewFolder}
-                                title="Cancel"
+                                title={t('Cancel')}
                               >
                                 <IconX size={16} strokeWidth={1.5} />
                               </button>
@@ -668,7 +670,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                                 type="button"
                                 className="new-folder-action-btn"
                                 onClick={handleCreateNewFolder}
-                                title="Create folder"
+                                title={t('Create folder')}
                               >
                                 <IconCheck size={16} strokeWidth={1.5} />
                               </button>
@@ -679,7 +681,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                             <div className="new-folder-filesystem-wrapper">
                               <div className="flex items-center justify-between">
                                 <label className="new-folder-filesystem-label flex items-center font-medium">
-                                  Folder Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
+                                  Folder Name <small className="font-normal text-muted ml-1">{t('(on filesystem)')}</small>
                                   <Help width={300} placement="top">
                                     <p>
                                       You can choose to save the folder as a different name on your file system versus what is displayed in the app.
@@ -707,7 +709,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                                   <input
                                     type="text"
                                     className="block textbox mt-2 w-full"
-                                    placeholder="Folder Name"
+                                    placeholder={t('Folder Name')}
                                     value={newFolderDirectoryName}
                                     autoComplete="off"
                                     autoCorrect="off"
@@ -749,12 +751,12 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                             {showFilesystemName ? (
                               <>
                                 <IconEyeOff size={16} strokeWidth={1.5} />
-                                <span>Hide filesystem name</span>
+                                <span>{t('Hide filesystem name')}</span>
                               </>
                             ) : (
                               <>
                                 <IconEye size={16} strokeWidth={1.5} />
-                                <span>Show filesystem name</span>
+                                <span>{t('Show filesystem name')}</span>
                               </>
                             )}
                           </button>

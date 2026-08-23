@@ -21,6 +21,7 @@ import Dropdown from 'components/Dropdown';
 import StyledWrapper from './StyledWrapper';
 import { showImportIssuesToast } from 'components/Toast/ImportIssuesToast';
 import { DEFAULT_COLLECTION_FORMAT } from 'utils/common/constants';
+import { useTranslation } from 'react-i18next';
 
 // Extract collection name from raw data
 const getCollectionName = (format, rawData) => {
@@ -105,6 +106,7 @@ const groupingOptions = [
 ];
 
 const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sourceUrl, filePath, rawContent }) => {
+  const { t } = useTranslation();
   const inputRef = useRef();
   const dispatch = useDispatch();
   const [groupingType, setGroupingType] = useState('tags');
@@ -209,7 +211,7 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
     return (
       <div ref={ref} className="flex items-center text-link cursor-pointer">
         <button className="btn-advanced" type="button">
-          Options
+          {t('Options')}
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
       </div>
@@ -221,7 +223,7 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
     return (
       <div ref={ref} className="flex items-center justify-between w-full current-group" data-testid="grouping-dropdown">
         <div>
-          <div className="font-medium text-gray-900 dark:text-gray-100">{selectedOption.label}</div>
+          <div className="font-medium text-gray-900 dark:text-gray-100">{t(selectedOption.label)}</div>
         </div>
         <IconCaretDown size={16} className="text-gray-400 ml-[0.25rem]" fill="currentColor" />
       </div>
@@ -265,8 +267,8 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
       <StyledWrapper>
         <Modal
           size="md"
-          title="Import Collection"
-          confirmText="Import"
+          title={t('Import Collection')}
+          confirmText={t('Import')}
           handleConfirm={onSubmit}
           handleCancel={onClose}
           dataTestId="import-collection-location-modal"
@@ -282,7 +284,7 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
                       setShowAdvancedOptions(!showAdvancedOptions);
                     }}
                   >
-                    {showAdvancedOptions ? 'Hide Advanced Options' : 'Show Advanced Options'}
+                    {showAdvancedOptions ? t('Hide Advanced Options') : t('Show Advanced Options')}
                   </div>
                 </Dropdown>
               </div>
@@ -292,16 +294,16 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
           <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
             <div>
               <label htmlFor="collectionName" className="block font-medium">
-                Name
+                {t('Name')}
               </label>
               <div className="mt-2">{collectionName}</div>
 
               <>
                 <label htmlFor="collectionLocation" className="font-medium mt-4 flex items-center">
-                  Location
+                  {t('Location')}
                   <Help>
-                    <p>Bruno stores your collections on your computer's filesystem.</p>
-                    <p className="mt-2">Choose the location where you want to store this collection.</p>
+                    <p>{t('Bruno stores your collections on your computer\'s filesystem.')}</p>
+                    <p className="mt-2">{t('Choose the location where you want to store this collection.')}</p>
                   </Help>
                 </label>
                 <input
@@ -330,21 +332,21 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
                   className="text-link cursor-pointer hover:underline"
                   onClick={browse}
                 >
-                  Browse
+                  {t('Browse')}
                 </span>
               </div>
 
               {showAdvancedOptions && !isZipImport && (
                 <div className="mt-4">
                   <label htmlFor="format" className="flex items-center font-medium">
-                    File Format
+                    {t('File Format')}
                     <Help width="300">
-                      <p>Choose the file format for storing requests in this collection.</p>
+                      <p>{t('Choose the file format for storing requests in this collection.')}</p>
                       <p className="mt-2">
-                        <strong>OpenCollection (YAML):</strong> Industry-standard YAML format (.yml files)
+                        <strong>OpenCollection (YAML):</strong> {t('Industry-standard YAML format (.yml files)')}
                       </p>
                       <p className="mt-1">
-                        <strong>BRU:</strong> Bruno's native file format (.bru files)
+                        <strong>BRU:</strong> {t('Bruno\'s native file format (.bru files)')}
                       </p>
                     </Help>
                   </label>
@@ -355,8 +357,8 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
                     value={collectionFormat}
                     onChange={(e) => setCollectionFormat(e.target.value)}
                   >
-                    <option value="yml">OpenCollection (YAML)</option>
-                    <option value="bru">BRU Format (.bru)</option>
+                    <option value="yml">{t('OpenCollection (YAML)')}</option>
+                    <option value="bru">{t('BRU Format (.bru)')}</option>
                   </select>
                 </div>
               )}
@@ -371,9 +373,9 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
                     data-testid="preserve-scripts-toggle"
                   />
                   <div>
-                    <span className="checkbox-option-label">Preserve scripts</span>
+                    <span className="checkbox-option-label">{t('Preserve scripts')}</span>
                     <p className="checkbox-option-description">
-                      Import Postman scripts without translating them.
+                      {t('Import Postman scripts without translating them.')}
                     </p>
                   </div>
                 </label>
@@ -384,10 +386,10 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
               <div className="mt-4 flex gap-4 items-center justify-between">
                 <div>
                   <label htmlFor="groupingType" className="block font-medium">
-                    Folder arrangement
+                    {t('Folder arrangement')}
                   </label>
                   <p className="text-muted text-xs mt-1 mb-2">
-                    Select whether to create folders according to the spec's paths or tags.
+                    {t('Select whether to create folders according to the spec\'s paths or tags.')}
                   </p>
                 </div>
                 <div className="relative">
@@ -402,7 +404,7 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
                           setGroupingType(option.value);
                         }}
                       >
-                        {option.label}
+                        {t(option.label)}
                       </div>
                     ))}
                   </Dropdown>
@@ -419,11 +421,11 @@ const ImportCollectionLocation = ({ onClose, handleSubmit, rawData, format, sour
                   className={`checkbox mt-0.5 ${isSwagger2 ? '' : 'cursor-pointer'}`}
                 />
                 <div>
-                  <span className="checkbox-option-label">Check for Spec Updates</span>
+                  <span className="checkbox-option-label">{t('Check for Spec Updates')}</span>
                   <p className="checkbox-option-description">
                     {isSwagger2
-                      ? 'OpenAPI Sync is not supported for Swagger 2.0 specs.'
-                      : 'Stay notified of spec changes and sync your collection with the spec.'}
+                      ? t('OpenAPI Sync is not supported for Swagger 2.0 specs.')
+                      : t('Stay notified of spec changes and sync your collection with the spec.')}
                   </p>
                 </div>
               </label>

@@ -1,15 +1,17 @@
 import { useCallback } from 'react';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { isSafeUrl } from 'utils/url/index';
 
 const useLinkHandlers = (editor) => {
+  const { t } = useTranslation();
   const handleLinkSubmit = useCallback(({ text, url }) => {
     if (!editor) return;
 
     const trimmedUrl = url.trim();
 
     if (!isSafeUrl(trimmedUrl)) {
-      toast.error('This link isn\'t allowed');
+      toast.error(t('This link isn\'t allowed'));
       return;
     }
 

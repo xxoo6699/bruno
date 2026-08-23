@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getMarkRange } from '@tiptap/core';
 import { IconEdit, IconUnlink, IconCopy } from '@tabler/icons';
@@ -30,6 +31,7 @@ function resolveLinkText(editor, anchorEl) {
 }
 
 const EditorLinkPopover = ({ editor, onSubmit, onUnlink, containerEl }) => {
+  const { t } = useTranslation();
   // --- Hover View Popover ---
   const [hoverOpen, setHoverOpen] = useState(false);
   const [hoverLink, setHoverLink] = useState({ text: '', url: '' });
@@ -325,7 +327,7 @@ const EditorLinkPopover = ({ editor, onSubmit, onUnlink, containerEl }) => {
                   className="action-icon-btn"
                   onClick={() => {
                     navigator.clipboard.writeText(hoverLink.url).then(() => {
-                      toast.success('Link copied to clipboard');
+                      toast.success(t('Link copied to clipboard'));
                     });
                     setHoverOpen(false);
                   }}

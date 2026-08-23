@@ -1,3 +1,4 @@
+import i18n from 'i18n';
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -66,7 +67,7 @@ export default function onHasCompletion(_cm, data, onHintInformationRender) {
 
     if (ctx && deprecation && ctx.deprecationReason) {
       const reason = ctx.deprecationReason ? md.render(ctx.deprecationReason) : '';
-      deprecation.innerHTML = '<span className="deprecation-label">Deprecated</span>' + reason;
+      deprecation.innerHTML = '<span className="deprecation-label">' + i18n.t('Deprecated') + '</span>' + reason;
       deprecation.style.display = 'block';
     } else if (deprecation) {
       deprecation.style.display = 'none';

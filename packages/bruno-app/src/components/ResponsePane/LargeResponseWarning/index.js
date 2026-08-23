@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconDownload, IconCopy, IconEye, IconAlertTriangle } from '@tabler/icons';
 import toast from 'react-hot-toast';
 import get from 'lodash/get';
@@ -7,6 +8,7 @@ import { formatSize } from 'utils/common/index';
 import Button from 'ui/Button/index';
 
 const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
+  const { t } = useTranslation();
   const { ipcRenderer } = window;
   const response = item.response || {};
 
@@ -16,12 +18,12 @@ const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
         .invoke('renderer:save-response-to-file', response, item.requestSent.url, item.pathname)
         .then((result) => {
           if (result && result.success) {
-            toast.success('Response downloaded to file');
+            toast.success(t('Response downloaded to file'));
           }
           resolve();
         })
         .catch((err) => {
-          toast.error(get(err, 'error.message') || 'Something went wrong!');
+          toast.error(get(err, 'error.message') || t('Something went wrong!'));
           reject(err);
         });
     });
@@ -34,12 +36,12 @@ const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
         : JSON.stringify(response.data, null, 2);
 
       navigator.clipboard.writeText(textToCopy).then(() => {
-        toast.success('Response copied to clipboard');
+        toast.success(t('Response copied to clipboard'));
       }).catch(() => {
-        toast.error('Failed to copy response');
+        toast.error(t('Failed to copy response'));
       });
     } catch (error) {
-      toast.error('Failed to copy response');
+      toast.error(t('Failed to copy response'));
     }
   };
 
@@ -51,12 +53,12 @@ const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
         </div>
         <div className="warning-content">
           <div className="warning-title">
-            Large Response Warning
+            {t('Large Response Warning')}
           </div>
           <div className="warning-description">
-            Handling responses over <span className="size-highlight supported-size">{formatSize(10 * 1024 * 1024)}</span> could degrade performance.
+            {t('Handling responses over')} <span className="size-highlight supported-size">{formatSize(10 * 1024 * 1024)}</span> {t('could degrade performance.')}
             <br />
-            Size of current response: <span className="size-highlight current-size">{formatSize(responseSize)}</span>
+            {t('Size of current response:')} <span className="size-highlight current-size">{formatSize(responseSize)}</span>
           </div>
         </div>
       </div>
@@ -65,33 +67,33 @@ const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
           icon={<IconEye size={18} strokeWidth={1.5} />}
           iconPosition="left"
           onClick={onRevealResponse}
-          title="Show response content"
+          title={t('Show response content')}
           color="secondary"
           size="sm"
         >
-          View
+          {t('View')}
         </Button>
         <Button
           icon={<IconDownload size={18} strokeWidth={1.5} />}
           iconPosition="left"
           onClick={downloadResponseToFile}
           disabled={!response.dataBuffer}
-          title="Download response to file"
+          title={t('Download response to file')}
           color="secondary"
           size="sm"
         >
-          Download
+          {t('Download')}
         </Button>
         <Button
           icon={<IconCopy size={18} strokeWidth={1.5} />}
           iconPosition="left"
           onClick={copyResponse}
           disabled={!response.data}
-          title="Copy response to clipboard"
+          title={t('Copy response to clipboard')}
           color="secondary"
           size="sm"
         >
-          Copy
+          {t('Copy')}
         </Button>
       </div>
     </StyledWrapper>

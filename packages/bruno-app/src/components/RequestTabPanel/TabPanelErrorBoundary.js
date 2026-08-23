@@ -1,3 +1,4 @@
+import i18n from 'i18n';
 import React from 'react';
 import { IconAlertTriangle } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,7 +32,7 @@ class TabPanelErrorBoundaryInner extends React.Component {
       return (
         <div className="h-full flex flex-col items-center justify-center gap-3 px-6 text-center">
           <IconAlertTriangle size={36} strokeWidth={1.5} style={{ color: theme?.status?.warning?.text }} />
-          <h2 className="text-lg font-medium">Something went wrong</h2>
+          <h2 className="text-lg font-medium">{i18n.t('Something went wrong')}</h2>
           {isClosable ? (
             <p className="text-sm opacity-70 max-w-md">
               This tab encountered an unexpected error. Close it and try reopening the request. If the

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { saveWorkspaceDocs } from 'providers/ReduxStore/slices/workspaces/actions';
 import StyledWrapper from './StyledWrapper';
 import { IconFileText, IconEdit, IconX, IconPlus } from '@tabler/icons';
@@ -12,6 +13,7 @@ import DocsEditor from 'components/Documentation/DocsEditor';
 
 const WorkspaceDocs = ({ workspace }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [localDocs, setLocalDocs] = useState(workspace?.docs || '');
 
@@ -52,17 +54,17 @@ const WorkspaceDocs = ({ workspace }) => {
 
   const onSave = async () => {
     if (!workspace) {
-      toast.error('Workspace not found');
+      toast.error(t('Workspace not found'));
       return;
     }
 
     try {
       await dispatch(saveWorkspaceDocs(workspace.uid, localDocs));
-      toast.success('Documentation saved successfully');
+      toast.success(t('Documentation saved successfully'));
       toggleViewMode();
     } catch (error) {
       console.error('Error saving workspace docs:', error);
-      toast.error('Failed to save documentation');
+      toast.error(t('Failed to save documentation'));
     }
   };
 
@@ -77,7 +79,7 @@ const WorkspaceDocs = ({ workspace }) => {
       <div className="docs-header">
         <div className="docs-title">
           <IconFileText size={16} strokeWidth={1.5} />
-          <span>Documentation</span>
+          <span>{t('Documentation')}</span>
         </div>
         {hasDocs && !isEditing && (
           <ActionIcon className="edit-btn" onClick={toggleViewMode}>
@@ -107,7 +109,7 @@ const WorkspaceDocs = ({ workspace }) => {
             {isEditing && (
               <div className="editor-actions">
                 <Button onClick={onSave}>
-                  Save
+                  {t('Save')}
                 </Button>
               </div>
             )}
@@ -118,17 +120,17 @@ const WorkspaceDocs = ({ workspace }) => {
               <IconFileText size={52} strokeWidth={1} />
             </div>
             <p className="empty-text">
-              Add documentation to help your team work smoothly.
+              {t('Add documentation to help your team work smoothly.')}
             </p>
-            <p className="empty-subtext">You can include:</p>
+            <p className="empty-subtext">{t('You can include:')}</p>
             <ul className="suggestions-list">
-              <li>Project overview</li>
-              <li>Setup instructions</li>
-              <li>Key workflows</li>
-              <li>Resources & FAQs</li>
+              <li>{t('Project overview')}</li>
+              <li>{t('Setup instructions')}</li>
+              <li>{t('Key workflows')}</li>
+              <li>{t('Resources & FAQs')}</li>
             </ul>
             <Button color="light" size="sm" icon={<IconPlus size={14} strokeWidth={1.5} />} onClick={handleAddDocumentation}>
-              Add Documentation
+              {t('Add Documentation')}
             </Button>
           </div>
         )}

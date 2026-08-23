@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import get from 'lodash/get';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,6 +43,7 @@ import useKeybinding from 'hooks/useKeybinding';
 
 const CollectionsSection = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const showSearch = useSelector((state) => state.app.showSidebarSearch);
 
   const { workspaces, activeWorkspaceUid } = useSelector((state) => state.workspaces);
@@ -84,7 +86,7 @@ const CollectionsSection = () => {
       }
     };
     dispatch(savePreferences(updatedPreferences)).catch(() => {
-      toast.error('Failed to save preferences');
+      toast.error(t('Failed to save preferences'));
     });
   };
 
@@ -167,11 +169,11 @@ const CollectionsSection = () => {
   const getSortLabel = () => {
     switch (collectionSortOrder) {
       case 'alphabetical':
-        return 'Sort Z-A';
+        return t('Sort Z-A');
       case 'reverseAlphabetical':
-        return 'Clear sort';
+        return t('Clear sort');
       default:
-        return 'Sort A-Z';
+        return t('Sort A-Z');
     }
   };
 
@@ -190,13 +192,13 @@ const CollectionsSection = () => {
   const handleStartRequest = () => {
     const scratchCollectionUid = activeWorkspace?.scratchCollectionUid;
     if (!scratchCollectionUid) {
-      toast.error('Unable to create request');
+      toast.error(t('Unable to create request'));
       return;
     }
 
     const scratchCollection = collections.find((c) => c.uid === scratchCollectionUid);
     if (!scratchCollection) {
-      toast.error('Unable to create request');
+      toast.error(t('Unable to create request'));
       return;
     }
 
@@ -227,7 +229,7 @@ const CollectionsSection = () => {
         isTransient: true
       })
     ).catch((err) => {
-      toast.error('An error occurred while creating the request');
+      toast.error(t('An error occurred while creating the request'));
     });
   };
 
@@ -241,7 +243,7 @@ const CollectionsSection = () => {
     {
       id: 'create',
       leftSection: IconPlus,
-      label: 'Create collection',
+      label: t('Create collection'),
       onClick: () => {
         dispatch(setIsCreatingCollection(true));
       }
@@ -249,7 +251,7 @@ const CollectionsSection = () => {
     {
       id: 'open',
       leftSection: IconFolder,
-      label: 'Open collection',
+      label: t('Open collection'),
       onClick: () => {
         handleOpenCollection();
       }
@@ -257,7 +259,7 @@ const CollectionsSection = () => {
     {
       id: 'import',
       leftSection: IconDownload,
-      label: 'Import collection',
+      label: t('Import collection'),
       onClick: () => {
         setImportCollectionModalOpen(true);
       }
@@ -276,7 +278,7 @@ const CollectionsSection = () => {
     {
       id: 'close-all',
       leftSection: IconSquareX,
-      label: 'Close all',
+      label: t('Close all'),
       onClick: () => {
         selectAllCollectionsToClose();
       }
@@ -284,7 +286,7 @@ const CollectionsSection = () => {
     {
       id: 'open-in-terminal',
       leftSection: IconTerminal2,
-      label: 'Open in Terminal',
+      label: t('Open in Terminal'),
       onClick: () => {
         openDevtoolsAndSwitchToTerminal(dispatch, activeWorkspace?.pathname);
       }
@@ -295,7 +297,7 @@ const CollectionsSection = () => {
     <>
       <ActionIcon
         onClick={handleToggleSearch}
-        label="Search requests"
+        label={t('Search requests')}
       >
         <IconSearch size={14} stroke={1.5} aria-hidden="true" />
       </ActionIcon>
@@ -306,7 +308,7 @@ const CollectionsSection = () => {
         placement="bottom-end"
       >
         <ActionIcon
-          label="Add new collection"
+          label={t('Add new collection')}
         >
           <IconPlus size={14} stroke={1.5} aria-hidden="true" />
         </ActionIcon>
@@ -318,7 +320,7 @@ const CollectionsSection = () => {
         placement="bottom-end"
       >
         <ActionIcon
-          label="More actions"
+          label={t('More actions')}
         >
           <IconDotsVertical size={14} stroke={1.5} aria-hidden="true" />
         </ActionIcon>
@@ -403,7 +405,7 @@ const CollectionsSection = () => {
       )}
       <SidebarSection
         id="collections"
-        title="Collections"
+        title={t('Collections')}
         icon={IconBox}
         actions={sectionActions}
       >

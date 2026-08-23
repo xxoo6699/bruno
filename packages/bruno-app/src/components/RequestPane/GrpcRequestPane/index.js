@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { updateRequestPaneTab } from 'providers/ReduxStore/slices/tabs';
 import RequestHeaders from 'components/RequestPane/RequestHeaders';
 import GrpcBody from 'components/RequestPane/GrpcBody';
@@ -18,6 +19,7 @@ import { hasEffectiveAuth } from 'utils/auth';
 import { AUTH_MODES_GRPC } from 'utils/common/constants';
 
 const GrpcRequestPane = ({ item, collection, handleRun }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
@@ -49,7 +51,7 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
         return <Documentation item={item} collection={collection} />;
       }
       default: {
-        return <div className="mt-4">404 | Not found</div>;
+        return <div className="mt-4">{t('404 | Not found')}</div>;
       }
     }
   }, [requestPaneTab, item, collection, handleRun]);
@@ -114,7 +116,7 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
 
   // Return error for truly missing active/focused tabs
   if (!activeTabUid || !focusedTab?.uid) {
-    return <div className="pb-4 px-4">An error occurred!</div>;
+    return <div className="pb-4 px-4">{t('An error occurred!')}</div>;
   }
 
   // Return null during initialization while requestPaneTab is being set by useEffect

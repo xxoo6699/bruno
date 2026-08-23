@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -13,12 +14,15 @@ import SyncReviewPage from '../SyncReviewPage';
 import useSyncFlow from '../hooks/useSyncFlow';
 
 const SpecStatusSection = ({
+
   collection, sourceUrl,
   isLoading, error, setError, fileNotFound,
   specDrift, storedSpec,
   collectionDrift, remoteDrift,
   onCheck, onOpenSettings
+
 }) => {
+  const { t } = useTranslation();
   const openApiSyncConfig = collection?.brunoConfig?.openapi?.[0];
   const lastCheckedAt = useSelector((state) => state.openapiSync?.collectionUpdates?.[collection.uid]?.lastChecked);
 
@@ -106,14 +110,14 @@ const SpecStatusSection = ({
       {(error || fileNotFound || specDrift?.isValid === false) ? (
         <div className="sync-review-empty-state mt-5">
           <IconAlertTriangle size={40} className="empty-state-icon" />
-          <h4>Unable to check for updates</h4>
-          <p>Fix the connection issue above and check again.</p>
+          <h4>{t('Unable to check for updates')}</h4>
+          <p>{t('Fix the connection issue above and check again.')}</p>
         </div>
       ) : specDrift?.storedSpecMissing && openApiSyncConfig?.lastSyncDate && !hasRemoteUpdates ? (
         <div className="sync-review-empty-state mt-5">
           <IconCheck size={40} className="empty-state-icon" />
-          <h4>No updates from the spec</h4>
-          <p>The spec endpoints have not been updated since the last sync. You can restore the spec file to track local collection changes.</p>
+          <h4>{t('No updates from the spec')}</h4>
+          <p>{t('The spec endpoints have not been updated since the last sync. You can restore the spec file to track local collection changes.')}</p>
           <Button className="mt-4" color="warning" onClick={handleRestoreSpec} loading={isSyncing}>
             Restore Spec File
           </Button>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IconTrash } from '@tabler/icons';
 import DeleteDotEnvFile from 'components/Environments/EnvironmentSettings/DeleteDotEnvFile';
+import { useTranslation } from 'react-i18next';
 import StyledWrapper from './StyledWrapper';
 
 const DotEnvFileDetails = ({
@@ -11,6 +12,7 @@ const DotEnvFileDetails = ({
   viewMode,
   onViewModeChange
 }) => {
+  const { t } = useTranslation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteClick = () => {
@@ -37,7 +39,7 @@ const DotEnvFileDetails = ({
                   onClick={() => onViewModeChange?.('table')}
                   aria-pressed={viewMode === 'table'}
                 >
-                  Table
+                  {t('Table')}
                 </button>
                 <button
                   type="button"
@@ -46,10 +48,10 @@ const DotEnvFileDetails = ({
                   aria-pressed={viewMode === 'raw'}
                   data-testid="dotenv-view-raw"
                 >
-                  Raw
+                  {t('Raw')}
                 </button>
               </div>
-              <button type="button" onClick={handleDeleteClick} title="Delete .env file" className="action-btn delete-btn">
+              <button type="button" onClick={handleDeleteClick} title={t('Delete .env file')} className="action-btn delete-btn">
                 <IconTrash size={15} strokeWidth={1.5} />
               </button>
             </>

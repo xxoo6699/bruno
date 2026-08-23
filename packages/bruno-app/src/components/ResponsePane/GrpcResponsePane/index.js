@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import find from 'lodash/find';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { updateResponsePaneTab } from 'providers/ReduxStore/slices/tabs';
 import Overlay from '../Overlay';
 import Placeholder from '../Placeholder';
@@ -19,6 +20,7 @@ import ResponsiveTabs from 'ui/ResponsiveTabs';
 
 const GrpcResponsePane = ({ item, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
   const isLoading = ['queued', 'sending'].includes(item.requestState);
@@ -46,7 +48,7 @@ const GrpcResponsePane = ({ item, collection }) => {
   const allTabs = [
     {
       key: 'response',
-      label: 'Response',
+      label: t('Response'),
       indicator:
         responsesCount > 0 ? (
           <sup data-testid="grpc-tab-response-count" className="ml-1 font-medium">
@@ -56,17 +58,17 @@ const GrpcResponsePane = ({ item, collection }) => {
     },
     {
       key: 'headers',
-      label: 'Metadata',
+      label: t('Metadata'),
       indicator: metadataCount > 0 ? <sup className="ml-1 font-medium">{metadataCount}</sup> : null
     },
     {
       key: 'trailers',
-      label: 'Trailers',
+      label: t('Trailers'),
       indicator: trailersCount > 0 ? <sup className="ml-1 font-medium">{trailersCount}</sup> : null
     },
     {
       key: 'timeline',
-      label: 'Timeline',
+      label: t('Timeline'),
       indicator: null
     }
   ];
@@ -86,7 +88,7 @@ const GrpcResponsePane = ({ item, collection }) => {
         return <Timeline collection={collection} item={item} activeTabUid={activeTabUid} />;
       }
       default: {
-        return <div>404 | Not found</div>;
+        return <div>{t('404 | Not found')}</div>;
       }
     }
   };
@@ -108,12 +110,12 @@ const GrpcResponsePane = ({ item, collection }) => {
   }
 
   if (!activeTabUid) {
-    return <div>Something went wrong</div>;
+    return <div>{t('Something went wrong')}</div>;
   }
 
   const focusedTab = find(tabs, (t) => t.uid === activeTabUid);
   if (!focusedTab || !focusedTab.uid || !focusedTab.responsePaneTab) {
-    return <div className="pb-4 px-4">An error occurred!</div>;
+    return <div className="pb-4 px-4">{t('An error occurred!')}</div>;
   }
 
   const rightContent = !isLoading ? (

@@ -4,12 +4,14 @@ import VarsTable from './VarsTable';
 import StyledWrapper from './StyledWrapper';
 import { saveCollectionSettings } from 'providers/ReduxStore/slices/collections/actions';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import Button from 'ui/Button';
 import { usePersistedState } from 'hooks/usePersistedState';
 import { useTrackScroll } from 'hooks/useTrackScroll';
 
 const Vars = ({ collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const isDraft = !!collection.draft?.root;
   const requestVars = isDraft ? get(collection, 'draft.root.request.vars.req', []) : get(collection, 'root.request.vars.req', []);
   const responseVars = isDraft ? get(collection, 'draft.root.request.vars.res', []) : get(collection, 'root.request.vars.res', []);
@@ -22,16 +24,16 @@ const Vars = ({ collection }) => {
   return (
     <StyledWrapper className="w-full flex flex-col" ref={wrapperRef}>
       <div className="flex-1">
-        <div className="mb-3 title text-xs">Pre Request</div>
+        <div className="mb-3 title text-xs">{t('Pre Request')}</div>
         <VarsTable collection={collection} vars={requestVars} varType="request" initialScroll={scroll} isDraft={isDraft} />
       </div>
       <div className="flex-1">
-        <div className="mt-3 mb-3 title text-xs">Post Response</div>
+        <div className="mt-3 mb-3 title text-xs">{t('Post Response')}</div>
         <VarsTable collection={collection} vars={responseVars} varType="response" initialScroll={scroll} isDraft={isDraft} />
       </div>
       <div className="mt-6">
         <Button type="submit" size="sm" onClick={handleSave}>
-          Save
+          {t('Save')}
         </Button>
       </div>
     </StyledWrapper>

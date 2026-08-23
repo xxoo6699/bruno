@@ -1,5 +1,6 @@
 import React from 'react';
 import { IconFolder, IconSettings, IconAlertCircle, IconFileImport } from '@tabler/icons';
+import { useTranslation } from 'react-i18next';
 import StyledWrapper from './StyledWrapper';
 
 const ImportPathsTab = ({
@@ -9,12 +10,13 @@ const ImportPathsTab = ({
   onBrowseImportPath,
   onToggleImportPath
 }) => {
+  const { t } = useTranslation();
   return (
     <StyledWrapper>
       {collectionImportPaths && collectionImportPaths.length > 0 && (
         <div className="content-wrapper">
           <div className="header-wrapper">
-            <div className="header-text">From Collection Settings</div>
+            <div className="header-text">{t('From Collection Settings')}</div>
             <button
               onClick={onOpenCollectionProtobufSettings}
               className="settings-button"
@@ -27,13 +29,13 @@ const ImportPathsTab = ({
             <div className="error-wrapper">
               <p className="error-text">
                 <IconAlertCircle size={16} strokeWidth={1.5} style={{ marginRight: '0.25rem' }} />
-                Some import paths could not be found.
+                {t('Some import paths could not be found.')}
                 {' '}
                 <button
                   onClick={onOpenCollectionProtobufSettings}
                   className="error-link"
                 >
-                  Manage import paths
+                  {t('Manage import paths')}
                 </button>
               </p>
             </div>
@@ -81,7 +83,7 @@ const ImportPathsTab = ({
       {(!collectionImportPaths || collectionImportPaths.length === 0) && (
         <div className="empty-wrapper">
           <div className="empty-text">
-            No import paths configured in collection settings
+            {t('No import paths configured in collection settings')}
           </div>
         </div>
       )}
@@ -92,7 +94,7 @@ const ImportPathsTab = ({
           onClick={onBrowseImportPath}
         >
           <IconFileImport size={16} strokeWidth={1.5} style={{ marginRight: '0.25rem' }} />
-          Browse for Import Path
+          {t('Browse for Import Path')}
         </button>
       </div>
     </StyledWrapper>

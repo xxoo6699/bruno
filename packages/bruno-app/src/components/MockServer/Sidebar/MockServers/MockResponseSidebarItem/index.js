@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -13,11 +14,14 @@ import MenuDropdown from 'ui/MenuDropdown';
 import ActionIcon from 'ui/ActionIcon';
 
 const MockResponseSidebarItem = ({
+
   response,
   instance,
   collectionUid,
   location
+
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const activeTabUid = useSelector((state) => state.tabs?.activeTabUid);
   const existingResponses = useSelector((state) => state.mockServer.mockResponses[instance.uid] || []);
@@ -156,7 +160,7 @@ const MockResponseSidebarItem = ({
 
       {showDeleteModal ? (
         <MockConfirmModal
-          title="Delete Mock Response"
+          title={t('Delete Mock Response')}
           confirmText={isDeleting ? 'Deleting...' : 'Delete'}
           confirmDisabled={isDeleting}
           confirmButtonColor="danger"
@@ -191,7 +195,7 @@ const MockResponseSidebarItem = ({
           <span className="truncate">{response.name}</span>
         </button>
         <MenuDropdown items={menuItems} placement="bottom-end">
-          <ActionIcon label="Mock response actions" className="mock-server-actions flex-shrink-0">
+          <ActionIcon label={t('Mock response actions')} className="mock-server-actions flex-shrink-0">
             <IconDots size={18} aria-hidden="true" />
           </ActionIcon>
         </MenuDropdown>

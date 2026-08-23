@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import IconEdit from 'components/Icons/IconEdit';
@@ -10,6 +11,7 @@ import get from 'lodash/get';
 import Button from 'ui/Button';
 
 const ResponseExampleTopBar = ({
+
   item,
   collection,
   exampleUid,
@@ -18,7 +20,9 @@ const ResponseExampleTopBar = ({
   onSave,
   onCancel,
   onGenerateCode
+
 }) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const dispatch = useDispatch();
 
@@ -112,7 +116,7 @@ const ResponseExampleTopBar = ({
                     value={example?.name || ''}
                     onChange={handleNameChange}
                     className="example-input example-input-name"
-                    placeholder="Enter example name"
+                    placeholder={t('Enter example name')}
                     autoFocus
                     data-testid="response-example-name-input"
                   />
@@ -122,7 +126,7 @@ const ResponseExampleTopBar = ({
                     value={example?.description || ''}
                     onChange={handleDescriptionChange}
                     className="example-input example-input-description"
-                    placeholder="Enter example description"
+                    placeholder={t('Enter example description')}
                     rows={3}
                     data-testid="response-example-description-input"
                   />
@@ -185,7 +189,7 @@ const ResponseExampleTopBar = ({
               size="sm"
               icon={<IconCode size={16} color={theme.examples.buttonIconColor} />}
               onClick={handleGenerateCode}
-              title="Generate Code"
+              title={t('Generate Code')}
               data-testid="response-example-generate-code-btn"
             />
             <Button

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Portal from 'components/Portal';
 import Modal from 'components/Modal';
 import statusCodePhraseMap from 'components/ResponsePane/StatusCode/get-status-code-phrase';
@@ -18,6 +19,7 @@ const BODY_TYPES = [
 ];
 
 const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate, onClose }) => {
+  const { t } = useTranslation();
   const nameInputRef = useRef();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -101,8 +103,8 @@ const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate,
     <Portal>
       <Modal
         size="md"
-        title="Create Mock Response"
-        confirmText={isSaving ? 'Creating...' : 'Create'}
+        title={t('Create Mock Response')}
+        confirmText={isSaving ? t('Creating...') : t('Create')}
         confirmDisabled={isSaving || !trimmedName || Boolean(inputNameError) || Boolean(descriptionError)}
         handleConfirm={handleConfirm}
         handleCancel={() => {
@@ -115,7 +117,7 @@ const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate,
         <form className="bruno-form" onSubmit={(event) => event.preventDefault()}>
           <div>
             <label htmlFor="mock-response-create-name" className="block font-medium">
-              Name
+              {t('Name')}
             </label>
             <input
               id="mock-response-create-name"
@@ -140,7 +142,7 @@ const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate,
 
           <div className="mt-4">
             <label htmlFor="mock-response-create-description" className="block font-medium">
-              Description
+              {t('Description')}
             </label>
             <textarea
               id="mock-response-create-description"
@@ -158,7 +160,7 @@ const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate,
           <div className="mt-4 grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="mock-response-create-status" className="block font-medium">
-                Status Code
+                {t('Status Code')}
               </label>
               <select
                 id="mock-response-create-status"
@@ -176,7 +178,7 @@ const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate,
 
             <div>
               <label htmlFor="mock-response-create-body-type" className="block font-medium">
-                Body Type
+                {t('Body Type')}
               </label>
               <select
                 id="mock-response-create-body-type"
@@ -209,9 +211,9 @@ const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate,
                   data-testid="mock-response-use-example-checkbox"
                 />
                 <span>
-                  <span className="block font-medium">Copy from a collection example</span>
+                  <span className="block font-medium">{t('Copy from a collection example')}</span>
                   <span className="block text-xs opacity-70 mt-1">
-                    Reuses the example's request, status code and body instead of starting from an empty response.
+                    {t('Reuses the example\'s request, status code and body instead of starting from an empty response.')}
                   </span>
                 </span>
               </label>
@@ -227,7 +229,7 @@ const CreateMockResponseModal = ({ collection, existingResponses = [], onCreate,
                     }}
                     data-testid="mock-response-example-select"
                   >
-                    <option value="">Select an example</option>
+                    <option value="">{t('Select an example')}</option>
                     {examples.map(({ item, example }) => (
                       <option key={`${item.uid}-${example.uid}`} value={`${item.uid}:${example.uid}`}>
                         {example.name} ({item.name})

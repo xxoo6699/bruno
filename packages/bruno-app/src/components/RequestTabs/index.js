@@ -4,6 +4,7 @@ import filter from 'lodash/filter';
 import classnames from 'classnames';
 import { IconChevronRight, IconChevronLeft } from '@tabler/icons';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { focusTab, reorderTabs } from 'providers/ReduxStore/slices/tabs';
 import NewRequest from 'components/Sidebar/NewRequest';
 import CollectionHeader from './CollectionHeader';
@@ -14,6 +15,7 @@ import CreateTransientRequest from 'components/CreateTransientRequest';
 import ActionIcon from 'ui/ActionIcon/index';
 
 const RequestTabs = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const tabsRef = useRef();
   const scrollContainerRef = useRef();
@@ -123,7 +125,7 @@ const RequestTabs = () => {
           )}
           <div className="flex items-center gap-2 pl-2" ref={collectionTabsRef}>
             <div className={classnames('scroll-chevrons', { hidden: !showChevrons })}>
-              <ActionIcon size="lg" onClick={leftSlide} aria-label="Left Chevron" style={{ marginBottom: '3px' }}>
+              <ActionIcon size="lg" onClick={leftSlide} aria-label={t('Left Chevron')} style={{ marginBottom: '3px' }}>
                 <IconChevronLeft size={18} strokeWidth={1.5} />
               </ActionIcon>
             </div>
@@ -175,7 +177,7 @@ const RequestTabs = () => {
             )}
 
             <div className={classnames('scroll-chevrons', { hidden: !showChevrons })}>
-              <ActionIcon size="lg" onClick={rightSlide} aria-label="Right Chevron" style={{ marginBottom: '3px' }}>
+              <ActionIcon size="lg" onClick={rightSlide} aria-label={t('Right Chevron')} style={{ marginBottom: '3px' }}>
                 <IconChevronRight size={18} strokeWidth={1.5} />
               </ActionIcon>
             </div>

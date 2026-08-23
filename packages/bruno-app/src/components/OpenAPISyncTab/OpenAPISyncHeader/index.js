@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -17,10 +18,13 @@ import Help from 'components/Help';
 import { isHttpUrl } from 'utils/url/index';
 
 const OpenAPISyncHeader = ({
+
   collection, spec, sourceUrl, syncStatus, onViewSpec,
   onOpenSettings, onOpenDisconnect,
   onCheck, isLoading
+
 }) => {
+  const { t } = useTranslation();
   const sourceIsLocal = !isHttpUrl(sourceUrl);
   const canCheck = !!sourceUrl?.trim();
 
@@ -109,7 +113,7 @@ const OpenAPISyncHeader = ({
             View spec
           </Button>
           <MenuDropdown items={menuItems} placement="bottom-end">
-            <ActionIcon label="More options">
+            <ActionIcon label={t('More options')}>
               <IconDotsVertical size={16} strokeWidth={2} />
             </ActionIcon>
           </MenuDropdown>
@@ -120,7 +124,7 @@ const OpenAPISyncHeader = ({
         {sourceIsLocal ? (
           <button
             className="spec-url-value spec-file-reveal"
-            title="Reveal in file manager"
+            title={t('Reveal in file manager')}
             type="button"
             onClick={revealInFolder}
           >
@@ -142,7 +146,7 @@ const OpenAPISyncHeader = ({
         </button>
       </div>
       <div className="linked-collection-row mt-1">
-        <span className="spec-url-label">Linked Collection:</span>
+        <span className="spec-url-label">{t('Linked Collection:')}</span>
         <span className="linked-collection-name">{collection.name}</span>
         {syncStatus === 'in-sync' && (
           <Help

@@ -1,10 +1,12 @@
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import MockConfirmModal from 'components/MockServer/MockConfirmModal';
 import { deleteMockServerInstance } from 'utils/mock-server/mock-server-instances';
 
 const DeleteMockServerModal = ({ instance, onClose, onDeleted }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleConfirm = async () => {
     try {
@@ -19,16 +21,16 @@ const DeleteMockServerModal = ({ instance, onClose, onDeleted }) => {
 
   return (
     <MockConfirmModal
-      title="Delete Mock Server"
-      confirmText="Delete"
+      title={t('Delete Mock Server')}
+      confirmText={t('Delete')}
       onConfirm={handleConfirm}
       onClose={onClose}
       confirmButtonColor="danger"
       dataTestId="delete-mock-server-modal"
     >
-      Are you sure you want to delete <span className="font-medium">{instance.name}</span>?
+      {t('Are you sure you want to delete')} <span className="font-medium">{instance.name}</span>?
       {instance.sourceType === 'spec' ? (
-        <div className="text-xs mt-3 opacity-70">This removes the mock server configuration only. Your API spec file is not deleted.</div>
+        <div className="text-xs mt-3 opacity-70">{t('This removes the mock server configuration only. Your API spec file is not deleted.')}</div>
       ) : null}
     </MockConfirmModal>
   );

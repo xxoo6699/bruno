@@ -7,6 +7,7 @@ import themeSchema from 'themes/schema';
 import useLocalStorage from 'hooks/useLocalStorage/index';
 
 import { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
 
 const validator = new Validator();
@@ -28,6 +29,7 @@ const applyThemeToRoot = (theme) => {
 
 export const ThemeContext = createContext();
 export const ThemeProvider = (props) => {
+  const { t } = useTranslation();
   const [storedTheme, setStoredTheme] = useLocalStorage('bruno.theme', 'system');
   const [displayedTheme, setDisplayedTheme] = useState(() => getEffectiveTheme(storedTheme));
   const [themeVariantLight, setThemeVariantLight] = useLocalStorage('bruno.themeVariantLight', 'light');
@@ -78,7 +80,7 @@ export const ThemeProvider = (props) => {
     if (!selectedTheme) {
       // Only show toast if using a non-default variant that doesn't exist
       if (variantName !== fallbackName) {
-        toast.error(`Theme "${variantName}" not found. Using default ${fallbackName} theme.`, {
+        toast.error(t('Theme "{{variantName}}" not found. Using default {{fallbackName}} theme.', { variantName, fallbackName }), {
           duration: 4000,
           id: `theme-not-found-${variantName}` // Prevent duplicate toasts
         });
@@ -91,7 +93,7 @@ export const ThemeProvider = (props) => {
     if (!validationResult.valid) {
       const errors = validationResult.errors?.map((e) => e.stack).join(', ') || 'Unknown validation error';
       console.error(`Theme "${variantName}" validation failed:`, errors);
-      toast.error(`Invalid theme "${variantName}". Using default ${fallbackName} theme.`, {
+      toast.error(t('Invalid theme "{{variantName}}". Using default {{fallbackName}} theme.', { variantName, fallbackName }), {
         duration: 4000,
         id: `theme-invalid-${variantName}` // Prevent duplicate toasts
       });

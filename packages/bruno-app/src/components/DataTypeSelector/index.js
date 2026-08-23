@@ -8,6 +8,7 @@ import {
   IconToggleRight
 } from '@tabler/icons';
 import { Tooltip } from 'react-tooltip';
+import { useTranslation } from 'react-i18next';
 import { BRUNO_VARIABLE_DATATYPES, parseValueByDataType, validateDataTypeValue } from '@usebruno/common/utils';
 import MenuDropdown from 'ui/MenuDropdown';
 import StyledWrapper from './StyledWrapper';
@@ -27,6 +28,7 @@ const TYPE_ICONS_SIZES = {
 };
 
 const DataTypeSelector = ({ variable, onChange, compact = false }) => {
+  const { t } = useTranslation();
   const selectedType = variable.dataType || 'string';
   const coercedValue = parseValueByDataType(variable.value, selectedType);
   const typeError = validateDataTypeValue(coercedValue, selectedType);
@@ -57,7 +59,7 @@ const DataTypeSelector = ({ variable, onChange, compact = false }) => {
           <div
             className="flex items-center cursor-pointer select-none"
             data-selected-type={selectedType}
-            aria-label={`Data type: ${selectedType}`}
+            aria-label={t('Data type: {{type}}', { type: selectedType })}
           >
             {compact ? (
               <TypeIcon className="type-icon" size={TYPE_ICONS_SIZES[selectedType]} strokeWidth={2} />

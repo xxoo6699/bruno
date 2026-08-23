@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { forwardRef, useRef, useCallback } from 'react';
 import find from 'lodash/find';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +12,7 @@ import CreateApiSpec from 'components/Sidebar/ApiSpecs/CreateApiSpec';
 import toast from 'react-hot-toast';
 
 const ApiSpecPanel = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const [createApiSpecModalOpen, setCreateApiSpecModalOpen] = useState(false);
@@ -32,7 +34,7 @@ const ApiSpecPanel = () => {
   );
 
   if (!uid) {
-    return <div className="p-4 opacity-50">API Spec not found!</div>;
+    return <div className="p-4 opacity-50">{t('API Spec not found!')}</div>;
   }
 
   const MenuIcon = forwardRef((props, ref) => {
@@ -56,7 +58,7 @@ const ApiSpecPanel = () => {
         <div className="flex flex-row justify-start gap-x-4 col-span-1">
           <div className="flex w-fit items-center cursor-pointer">
             <IconFileCode size={18} strokeWidth={1.5} />
-            <span className="ml-2 mr-4 font-semibold">API Designer</span>
+            <span className="ml-2 mr-4 font-semibold">{t('API Designer')}</span>
           </div>
         </div>
         <div className="w-full col-span-1 flex justify-center" title={pathname}>

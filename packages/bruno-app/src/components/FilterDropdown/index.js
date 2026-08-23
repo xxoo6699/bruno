@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconChevronDown, IconCheck } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
 
@@ -13,6 +14,7 @@ import StyledWrapper from './StyledWrapper';
  * @param {string} [placement='left'] - Menu alignment: 'left' or 'right'
  */
 const FilterDropdown = ({ label, options, value, onChange, allLabel = 'All', placement = 'left', testId }) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef(null);
 
@@ -88,7 +90,7 @@ const FilterDropdown = ({ label, options, value, onChange, allLabel = 'All', pla
             onClick={() => handleSelect(null)}
             onKeyDown={(e) => handleOptionKeyDown(e, null)}
           >
-            <span className="filter-option-label">{allLabel}</span>
+            <span className="filter-option-label">{t(allLabel)}</span>
             <IconCheck
               size={14}
               strokeWidth={2}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconSearch, IconX } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
 
@@ -13,6 +14,8 @@ const SearchInput = React.forwardRef(({
   onChange,
   ...props
 }, ref) => {
+  const { t } = useTranslation();
+
   const handleChange = (e) => {
     setSearchText(e.target.value);
     if (onChange) {
@@ -31,7 +34,7 @@ const SearchInput = React.forwardRef(({
         ref={ref}
         type="text"
         name="search"
-        placeholder={placeholder}
+        placeholder={t(placeholder)}
         id="search-input"
         autoComplete="off"
         autoCorrect="off"

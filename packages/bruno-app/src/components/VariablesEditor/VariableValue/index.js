@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconArrowsDiagonal, IconCheck, IconCopy, IconEye, IconEyeOff } from '@tabler/icons';
 import { toDisplayString } from '@usebruno/common/utils';
 import { useTheme } from 'providers/Theme';
@@ -22,6 +23,7 @@ const VariableValue = ({
   onToggleReveal,
   onOpenObject
 }) => {
+  const { t } = useTranslation();
   const { displayedTheme } = useTheme();
   const persistenceScope = usePersistenceScope();
   const { copied, copyToClipboard } = useCopyToClipboard(COPY_FEEDBACK_MS);
@@ -91,8 +93,8 @@ const VariableValue = ({
             type="button"
             className={`row-action-btn ${isSelected ? 'is-pinned' : ''}`}
             onClick={onOpenObject}
-            title="Open in drawer"
-            aria-label="Open object in drawer"
+            title={t('Open in drawer')}
+            aria-label={t('Open object in drawer')}
             data-testid="variable-object-preview"
           >
             <IconArrowsDiagonal size={15} strokeWidth={1.5} />
@@ -103,8 +105,8 @@ const VariableValue = ({
             type="button"
             className={`row-action-btn ${revealed ? 'is-pinned' : ''}`}
             onClick={onToggleReveal}
-            title={revealed ? 'Hide value' : 'Show value'}
-            aria-label={revealed ? 'Hide value' : 'Show value'}
+            title={revealed ? t('Hide value') : t('Show value')}
+            aria-label={revealed ? t('Hide value') : t('Show value')}
             data-testid="variable-row-secret-toggle"
           >
             {revealed
@@ -116,7 +118,7 @@ const VariableValue = ({
           type="button"
           className={`row-action-btn ${copied ? 'copied' : ''}`}
           onClick={handleCopy}
-          title="Copy value"
+          title={t('Copy value')}
           data-testid="variable-row-copy"
         >
           {copied

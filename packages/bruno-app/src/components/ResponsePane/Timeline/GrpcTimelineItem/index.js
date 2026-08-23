@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RelativeTime } from '../TimelineItem/Common/Time/index';
 import Status from '../TimelineItem/Common/Status/index';
 import {
@@ -29,6 +30,7 @@ const EventTypeNames = {
 };
 
 const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection, eventData, item }) => {
+  const { t } = useTranslation();
   const [isExpanded, onToggleExpand] = usePersistedState({
     key: `grpc-timeline-${timestamp}`,
     default: false
@@ -83,7 +85,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
               <div>
                 <div className="content-request-label mb-1">
                   <IconArrowsRightLeft size={14} strokeWidth={1.5} className="inline-block mr-1" />
-                  Proxy
+                  {t('Proxy')}
                 </div>
                 <div className="content-box">
                   {effectiveRequest.proxy.url ? (
@@ -93,8 +95,8 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
                   ) : (
                     <div className="empty-text">
                       {effectiveRequest.proxy.mode === 'system'
-                        ? 'No system proxy configured for this request'
-                        : 'Proxy enabled but not applicable for this request'}
+                        ? t('No system proxy configured for this request')
+                        : t('Proxy enabled but not applicable for this request')}
                     </div>
                   )}
                 </div>
@@ -103,7 +105,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
 
             {effectiveRequest.headers && Object.keys(effectiveRequest.headers).length > 0 && (
               <div>
-                <div className="content-request-label mb-1">Metadata</div>
+                <div className="content-request-label mb-1">{t('Metadata')}</div>
                 <div className="content-box grid grid-cols-2 gap-1">
                   {Object.entries(effectiveRequest.headers).map(([key, value], idx) => (
                     <div key={idx} className="contents">
@@ -118,7 +120,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
             {/* gRPC Messages section */}
             {!isClientStreaming && effectiveRequest.body?.mode === 'grpc' && effectiveRequest.body?.grpc?.length > 0 && (
               <div>
-                <div className="content-request-label mb-1">Message</div>
+                <div className="content-request-label mb-1">{t('Message')}</div>
                 <div className="space-y-1">
                   {effectiveRequest.body.grpc.filter((_, index) => index === 0).map((message, idx) => (
                     <div key={idx} className="content-box">
@@ -139,7 +141,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
         return (
           <div className="content-message">
             <div>
-              <div className="content-message-label mb-1">Message</div>
+              <div className="content-message-label mb-1">{t('Message')}</div>
               <pre className="content-box overflow-auto max-h-[200px]">
                 {typeof eventData === 'string'
                   ? eventData
@@ -153,7 +155,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
         return (
           <div className="content-metadata">
             <div>
-              <div className="content-metadata-label mb-1">Metadata Headers</div>
+              <div className="content-metadata-label mb-1">{t('Metadata Headers')}</div>
               {response.metadata && response.metadata.length > 0 ? (
                 <div className="content-box grid grid-cols-2 gap-1">
                   {response.metadata.map((header, idx) => (
@@ -164,7 +166,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
                   ))}
                 </div>
               ) : (
-                <div className="empty-text">No metadata headers</div>
+                <div className="empty-text">{t('No metadata headers')}</div>
               )}
             </div>
           </div>
@@ -176,14 +178,14 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
           <div className="content-response">
             <div>
               <div className="content-response-label mb-1">
-                Response Message #{(response?.responses?.length) || 0}
+                {t('Response Message')} #{(response?.responses?.length) || 0}
               </div>
               {response?.responses && response.responses.length > 0 ? (
                 <pre className="content-box overflow-auto max-h-[200px]">
                   {JSON.stringify(response.responses[response.responses.length - 1], null, 2)}
                 </pre>
               ) : (
-                <div className="empty-text">Empty message</div>
+                <div className="empty-text">{t('Empty message')}</div>
               )}
             </div>
           </div>
@@ -203,7 +205,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
 
             {response.trailers && response.trailers.length > 0 && (
               <div>
-                <div className="content-status-label mb-1">Trailers</div>
+                <div className="content-status-label mb-1">{t('Trailers')}</div>
                 <div className="content-box grid grid-cols-2 gap-1">
                   {response.trailers.map((trailer, idx) => (
                     <div key={idx} className="contents">
@@ -222,8 +224,8 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
         return (
           <div className="content-error">
             <div>
-              <div className="content-error-label mb-1">Error</div>
-              <div>{response.error || 'Unknown error'}</div>
+              <div className="content-error-label mb-1">{t('Error')}</div>
+              <div>{response.error || t('Unknown error')}</div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -232,7 +234,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
 
             {response.trailers && response.trailers.length > 0 && (
               <div>
-                <div className="content-error-label mb-1">Error Metadata</div>
+                <div className="content-error-label mb-1">{t('Error Metadata')}</div>
                 <div className="content-box grid grid-cols-2 gap-1">
                   {response.trailers.map((trailer, idx) => (
                     <div key={idx} className="contents">
@@ -250,9 +252,9 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
         // For end events, show summary
         return (
           <div className="content-end">
-            <div>Stream Ended</div>
+            <div>{t('Stream Ended')}</div>
             <div>
-              Total messages: {(response?.responses?.length) || 0}
+              {t('Total messages:')} {(response?.responses?.length) || 0}
             </div>
           </div>
         );
@@ -261,8 +263,8 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
         // For cancel events, show cancellation info
         return (
           <div className="content-cancel">
-            <div className="content-cancel-label mb-1">Stream Cancelled</div>
-            <div>{response.statusDescription || 'The gRPC stream was cancelled'}</div>
+            <div className="content-cancel-label mb-1">{t('Stream Cancelled')}</div>
+            <div>{response.statusDescription || t('The gRPC stream was cancelled')}</div>
           </div>
         );
 
@@ -278,7 +280,7 @@ const GrpcTimelineItem = ({ timestamp, request, response, eventType, collection,
         <div className="event-icon-container">
           {eventIcon}
         </div>
-        <span>{eventName}</span>
+        <span>{t(eventName)}</span>
         {eventType === 'request' && effectiveRequest.methodType && (
           <span className="method-type-badge px-2 py-0.5">
             {effectiveRequest.methodType}

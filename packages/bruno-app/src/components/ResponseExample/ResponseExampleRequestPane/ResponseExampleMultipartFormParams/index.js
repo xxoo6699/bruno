@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo, useCallback } from 'react';
 import get from 'lodash/get';
 import toast from 'react-hot-toast';
@@ -19,6 +20,7 @@ const fileBasename = (filePath) =>
   filePath ? path.basename(normalizePath(String(filePath))) : '';
 
 const ResponseExampleMultipartFormParams = ({ item, collection, exampleUid, editMode = false }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const tabs = useSelector((state) => state.tabs.tabs);
@@ -222,7 +224,7 @@ const ResponseExampleMultipartFormParams = ({ item, collection, exampleUid, edit
             <button
               className="upload-btn ml-1"
               onClick={() => handleBrowseFiles(row, onChange)}
-              title="Select File"
+              title={t('Select File')}
             >
               <IconUpload size={16} />
             </button>

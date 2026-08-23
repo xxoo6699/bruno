@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconBrandGit, IconCopy, IconDots, IconUnlink } from '@tabler/icons';
 import toast from 'react-hot-toast';
 import ActionIcon from 'ui/ActionIcon';
@@ -10,6 +11,7 @@ import StyledWrapper from './StyledWrapper';
 
 const GitRemoteCollectionRow = ({ entry }) => {
   const { dropdownContainerRef } = useSidebarAccordion();
+  const { t } = useTranslation();
   const menuDropdownRef = useRef(null);
   const [showCloneModal, setShowCloneModal] = useState(false);
   const [showRemoveGitModal, setShowRemoveGitModal] = useState(false);
@@ -20,9 +22,9 @@ const GitRemoteCollectionRow = ({ entry }) => {
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(entry.remote);
-      toast.success('Git URL copied');
+      toast.success(t('Git URL copied'));
     } catch (e) {
-      toast.error('Failed to copy URL');
+      toast.error(t('Failed to copy URL'));
     }
   };
 
@@ -35,19 +37,19 @@ const GitRemoteCollectionRow = ({ entry }) => {
     {
       id: 'clone-git',
       leftSection: IconBrandGit,
-      label: 'Clone from Git',
+      label: t('Clone from Git'),
       onClick: openCloneModal
     },
     {
       id: 'copy-url',
       leftSection: IconCopy,
-      label: 'Copy Git URL',
+      label: t('Copy Git URL'),
       onClick: handleCopyUrl
     },
     {
       id: 'remove-git-remote',
       leftSection: IconUnlink,
-      label: 'Remove Git Remote',
+      label: t('Remove Git Remote'),
       onClick: () => setShowRemoveGitModal(true)
     }
   ];
@@ -73,7 +75,7 @@ const GitRemoteCollectionRow = ({ entry }) => {
         className="git-collection-row"
         onClick={openCloneModal}
         onContextMenu={handleRightClick}
-        title={`${entry.name} — click to clone from ${entry.remote}`}
+        title={t('{{name}} — click to clone from {{url}}', { name: entry.name, url: entry.remote })}
         data-testid="sidebar-git-collection-row"
       >
         <div className="flex flex-grow items-center overflow-hidden">

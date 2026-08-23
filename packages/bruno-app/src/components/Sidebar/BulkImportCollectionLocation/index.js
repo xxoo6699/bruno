@@ -23,6 +23,7 @@ import toast from 'react-hot-toast';
 import { showImportIssuesToast } from 'components/Toast/ImportIssuesToast';
 import get from 'lodash/get';
 import { DEFAULT_COLLECTION_FORMAT } from 'utils/common/constants';
+import { useTranslation } from 'react-i18next';
 
 const STATUS = {
   LOADING: 'loading',
@@ -135,6 +136,7 @@ export const BulkImportCollectionLocation = ({
   handleSubmit,
   importData
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const dropdownTippyRef = useRef();
 
@@ -281,7 +283,7 @@ export const BulkImportCollectionLocation = ({
     return (
       <div ref={ref} className="flex items-center justify-between w-full current-group" data-testid="grouping-dropdown">
         <div>
-          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{selectedOption.label}</div>
+          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{t(selectedOption.label)}</div>
         </div>
         <IconCaretDown size={16} className="text-gray-400 ml-[0.25rem]" fill="currentColor" />
       </div>
@@ -568,7 +570,7 @@ export const BulkImportCollectionLocation = ({
   const ErrorModal = ({ error, onClose }) => (
     <Modal
       size="sm"
-      title="Error Details"
+      title={t('Error Details')}
       handleConfirm={onClose}
       handleCancel={onClose}
       showCancelButton={false}
@@ -585,9 +587,9 @@ export const BulkImportCollectionLocation = ({
     <StyledWrapper>
       <Modal
         size="md"
-        title="Bulk Import"
+        title={t('Bulk Import')}
         dataTestId="bulk-import-collection-location-modal"
-        confirmText={importStarted ? 'Close' : 'Import'}
+        confirmText={importStarted ? t('Close') : t('Import')}
         confirmDisabled={Boolean(!selectedCollections?.length)}
         handleConfirm={onSubmit}
         handleCancel={onClose}
@@ -602,20 +604,20 @@ export const BulkImportCollectionLocation = ({
               <>
                 <div className="mb-6">
                   <div className="flex items-center justify-between relative mb-5 w-full">
-                    <div className="font-semibold">Location</div>
+                    <div className="font-semibold">{t('Location')}</div>
                     <div className="text-sm border border-slate-600 rounded px-3 py-1.5 ml-4 flex-1">
                       {formik.values.collectionLocation
-                        || 'No location selected'}
+                        || t('No location selected')}
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between mb-2">
                     <div className="font-semibold">
-                      Importing Collections ({importStatus.totalSelected})
+                      {t('Importing Collections')} ({importStatus.totalSelected})
                     </div>
                     {importStatus.failedCount > 0 && importStatus.totalSelected > 0 && (
                       <div className="text-sm text-red-500">
-                        ({importStatus.failedCount}/{importStatus.totalSelected} failed)
+                        ({importStatus.failedCount}/{importStatus.totalSelected} {t('failed')})
                       </div>
                     )}
                   </div>
@@ -664,13 +666,13 @@ export const BulkImportCollectionLocation = ({
                                 )}
                               className="text-red-500 text-sm hover:underline"
                             >
-                              See error
+                              {t('See error')}
                             </button>
                           )}
                           {status[collection.uid] === STATUS.SUCCESS && importIssues[collection.uid] && (
                             <div className="flex items-center gap-2">
                               <span className="text-yellow-600 text-xs">
-                                {importIssues[collection.uid].filter((i) => i.severity === 'error').length} item(s) skipped
+                                {importIssues[collection.uid].filter((i) => i.severity === 'error').length} {t('item(s) skipped')}
                               </span>
                               <button
                                 onClick={async () => {
@@ -679,14 +681,14 @@ export const BulkImportCollectionLocation = ({
                                     .join('\n');
                                   try {
                                     await navigator.clipboard.writeText(text);
-                                    toast.success('Copied to clipboard', { duration: 2000 });
+                                    toast.success(t('Copied to clipboard'), { duration: 2000 });
                                   } catch (err) {
-                                    toast.error('Failed to copy to clipboard', { duration: 3000 });
+                                    toast.error(t('Failed to copy to clipboard'), { duration: 3000 });
                                   }
                                 }}
                                 className="text-yellow-600 text-xs hover:underline"
                               >
-                                Copy
+                                {t('Copy')}
                               </button>
                             </div>
                           )}
@@ -698,7 +700,7 @@ export const BulkImportCollectionLocation = ({
                 {selectedEnvironments.length > 0 && (
                   <div className="mb-6">
                     <div className="font-semibold mb-2">
-                      Importing Environments ({selectedEnvironments.length})
+                      {t('Importing Environments')} ({selectedEnvironments.length})
                     </div>
                     <div className="max-h-[180px] overflow-y-scroll border border-slate-600 rounded-md py-2 scrollbar-visible">
                       {sortedEnvironments
@@ -741,7 +743,7 @@ export const BulkImportCollectionLocation = ({
                                   )}
                                 className="text-red-500 text-sm hover:underline"
                               >
-                                See error
+                                {t('See error')}
                               </button>
                             )}
                           </div>
@@ -755,8 +757,8 @@ export const BulkImportCollectionLocation = ({
                 <div className="w-full mb-6">
                   <SelectionList
                     dataTestId="selection-section-collections"
-                    title="Collections"
-                    searchPlaceholder="Search Collections"
+                    title={t('Collections')}
+                    searchPlaceholder={t('Search Collections')}
                     items={sortedCollections}
                     selectedItems={selectedCollections}
                     onSelectAll={handleSelectAllCollections}
@@ -767,7 +769,7 @@ export const BulkImportCollectionLocation = ({
                     visibleRows={5}
                     rowHeight={isMultipleImport ? 60 : 30}
                     rowGap={4}
-                    emptyMessage="No collections found"
+                    emptyMessage={t('No collections found')}
                     showSelectedCount={true}
                   />
                 </div>
@@ -777,8 +779,8 @@ export const BulkImportCollectionLocation = ({
                     <div className="w-full mb-6">
                       <SelectionList
                         dataTestId="selection-section-environments"
-                        title="Environments"
-                        searchPlaceholder="Search Environments"
+                        title={t('Environments')}
+                        searchPlaceholder={t('Search Environments')}
                         items={sortedEnvironments}
                         selectedItems={selectedEnvironments}
                         onSelectAll={handleSelectAllEnvironments}
@@ -788,14 +790,14 @@ export const BulkImportCollectionLocation = ({
                         visibleRows={4}
                         rowHeight={30}
                         rowGap={4}
-                        emptyMessage="No environments found"
+                        emptyMessage={t('No environments found')}
                         showSelectedCount={true}
                       />
                     </div>
 
                     <div className="mb-6">
                       <div className="font-semibold mb-2">
-                        Environment Assignment
+                        {t('Environment Assignment')}
                       </div>
                       <div className="flex gap-8 mt-2 ml-2">
                         <label className="flex items-center">
@@ -806,9 +808,9 @@ export const BulkImportCollectionLocation = ({
                             className="mr-2"
                           />
                           <span className="ml-2">
-                            Global Environment
+                            {t('Global Environment')}
                             <InfoTip
-                              content="Environments will be imported and stored as global, accessible across collections."
+                              content={t('Environments will be imported and stored as global, accessible across collections.')}
                               infotipId="apply-to-global-infotip"
                             />
                           </span>
@@ -822,9 +824,9 @@ export const BulkImportCollectionLocation = ({
                             className="mr-2"
                           />
                           <span className="ml-2">
-                            Duplicate Across Collections
+                            {t('Duplicate Across Collections')}
                             <InfoTip
-                              content="Each imported collection will receive its own copy of the environments."
+                              content={t('Each imported collection will receive its own copy of the environments.')}
                               infotipId="apply-to-each-infotip"
                             />
                           </span>
@@ -835,12 +837,12 @@ export const BulkImportCollectionLocation = ({
                 )}
 
                 <div className="flex items-start flex-col relative">
-                  <div className="font-semibold mb-2">Location</div>
+                  <div className="font-semibold mb-2">{t('Location')}</div>
                   <input
                     id="collection-location"
                     data-testid="bulk-import-collection-location-input"
                     type="text"
-                    placeholder="Select a location to save the collection"
+                    placeholder={t('Select a location to save the collection')}
                     name="collectionLocation"
                     className="block textbox w-full cursor-pointer"
                     autoComplete="off"
@@ -860,21 +862,21 @@ export const BulkImportCollectionLocation = ({
                   ) : null}
                   <div className="mt-1">
                     <span className="text-link cursor-pointer hover:underline" onClick={browse}>
-                      Browse
+                      {t('Browse')}
                     </span>
                   </div>
                 </div>
 
                 <div className="mt-4">
                   <label htmlFor="format" className="flex items-center font-semibold">
-                    File Format
+                    {t('File Format')}
                     <Help width="300">
-                      <p>Choose the file format for storing requests in this collection.</p>
+                      <p>{t('Choose the file format for storing requests in this collection.')}</p>
                       <p className="mt-2">
-                        <strong>OpenCollection (YAML):</strong> Industry-standard YAML format (.yml files)
+                        <strong>OpenCollection (YAML):</strong> {t('Industry-standard YAML format (.yml files)')}
                       </p>
                       <p className="mt-1">
-                        <strong>BRU:</strong> Bruno's native file format (.bru files)
+                        <strong>BRU:</strong> {t('Bruno\'s native file format (.bru files)')}
                       </p>
                     </Help>
                   </label>
@@ -886,8 +888,8 @@ export const BulkImportCollectionLocation = ({
                     value={collectionFormat}
                     onChange={(e) => setCollectionFormat(e.target.value)}
                   >
-                    <option value="yml">OpenCollection (YAML)</option>
-                    <option value="bru">BRU Format (.bru)</option>
+                    <option value="yml">{t('OpenCollection (YAML)')}</option>
+                    <option value="bru">{t('BRU Format (.bru)')}</option>
                   </select>
                 </div>
 
@@ -896,10 +898,10 @@ export const BulkImportCollectionLocation = ({
                     <div className="flex gap-4 items-center mt-4">
                       <div>
                         <label htmlFor="groupingType" className="block font-semibold">
-                          Folder arrangement
+                          {t('Folder arrangement')}
                         </label>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-2">
-                          Select whether to create folders according to the spec's paths or tags.
+                          {t('Select whether to create folders according to the spec\'s paths or tags.')}
                         </p>
                       </div>
                       <div className="relative">
@@ -914,7 +916,7 @@ export const BulkImportCollectionLocation = ({
                                 setGroupingType(option.value);
                               }}
                             >
-                              {option.label}
+                              {t(option.label)}
                             </div>
                           ))}
                         </Dropdown>

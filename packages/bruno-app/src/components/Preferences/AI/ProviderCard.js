@@ -12,6 +12,7 @@ import {
   IconX
 } from '@tabler/icons';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import { clearAiApiKey, getAiApiKey, setAiApiKey, testAiProvider } from 'utils/ai';
 
 const OpenAiLogo = (props) => (
@@ -42,6 +43,7 @@ const ProviderCard = ({
   onToggleModel,
   onStatusChange
 }) => {
+  const { t } = useTranslation();
   const Logo = PROVIDER_LOGOS[provider.id];
 
   const [expanded, setExpanded] = useState(false);
@@ -76,9 +78,9 @@ const ProviderCard = ({
       setKeyDraft('');
       setShowKey(false);
       setEditing(false);
-      setFeedback({ type: 'success', message: 'API key saved' });
+      setFeedback({ type: 'success', message: t('API key saved') });
     } catch (err) {
-      setFeedback({ type: 'error', message: err.message || 'Failed to save API key' });
+      setFeedback({ type: 'error', message: err.message || t('Failed to save API key') });
     } finally {
       setSaving(false);
     }
@@ -91,9 +93,9 @@ const ProviderCard = ({
       onStatusChange?.(status);
       setEditing(false);
       setKeyDraft('');
-      toast.success(`${provider.label} API key removed`);
+      toast.success(t('{{provider}} API key removed', { provider: provider.label }));
     } catch (err) {
-      toast.error(err.message || 'Failed to clear API key');
+      toast.error(err.message || t('Failed to clear API key'));
     }
   };
 
@@ -103,12 +105,12 @@ const ProviderCard = ({
     try {
       const result = await testAiProvider({ providerId: provider.id });
       if (result.ok) {
-        setFeedback({ type: 'success', message: 'Connection successful' });
+        setFeedback({ type: 'success', message: t('Connection successful') });
       } else {
-        setFeedback({ type: 'error', message: result.error || 'Connection failed' });
+        setFeedback({ type: 'error', message: result.error || t('Connection failed') });
       }
     } catch (err) {
-      setFeedback({ type: 'error', message: err.message || 'Connection failed' });
+      setFeedback({ type: 'error', message: err.message || t('Connection failed') });
     } finally {
       setTesting(false);
     }
@@ -167,8 +169,8 @@ const ProviderCard = ({
           <span className={`provider-status inline-flex items-center gap-1.5 text-[11px] ${provider.configured ? 'configured' : ''}`}>
             <span className={`status-dot w-[7px] h-[7px] rounded-full ${provider.configured ? 'configured' : ''}`} />
             {provider.configured
-              ? `${enabledModelsCount}/${models.length} models`
-              : 'Not configured'}
+              ? t('{{enabled}}/{{total}} models', { enabled: enabledModelsCount, total: models.length })
+              : t('Not configured')}
           </span>
           <span className="flex items-center" onClick={stopBubble}>
             {providerToggle}
@@ -185,7 +187,7 @@ const ProviderCard = ({
             {/* API key */}
             <div>
               <div className="key-section-label flex items-center justify-between gap-2 text-[11px] mb-1">
-                <span>API Key</span>
+                <span>{t('API Key')}</span>
               </div>
 
               {!isEditing ? (
@@ -200,8 +202,8 @@ const ProviderCard = ({
                       className="btn-icon w-7 h-7 box-border inline-flex items-center justify-center cursor-pointer"
                       onClick={handleTest}
                       disabled={testing || !providerEnabled}
-                      title="Test connection"
-                      aria-label="Test connection"
+                      title={t('Test connection')}
+                      aria-label={t('Test connection')}
                     >
                       {testing ? <IconLoader2 size={15} className="spin" /> : <IconBolt size={15} />}
                     </button>
@@ -209,8 +211,8 @@ const ProviderCard = ({
                       type="button"
                       className="btn-icon w-7 h-7 box-border inline-flex items-center justify-center cursor-pointer"
                       onClick={handleStartEdit}
-                      title="Replace key"
-                      aria-label="Replace key"
+                      title={t('Replace key')}
+                      aria-label={t('Replace key')}
                     >
                       <IconPencil size={15} />
                     </button>
@@ -218,8 +220,8 @@ const ProviderCard = ({
                       type="button"
                       className="btn-icon danger w-7 h-7 box-border inline-flex items-center justify-center cursor-pointer"
                       onClick={handleClear}
-                      title="Remove key"
-                      aria-label="Remove key"
+                      title={t('Remove key')}
+                      aria-label={t('Remove key')}
                     >
                       <IconTrash size={15} />
                     </button>
@@ -249,7 +251,7 @@ const ProviderCard = ({
                       className="key-eye-btn absolute right-1 p-1 inline-flex items-center cursor-pointer"
                       onClick={() => setShowKey(!showKey)}
                       tabIndex={-1}
-                      aria-label={showKey ? 'Hide API key' : 'Show API key'}
+                      aria-label={showKey ? t('Hide API key') : t('Show API key')}
                     >
                       {showKey ? <IconEyeOff size={14} /> : <IconEye size={14} />}
                     </button>
@@ -262,14 +264,14 @@ const ProviderCard = ({
                     data-testid={`ai-provider-${provider.id}-save`}
                   >
                     {saving ? <IconLoader2 size={13} className="spin" /> : <IconCheck size={13} />}
-                    Save
+                    {t('Save')}
                   </button>
                   {provider.configured && (
                     <button
                       type="button"
                       className="btn-icon w-7 h-7 box-border inline-flex items-center justify-center cursor-pointer"
                       onClick={handleCancelEdit}
-                      title="Cancel"
+                      title={t('Cancel')}
                     >
                       <IconX size={15} />
                     </button>
@@ -292,11 +294,11 @@ const ProviderCard = ({
             {models.length > 0 && (
               <div className="flex flex-col gap-1.5">
                 <div className="models-label-row flex items-center justify-between text-[11px]">
-                  <span>Models</span>
+                  <span>{t('Models')}</span>
                   {!provider.configured && (
                     <span className="keyless-hint flex items-center gap-1.5 text-[11px] py-1">
                       <IconAlertCircle size={12} />
-                      Add an API key to enable
+                      {t('Add an API key to enable')}
                     </span>
                   )}
                 </div>

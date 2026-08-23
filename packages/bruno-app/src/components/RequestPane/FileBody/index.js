@@ -2,6 +2,7 @@ import React from 'react';
 import { get, cloneDeep } from 'lodash';
 import { IconTrash } from '@tabler/icons';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'providers/Theme';
 import { addFile as _addFile, updateFile, deleteFile } from 'providers/ReduxStore/slices/collections/index';
 import { sendRequest, saveRequest } from 'providers/ReduxStore/slices/collections/actions';
@@ -11,6 +12,7 @@ import SingleLineEditor from 'components/SingleLineEditor/index';
 import MultiLineEditor from 'components/MultiLineEditor';
 
 const FileBody = ({ item, collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const params = item.draft ? get(item, 'draft.request.body.file') : get(item, 'request.body.file');
@@ -73,18 +75,18 @@ const FileBody = ({ item, collection }) => {
         <thead>
           <tr>
             <td>
-              <div title="File" className="flex items-center justify-start">File</div>
+              <div title={t('File')} className="flex items-center justify-start">{t('File')}</div>
             </td>
             <td>
               <div title="Content-Type" className="flex items-center justify-start">Content-Type</div>
             </td>
             <td>
-              <div title="Selected" className="flex items-center justify-start min-w-0">
-                <span className="truncate">Selected</span>
+              <div title={t('Selected')} className="flex items-center justify-start min-w-0">
+                <span className="truncate">{t('Selected')}</span>
               </div>
             </td>
             <td>
-              <div title="Description" className="flex items-center justify-start">Description</div>
+              <div title={t('Description')} className="flex items-center justify-start">{t('Description')}</div>
             </td>
             <td></td>
           </tr>
@@ -117,7 +119,7 @@ const FileBody = ({ item, collection }) => {
                         className="flex items-center justify-center"
                         onSave={onSave}
                         theme={storedTheme}
-                        placeholder="Auto"
+                        placeholder={t('Auto')}
                         value={param.contentType}
                         onChange={(newValue) =>
                           handleParamChange(
@@ -164,7 +166,7 @@ const FileBody = ({ item, collection }) => {
                         onRun={handleRun}
                         collection={collection}
                         item={item}
-                        placeholder={!param.filePath && !param.description ? 'Description' : ''}
+                        placeholder={!param.filePath && !param.description ? t('Description') : ''}
                       />
                     </td>
                     <td>
@@ -182,7 +184,7 @@ const FileBody = ({ item, collection }) => {
       </table>
       <div>
         <button className="btn-add-param text-link pr-2 pt-3 select-none" onClick={addFile}>
-          + Add File
+          {t('+ Add File')}
         </button>
       </div>
     </StyledWrapper>

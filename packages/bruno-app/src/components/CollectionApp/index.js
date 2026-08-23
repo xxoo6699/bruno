@@ -20,6 +20,7 @@ import {
 import { saveRequest } from 'providers/ReduxStore/slices/collections/actions';
 import { addLog } from 'providers/ReduxStore/slices/logs';
 import { useTheme } from 'providers/Theme';
+import { useTranslation } from 'react-i18next';
 import CodeEditor from 'components/CodeEditor';
 import AIAssist from 'components/AIAssist';
 import { buildAiVariablesPayload, buildDocsContextFromCollection } from 'utils/ai';
@@ -170,6 +171,7 @@ const listRequestSummaries = (collection) =>
 
 const CollectionApp = ({ item, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { displayedTheme, theme, themeVariantLight, themeVariantDark } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
   const [view, setView] = useState('preview');
@@ -361,7 +363,7 @@ const CollectionApp = ({ item, collection }) => {
               className={classnames('view-btn', { active: view === 'code' })}
               onClick={() => setView('code')}
             >
-              Code
+              {t('Code')}
             </button>
             <button
               type="button"
@@ -369,7 +371,7 @@ const CollectionApp = ({ item, collection }) => {
               className={classnames('view-btn', { active: view === 'preview' })}
               onClick={() => setView('preview')}
             >
-              Preview
+              {t('Preview')}
             </button>
           </div>
         </div>
@@ -401,8 +403,8 @@ const CollectionApp = ({ item, collection }) => {
       ) : (
         <div className="app-pane" data-testid="collection-app-preview">
           <EmptyAppState
-            title="No app yet"
-            hint="Switch to Code and write some HTML/JS"
+            title={t('No app yet')}
+            hint={t('Switch to Code and write some HTML/JS')}
           />
         </div>
       )}

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useRef } from 'react';
 import get from 'lodash/get';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'providers/Theme';
+import { useTranslation } from 'react-i18next';
 import { setFolderHeaders } from 'providers/ReduxStore/slices/collections';
 import { saveFolderRoot } from 'providers/ReduxStore/slices/collections/actions';
 import { updateTableColumnWidths } from 'providers/ReduxStore/slices/tabs';
@@ -22,6 +23,7 @@ const headerAutoCompleteList = StandardHTTPHeaders.map((e) => e.header);
 const Headers = ({ collection, folder }) => {
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
+  const { t } = useTranslation();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
   const headers = folder.draft
@@ -58,17 +60,17 @@ const Headers = ({ collection, folder }) => {
     if (key === 'name') {
       if (!row.name || row.name.trim() === '') return null;
       if (!headerNameRegex.test(row.name)) {
-        return 'Header name cannot contain spaces or newlines';
+        return t('Header name cannot contain spaces or newlines');
       }
     }
     if (key === 'value') {
       if (!row.value) return null;
       if (!headerValueRegex.test(row.value)) {
-        return 'Header value cannot contain newlines';
+        return t('Header value cannot contain newlines');
       }
     }
     return null;
-  }, []);
+  }, [t]);
 
   const descriptionColumn = createDescriptionColumn({
     theme: storedTheme,
@@ -80,9 +82,9 @@ const Headers = ({ collection, folder }) => {
   const columns = [
     {
       key: 'name',
-      name: 'Name',
+      name: t('Name'),
       isKeyField: true,
-      placeholder: 'Name',
+      placeholder: t('Name'),
       width: '20%',
       render: ({ value, onChange }) => (
         <SingleLineEditor
@@ -92,14 +94,14 @@ const Headers = ({ collection, folder }) => {
           onChange={(newValue) => onChange(newValue.replace(/[\r\n]/g, ''))}
           autocomplete={headerAutoCompleteList}
           collection={collection}
-          placeholder={!value ? 'Name' : ''}
+          placeholder={!value ? t('Name') : ''}
         />
       )
     },
     {
       key: 'value',
-      name: 'Value',
-      placeholder: 'Value',
+      name: t('Value'),
+      placeholder: t('Value'),
       render: ({ value, onChange }) => (
         <SingleLineEditor
           value={value || ''}
@@ -109,7 +111,7 @@ const Headers = ({ collection, folder }) => {
           collection={collection}
           item={folder}
           autocomplete={MimeTypes}
-          placeholder={!value ? 'Value' : ''}
+          placeholder={!value ? t('Value') : ''}
         />
       )
     },
@@ -126,7 +128,7 @@ const Headers = ({ collection, folder }) => {
     return (
       <StyledWrapper className="w-full">
         <div className="text-xs mb-4 text-muted">
-          Request headers that will be sent with every request inside this folder.
+          {t('Request headers that will be sent with every request inside this folder.')}
         </div>
         <BulkEditor
           params={headers}
@@ -141,7 +143,7 @@ const Headers = ({ collection, folder }) => {
   return (
     <StyledWrapper className="w-full" ref={wrapperRef}>
       <div className="text-xs mb-4 text-muted">
-        Request headers that will be sent with every request inside this folder.
+        {t('Request headers that will be sent with every request inside this folder.')}
       </div>
       <EditableTable
         tableId="folder-headers"
@@ -156,12 +158,12 @@ const Headers = ({ collection, folder }) => {
       />
       <div className="flex justify-end mt-2">
         <button className="text-link select-none" data-testid="bulk-edit-toggle" onClick={toggleBulkEditMode}>
-          Bulk Edit
+          {t('Bulk Edit')}
         </button>
       </div>
       <div className="mt-6">
         <Button type="submit" size="sm" onClick={handleSave}>
-          Save
+          {t('Save')}
         </Button>
       </div>
     </StyledWrapper>

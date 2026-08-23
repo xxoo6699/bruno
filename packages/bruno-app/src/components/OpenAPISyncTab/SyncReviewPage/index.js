@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18n';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -76,6 +78,7 @@ const categorizeEndpoints = (remoteDrift, specDrift, collectionDrift) => {
 };
 
 const SyncReviewPage = ({
+
   specDrift,
   remoteDrift,
   collectionDrift,
@@ -85,6 +88,7 @@ const SyncReviewPage = ({
   isSyncing,
   isLoading,
   onApplySync
+
 }) => {
   const dispatch = useDispatch();
   const tabUiState = useSelector((state) => state.openapiSync?.tabUiState?.[collectionUid] || {});
@@ -231,7 +235,7 @@ const SyncReviewPage = ({
         <div className="sync-review-header">
           <div className="title-row">
             <div className="title-left">
-              <h3 className="review-title">Review Changes</h3>
+              <h3 className="review-title">{i18n.t('Review Changes')}</h3>
               {totalChanges > 0 && (
                 <p className="review-subtitle">
                   Choose to keep the current version or accept the updated one.
@@ -250,7 +254,7 @@ const SyncReviewPage = ({
                   >
                     <span className="preserve-toggle-knob" />
                   </button>
-                  <span className="preserve-values-label">Preserve values</span>
+                  <span className="preserve-values-label">{i18n.t('Preserve values')}</span>
                   <Help icon="info" size={12} placement="top" width={260}>
                     When enabled, your edited values are preserved during sync. When disabled, all values are updated to match the OpenAPI spec.
                   </Help>
@@ -297,14 +301,14 @@ const SyncReviewPage = ({
             {isLoading ? (
               <>
                 <IconLoader2 size={40} className="empty-state-icon animate-spin" />
-                <h4>Checking for updates</h4>
-                <p>Comparing your last synced spec with the latest spec...</p>
+                <h4>{i18n.t('Checking for updates')}</h4>
+                <p>{i18n.t('Comparing your last synced spec with the latest spec...')}</p>
               </>
             ) : (
               <>
                 <IconCheck size={40} className="empty-state-icon" />
-                <h4>No updates from the spec</h4>
-                <p>The spec endpoints have not been updated since the last sync.</p>
+                <h4>{i18n.t('No updates from the spec')}</h4>
+                <p>{i18n.t('The spec endpoints have not been updated since the last sync.')}</p>
               </>
             )}
           </div>
@@ -315,7 +319,7 @@ const SyncReviewPage = ({
               <div className="review-group">
 
                 <EndpointChangeSection
-                  title="Updated in Spec"
+                  title={i18n.t('Updated in Spec')}
                   type="spec-modified"
                   endpoints={specUpdatedEndpoints}
                   defaultExpanded={true}
@@ -352,7 +356,7 @@ const SyncReviewPage = ({
                 />
 
                 <EndpointChangeSection
-                  title="New in Spec"
+                  title={i18n.t('New in Spec')}
                   type="added"
                   endpoints={specAddedEndpoints}
                   defaultExpanded={true}
@@ -377,7 +381,7 @@ const SyncReviewPage = ({
                 />
 
                 <EndpointChangeSection
-                  title="Removed from Spec"
+                  title={i18n.t('Removed from Spec')}
                   type="removed"
                   endpoints={specRemovedEndpoints}
                   defaultExpanded={true}
@@ -410,7 +414,7 @@ const SyncReviewPage = ({
       {hasRemoteUpdates && (
         <div className="sync-info-notice mt-4">
           <IconInfoCircle size={14} className="sync-info-icon" />
-          <span><span className="whats-updated-title">What gets updated:</span> Parameters, headers, body and auth will be updated. Tests, scripts, and assertions are always preserved.</span>
+          <span><span className="whats-updated-title">What gets updated:</span> {i18n.t('Parameters, headers, body and auth will be updated. Tests, scripts, and assertions are always preserved.')}</span>
         </div>
       )}
 

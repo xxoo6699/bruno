@@ -5,6 +5,8 @@
     "allowSyntheticDefaultImports": false,
     "baseUrl": "./",
     "paths": {
+      "i18n": ["src/i18n/index.js"],
+      "i18n/*": ["src/i18n/*"],
       "assets/*": ["src/assets/*"],
       "ui/*": ["src/ui/*"],
       "components/*": ["src/components/*"],

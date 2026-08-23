@@ -2,6 +2,7 @@ import { IconAdjustmentsHorizontal, IconInfoCircle } from '@tabler/icons';
 import get from 'lodash/get';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import SensitiveFieldWarning from 'components/SensitiveFieldWarning';
 import SingleLineEditor from 'components/SingleLineEditor';
@@ -71,6 +72,7 @@ const ADVANCED_FIELDS = FIELDS.slice(3);
 const EdgeGridAuth: React.FC<AkamaiEdgeGridAuthProps> = ({ collection }) => {
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
+  const { t } = useTranslation();
 
   const edgeGridAuth: AkamaiEdgeGridAuthValues =
     (collection.draft?.root
@@ -114,11 +116,11 @@ const EdgeGridAuth: React.FC<AkamaiEdgeGridAuthProps> = ({ collection }) => {
     return (
       <div key={key}>
         <label>
-          {label}
+          {t(label)}
           {tooltip && (
             <span className="field-info">
               <IconInfoCircle size={16} />
-              <span className="field-tooltip">{tooltip}</span>
+              <span className="field-tooltip">{t(tooltip)}</span>
             </span>
           )}
         </label>
@@ -148,7 +150,7 @@ const EdgeGridAuth: React.FC<AkamaiEdgeGridAuthProps> = ({ collection }) => {
         <span className="advanced-settings-icon">
           <IconAdjustmentsHorizontal size={16} />
         </span>
-        <span>Advanced Settings</span>
+        <span>{t('Advanced Settings')}</span>
       </div>
 
       <>

@@ -5,6 +5,7 @@ import { saveCollectionSettings } from 'providers/ReduxStore/slices/collections/
 import OAuth2AuthorizationCode from 'components/RequestPane/Auth/OAuth2/AuthorizationCode/index';
 import { updateCollectionAuth } from 'providers/ReduxStore/slices/collections/index';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import OAuth2PasswordCredentials from 'components/RequestPane/Auth/OAuth2/PasswordCredentials/index';
 import OAuth2ClientCredentials from 'components/RequestPane/Auth/OAuth2/ClientCredentials/index';
 import OAuth2Implicit from 'components/RequestPane/Auth/OAuth2/Implicit/index';
@@ -12,6 +13,7 @@ import GrantTypeSelector from 'components/RequestPane/Auth/OAuth2/GrantTypeSelec
 
 const GrantTypeComponentMap = ({ collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const save = () => {
     dispatch(saveCollectionSettings(collection.uid));
@@ -34,7 +36,7 @@ const GrantTypeComponentMap = ({ collection }) => {
       return <OAuth2Implicit save={save} request={request} updateAuth={updateCollectionAuth} collection={collection} />;
       break;
     default:
-      return <div>TBD</div>;
+      return <div>{t('TBD')}</div>;
       break;
   }
 };

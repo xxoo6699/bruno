@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import classnames from 'classnames';
 import { uuid } from 'utils/common';
@@ -68,6 +69,7 @@ import CreateMockServerModal from 'components/MockServer/CreateMockServerModal';
 const EMPTY_STATE_DELAY_MS = 300;
 
 const Collection = ({ collection, searchText }) => {
+  const { t } = useTranslation();
   const isMockServerEnabled = useBetaFeature(BETA_FEATURES.MOCK_SERVER);
   const { dropdownContainerRef } = useSidebarAccordion();
   const [showNewFolderModal, setShowNewFolderModal] = useState(false);
@@ -212,17 +214,17 @@ const Collection = ({ collection, searchText }) => {
   const handleShowInFolder = () => {
     dispatch(showInFolder(collection.pathname)).catch((error) => {
       console.error('Error opening the folder', error);
-      toast.error('Error opening the folder');
+      toast.error(t('Error opening the folder'));
     });
   };
 
   const handlePasteItem = () => {
     dispatch(pasteItem(collection.uid, null))
       .then(() => {
-        toast.success('Item pasted successfully');
+        toast.success(t('Item pasted successfully'));
       })
       .catch((err) => {
-        toast.error(err ? err.message : 'An error occurred while pasting the item');
+        toast.error(err ? err.message : t('An error occurred while pasting the item'));
       });
   };
 
@@ -368,7 +370,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'new-request',
       leftSection: IconFilePlus,
-      label: 'New Request',
+      label: t('New Request'),
       onClick: () => {
         ensureCollectionIsMounted();
         setShowNewRequestModal(true);
@@ -377,7 +379,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'new-folder',
       leftSection: IconFolderPlus,
-      label: 'New Folder',
+      label: t('New Folder'),
       onClick: () => {
         ensureCollectionIsMounted();
         setShowNewFolderModal(true);
@@ -386,7 +388,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'new-app',
       leftSection: IconAppWindow,
-      label: 'New App',
+      label: t('New App'),
       onClick: () => {
         ensureCollectionIsMounted();
         setShowNewAppModal(true);
@@ -395,7 +397,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'run',
       leftSection: IconPlayerPlay,
-      label: 'Run',
+      label: t('Run'),
       onClick: () => {
         ensureCollectionIsMounted();
         handleRun();
@@ -404,7 +406,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'clone',
       leftSection: IconCopy,
-      label: 'Clone',
+      label: t('Clone'),
       testId: 'clone-collection',
       onClick: () => {
         setShowCloneCollectionModalOpen(true);
@@ -421,7 +423,7 @@ const Collection = ({ collection, searchText }) => {
           {
             id: 'paste',
             leftSection: IconClipboard,
-            label: 'Paste',
+            label: t('Paste'),
             onClick: handlePasteItem
           }
         ]
@@ -429,7 +431,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'rename',
       leftSection: IconEdit,
-      label: 'Rename',
+      label: t('Rename'),
       onClick: () => {
         setShowRenameCollectionModal(true);
       }
@@ -437,7 +439,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'share',
       leftSection: IconShare,
-      label: 'Share',
+      label: t('Share'),
       onClick: () => {
         ensureCollectionIsMounted();
         setShowShareCollectionModal(true);
@@ -446,7 +448,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'generate-docs',
       leftSection: IconBook,
-      label: 'Generate Docs',
+      label: t('Generate Docs'),
       onClick: () => {
         ensureCollectionIsMounted();
         setShowGenerateDocumentationModal(true);
@@ -455,7 +457,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'collapse',
       leftSection: IconFoldDown,
-      label: 'Collapse',
+      label: t('Collapse'),
       onClick: handleCollapseFullCollection
     },
     {
@@ -467,8 +469,8 @@ const Collection = ({ collection, searchText }) => {
     ...(isMockServerEnabled ? [{
       id: 'create-mock-server',
       leftSection: IconServer,
-      label: 'Create Mock server',
-      rightSection: <StatusBadge status="info" size="xs">Beta</StatusBadge>,
+      label: t('Create Mock server'),
+      rightSection: <StatusBadge status="info" size="xs">{t('Beta')}</StatusBadge>,
       onClick: openMockServerDashboard
     }] : []),
     {
@@ -478,13 +480,13 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'settings',
       leftSection: IconSettings,
-      label: 'Settings',
+      label: t('Settings'),
       onClick: viewCollectionSettings
     },
     {
       id: 'terminal',
       leftSection: IconTerminal2,
-      label: 'Open in Terminal',
+      label: t('Open in Terminal'),
       onClick: async () => {
         const collectionCwd = collection.pathname;
         await openDevtoolsAndSwitchToTerminal(dispatch, collectionCwd);
@@ -495,7 +497,7 @@ const Collection = ({ collection, searchText }) => {
           {
             id: 'move-to-workspace',
             leftSection: IconFileArrowRight,
-            label: 'Move into Workspace',
+            label: t('Move into Workspace'),
             testId: 'move-collection-to-workspace',
             onClick: () => {
               setShowMoveToWorkspaceModal(true);
@@ -506,7 +508,7 @@ const Collection = ({ collection, searchText }) => {
     {
       id: 'remove',
       leftSection: IconX,
-      label: 'Remove',
+      label: t('Remove'),
       onClick: () => {
         setShowRemoveCollectionModal(true);
       }
@@ -618,7 +620,7 @@ const Collection = ({ collection, searchText }) => {
                     appendTo={dropdownContainerRef?.current || document.body}
                     popperOptions={{ strategy: 'fixed' }}
                   >
-                    <button className="ml-1 add-request-link">+ Add request</button>
+                    <button className="ml-1 add-request-link">+ {t('Add request')}</button>
                   </MenuDropdown>
                 </div>
               </div>

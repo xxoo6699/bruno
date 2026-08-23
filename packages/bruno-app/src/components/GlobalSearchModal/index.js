@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -19,6 +20,7 @@ import { SEARCH_TYPES, MATCH_TYPES, SEARCH_CONFIG, DOCUMENTATION_RESULT } from '
 import StyledWrapper from './StyledWrapper';
 
 const GlobalSearchModal = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [results, setResults] = useState([]);
@@ -207,7 +209,7 @@ const GlobalSearchModal = ({ isOpen, onClose }) => {
     const handlers = {
       ArrowDown: () => {
         e.preventDefault();
-        setSelectedIndex((prev) => prev < results.length - 1 ? prev + 1 : 0);
+        setSelectedIndex((prev) => (prev < results.length - 1 ? prev + 1 : 0));
       },
       ArrowUp: () => {
         e.preventDefault();
@@ -372,7 +374,7 @@ const GlobalSearchModal = ({ isOpen, onClose }) => {
         aria-describedby="search-modal-description"
       >
         <div className="command-k-modal" onClick={(e) => e.stopPropagation()}>
-          <h1 id="search-modal-title" className="sr-only">Global Search</h1>
+          <h1 id="search-modal-title" className="sr-only">{t('Global Search')}</h1>
           <p id="search-modal-description" className="sr-only">
             Search through collections, requests, folders, and documentation. Use arrow keys to navigate results and Enter to select.
           </p>
@@ -389,7 +391,7 @@ const GlobalSearchModal = ({ isOpen, onClose }) => {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder="Search collections, requests, or documentation..."
+                placeholder={t('Search collections, requests, or documentation...')}
                 value={query}
                 onChange={handleQueryChange}
                 onKeyDown={handleKeyNavigation}
@@ -432,7 +434,7 @@ const GlobalSearchModal = ({ isOpen, onClose }) => {
                   No results found for "{query}".
                   <br />
                   <span className="block mt-2">
-                    The item might not exist yet, or its collection isn’t mounted. Press <strong>Enter</strong> here (or open it from the sidebar) to mount the collection automatically.
+                    The item might not exist yet, or its collection isn’t mounted. Press <strong>{t('Enter')}</strong> here (or open it from the sidebar) to mount the collection automatically.
                   </span>
                 </p>
               </div>
@@ -507,15 +509,15 @@ const GlobalSearchModal = ({ isOpen, onClose }) => {
               <span aria-label="Use up and down arrows to navigate">
                 <span className="keycap" aria-hidden="true">↑</span>
                 <span className="keycap" aria-hidden="true">↓</span>
-                <span className="hint-label">to navigate</span>
+                <span className="hint-label">{t('to navigate')}</span>
               </span>
               <span aria-label="Press Enter to select">
                 <span className="keycap" aria-hidden="true">↵</span>
-                <span className="hint-label">to select</span>
+                <span className="hint-label">{t('to select')}</span>
               </span>
               <span aria-label="Press Escape to close">
                 <span className="keycap" aria-hidden="true">esc</span>
-                <span className="hint-label">to close</span>
+                <span className="hint-label">{t('to close')}</span>
               </span>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import Modal from 'components/Modal/index';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import CodeView from './CodeView';
 import CodeViewToolbar from './CodeViewToolbar';
 import StyledWrapper from './StyledWrapper';
@@ -23,6 +24,7 @@ const validateURLWithVars = (url) => {
 };
 
 const GenerateCodeItem = ({ collectionUid, item, onClose, isExample = false, exampleUid = null }) => {
+  const { t } = useTranslation();
   const languages = getLanguages();
   const collection = useSelector((state) => state.collections.collections?.find((c) => c.uid === collectionUid));
   const { globalEnvironments, activeGlobalEnvironmentUid } = useSelector((state) => state.globalEnvironments);
@@ -122,7 +124,9 @@ const GenerateCodeItem = ({ collectionUid, item, onClose, isExample = false, exa
   };
 
   // Update modal title based on mode
-  const modalTitle = isExample ? `Generate Code - ${get(item, 'draft.examples', []).find((e) => e.uid === exampleUid)?.name || 'Example'}` : 'Generate Code';
+  const modalTitle = isExample
+    ? t('Generate Code - {{name}}', { name: get(item, 'draft.examples', []).find((e) => e.uid === exampleUid)?.name || t('Example') })
+    : t('Generate Code');
 
   return (
     <Modal size="lg" title={modalTitle} handleCancel={onClose} hideFooter={true}>
@@ -138,8 +142,8 @@ const GenerateCodeItem = ({ collectionUid, item, onClose, isExample = false, exa
               />
             ) : (
               <div className="error-message">
-                <h1>Invalid URL: {validationUrl}</h1>
-                <p>Please check the URL and try again</p>
+                <h1>{t('Invalid URL: {{url}}', { url: validationUrl })}</h1>
+                <p>{t('Please check the URL and try again')}</p>
               </div>
             )}
           </div>

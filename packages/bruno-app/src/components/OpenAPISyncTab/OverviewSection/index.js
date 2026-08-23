@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getTotalRequestCountInCollection } from 'utils/collections/';
@@ -39,6 +40,7 @@ const SUMMARY_CARDS = [
 ];
 
 const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, remoteDrift, onTabSelect, error, onOpenSettings }) => {
+  const { t } = useTranslation();
   const openApiSyncConfig = collection?.brunoConfig?.openapi?.[0];
 
   const reduxError = useSelector((state) => state.openapiSync?.collectionUpdates?.[collection.uid]?.error);
@@ -201,7 +203,7 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
         </div>
       )}
 
-      <h4 className="overview-section-title mt-5">Endpoint Summary</h4>
+      <h4 className="overview-section-title mt-5">{t('Endpoint Summary')}</h4>
       <div className="sync-summary-cards">
         {SUMMARY_CARDS.map(({ key, label, tooltip, tab, color }) => {
           const count = summaryValues[key];
@@ -230,7 +232,7 @@ const OverviewSection = ({ collection, storedSpec, collectionDrift, specDrift, r
         })}
       </div>
 
-      <h4 className="overview-section-title mt-7">Last Synced Spec Details</h4>
+      <h4 className="overview-section-title mt-7">{t('Last Synced Spec Details')}</h4>
       <div className="spec-details-grid">
         {details.map(({ label, value, tooltip }) => (
           <div className="spec-detail-item" key={label}>

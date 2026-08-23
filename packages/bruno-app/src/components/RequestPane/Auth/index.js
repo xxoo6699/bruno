@@ -10,6 +10,7 @@ import OAuth1 from './OAuth1';
 import { updateAuth } from 'providers/ReduxStore/slices/collections';
 import { saveRequest } from 'providers/ReduxStore/slices/collections/actions';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 import ApiKeyAuth from './ApiKeyAuth';
 import EdgeGridAuth from './EdgeGridAuth';
@@ -20,6 +21,7 @@ import { getEffectiveAuthSource } from 'utils/auth';
 
 const Auth = ({ item, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const authMode = item.draft ? get(item, 'draft.request.auth.mode') : get(item, 'request.auth.mode');
 
   // Create a request object to pass to the auth components
@@ -40,7 +42,7 @@ const Auth = ({ item, collection }) => {
   const getAuthView = () => {
     switch (authMode) {
       case 'none': {
-        return <div className="mt-2">No Auth</div>;
+        return <div className="mt-2">{t('No Auth')}</div>;
       }
       case 'awsv4': {
         return <AwsV4Auth collection={collection} item={item} request={request} save={save} updateAuth={updateAuth} />;

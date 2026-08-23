@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconCaretDown, IconForms, IconBraces, IconCode, IconFileText, IconDatabase, IconFile, IconX } from '@tabler/icons';
 import MenuDropdown from 'ui/MenuDropdown';
 import { humanizeRequestBodyMode } from 'utils/collections';
@@ -40,16 +41,20 @@ const BodyModeSelector = ({
   placement = 'bottom-end',
   'data-testid': testId
 }) => {
+  const { t } = useTranslation();
+
   // Add onClick handlers to mode options
   const menuItems = useMemo(() => {
     return modes.map((group) => ({
       ...group,
+      name: t(group.name),
       options: group.options.map((option) => ({
         ...option,
+        label: t(option.label),
         onClick: () => onModeChange(option.id)
       }))
     }));
-  }, [modes, onModeChange]);
+  }, [modes, onModeChange, t]);
 
   return (
     <StyledWrapper className={wrapperClassName}>

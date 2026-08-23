@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import Portal from 'components/Portal';
 import Modal from 'components/Modal';
 import {
@@ -16,6 +17,7 @@ import {
 
 const RenameMockServerModal = ({ instance, onClose }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const inputRef = useRef();
   const activeWorkspaceUid = useSelector((state) => state.workspaces.activeWorkspaceUid);
   const storedInstance = useSelector((state) => (
@@ -75,8 +77,8 @@ const RenameMockServerModal = ({ instance, onClose }) => {
     <Portal>
       <Modal
         size="md"
-        title="Rename Mock Server"
-        confirmText="Rename"
+        title={t('Rename Mock Server')}
+        confirmText={t('Rename')}
         handleConfirm={() => formik.handleSubmit()}
         handleCancel={handleCancel}
         dataTestId="mock-server-rename-modal"
@@ -84,7 +86,7 @@ const RenameMockServerModal = ({ instance, onClose }) => {
         <form className="bruno-form" onSubmit={(event) => event.preventDefault()}>
           <div>
             <label htmlFor="mock-server-rename-name" className="block font-medium">
-              Name
+              {t('Name')}
             </label>
             <input
               id="mock-server-rename-name"

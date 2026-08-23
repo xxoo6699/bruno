@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import { uuid } from 'utils/common';
 import Modal from 'components/Modal';
@@ -14,6 +15,7 @@ import Button from 'ui/Button';
 
 const RunCollectionItem = ({ collectionUid, item, onClose }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [delay, setDelay] = useState('');
 
   const collection = useSelector((state) => state.collections.collections?.find((c) => c.uid === collectionUid));
@@ -60,26 +62,26 @@ const RunCollectionItem = ({ collectionUid, item, onClose }) => {
 
   return (
     <StyledWrapper>
-      <Modal size="md" title="Collection Runner" hideFooter={true} handleCancel={onClose}>
+      <Modal size="md" title={t('Collection Runner')} hideFooter={true} handleCancel={onClose}>
         <div>
           <div className="mb-1">
-            <span className="font-medium">Run</span>
-            <span className="ml-1 text-xs">({totalRequestItemsCountForFolderRun} requests)</span>
+            <span className="font-medium">{t('Run')}</span>
+            <span className="ml-1 text-xs">{t('({{count}} requests)', { count: totalRequestItemsCountForFolderRun })}</span>
           </div>
-          <div className="mb-3 description">This will only run the requests in this folder.</div>
+          <div className="mb-3 description">{t('This will only run the requests in this folder.')}</div>
           <div className="mb-1">
-            <span className="font-medium">Recursive Run</span>
-            <span className="ml-1 text-xs">({totalRequestItemsCountForRecursiveFolderRun} requests)</span>
+            <span className="font-medium">{t('Recursive Run')}</span>
+            <span className="ml-1 text-xs">{t('({{count}} requests)', { count: totalRequestItemsCountForRecursiveFolderRun })}</span>
           </div>
-          <div className={`description ${isFolderLoading ? 'mb-2' : 'mb-6'}`}>This will run all the requests in this folder and all its subfolders.</div>
-          {isFolderLoading ? <div className="mb-8 warning">Requests in this folder are still loading.</div> : null}
-          {isCollectionRunInProgress ? <div className="mb-6 warning">A Collection Run is already in progress.</div> : null}
+          <div className={`description ${isFolderLoading ? 'mb-2' : 'mb-6'}`}>{t('This will run all the requests in this folder and all its subfolders.')}</div>
+          {isFolderLoading ? <div className="mb-8 warning">{t('Requests in this folder are still loading.')}</div> : null}
+          {isCollectionRunInProgress ? <div className="mb-6 warning">{t('A Collection Run is already in progress.')}</div> : null}
 
           <hr className="divider" />
 
           {/* Timings */}
           <div className="flex flex-col items-start gap-2 mb-8">
-            <label htmlFor="runner-delay" className="block text-sm">Delay between requests (ms)</label>
+            <label htmlFor="runner-delay" className="block text-sm">{t('Delay between requests (ms)')}</label>
             <input
               id="runner-delay"
               type="number"
@@ -99,22 +101,22 @@ const RunCollectionItem = ({ collectionUid, item, onClose }) => {
 
           <div className="flex justify-end bruno-modal-footer">
             <Button type="button" color="secondary" variant="ghost" onClick={onClose} className="mr-3">
-              Cancel
+              {t('Cancel')}
             </Button>
             {
               isCollectionRunInProgress
                 ? (
                     <Button type="submit" onClick={handleViewRunner}>
-                      View Run
+                      {t('View Run')}
                     </Button>
                   )
                 : (
                     <>
                       <Button type="submit" disabled={shouldDisableRecursiveFolderRun} onClick={() => onSubmit(true)} className="mr-3">
-                        Recursive Run
+                        {t('Recursive Run')}
                       </Button>
                       <Button type="submit" disabled={shouldDisableFolderRun} onClick={() => onSubmit(false)}>
-                        Run
+                        {t('Run')}
                       </Button>
                     </>
                   )

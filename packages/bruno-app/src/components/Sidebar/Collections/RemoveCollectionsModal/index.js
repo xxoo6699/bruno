@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { filter, groupBy } from 'lodash';
@@ -48,6 +49,7 @@ const getDisplayItems = (items, maxWidth = MAX_COLLECTIONS_WIDTH) => {
 
 const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const allCollections = useSelector((state) => state.collections.collections || []);
   const [showAllCollections, setShowAllCollections] = useState(false);
 
@@ -115,11 +117,11 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
 
     Promise.all(removalPromises)
       .then(() => {
-        toast.success('Closed all collections');
+        toast.success(t('Closed all collections'));
       })
       .catch((error) => {
         console.error('Error closing collections:', error);
-        toast.error('An error occurred while closing collections');
+        toast.error(t('An error occurred while closing collections'));
       })
       .finally(() => {
         onClose();
@@ -157,7 +159,7 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
       handleCloseAllCollections();
     } catch (error) {
       console.error('Error saving drafts:', error);
-      toast.error('An error occurred while saving changes');
+      toast.error(t('An error occurred while saving changes'));
       handleCancel();
     }
   };
@@ -182,7 +184,7 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
       onClick={() => setShowAllCollections(!showAllCollections)}
     >
       <span className="text-link">
-        {showAllCollections ? 'Show less' : `Show ${hiddenCollectionsCount} more`}
+        {showAllCollections ? t('Show less') : t('Show {{count}} more', { count: hiddenCollectionsCount })}
       </span>
     </span>
   ) : null;
@@ -191,7 +193,7 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
     <Portal>
       <Modal
         size="md"
-        title="Close all collections"
+        title={t('Close all collections')}
         disableEscapeKey={hasUnsavedChanges}
         disableCloseOnOutsideClick={hasUnsavedChanges}
         handleCancel={handleCancel}
@@ -202,14 +204,15 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
             <>
               <div className="flex items-center font-normal">
                 <IconAlertTriangle size={32} strokeWidth={1.5} className="text-yellow-600" />
-                <h1 className="ml-2 text-lg font-medium">Hold on..</h1>
+                <h1 className="ml-2 text-lg font-medium">{t('Hold on..')}</h1>
               </div>
               <div className="font-normal mt-4">
-                Do you want to save changes you made to the following{' '}
-                {collectionsWithUnsavedChanges.length === 1 ? 'collection' : 'collections'}?
+                {t('Do you want to save changes you made to the following {{what}}?', {
+                  what: collectionsWithUnsavedChanges.length === 1 ? t('collection') : t('collections')
+                })}
               </div>
               <div className="mt-2 text-xs text-gray-500">
-                Collections will be removed from the current workspace but will still be available in the file system and can be re-opened later.
+                {t('Collections will be removed from the current workspace but will still be available in the file system and can be re-opened later.')}
               </div>
 
               <div className="mt-4">
@@ -228,15 +231,15 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
               <div className="flex justify-between mt-6">
                 <div>
                   <Button color="danger" onClick={handleDiscard}>
-                    Discard and Close
+                    {t('Discard and Close')}
                   </Button>
                 </div>
                 <div>
                   <Button className="mr-2" color="secondary" variant="ghost" onClick={handleCancel}>
-                    Cancel
+                    {t('Cancel')}
                   </Button>
                   <Button onClick={handleSave}>
-                    Save and Close
+                    {t('Save and Close')}
                   </Button>
                 </div>
               </div>
@@ -245,22 +248,22 @@ const RemoveCollectionsModal = ({ collectionUids, onClose }) => {
             <>
               <div className="mt-4">
                 {hasMultipleCollections ? (
-                  `Are you sure you want to close all ${collectionUids.length} collections in this workspace?`
+                  t('Are you sure you want to close all {{count}} collections in this workspace?', { count: collectionUids.length })
                 ) : (
                   <>
-                    Are you sure you want to close the collection <strong>{singleCollectionName}</strong> from this workspace?
+                    {t('Are you sure you want to close the collection')} <strong>{singleCollectionName}</strong> {t('from this workspace?')}
                   </>
                 )}
               </div>
               <div className="mt-4 text-xs text-gray-500">
-                Collections will be removed from the current workspace but will still be available in the file system and can be re-opened later.
+                {t('Collections will be removed from the current workspace but will still be available in the file system and can be re-opened later.')}
               </div>
               <div className="flex justify-end mt-6">
                 <Button className="mr-2" color="secondary" variant="ghost" onClick={handleCancel} data-testid="modal-close-button">
-                  Cancel
+                  {t('Cancel')}
                 </Button>
                 <Button color="warning" onClick={handleCloseAllCollections}>
-                  {hasMultipleCollections ? 'Close All' : 'Close'}
+                  {hasMultipleCollections ? t('Close All') : t('Close')}
                 </Button>
               </div>
             </>

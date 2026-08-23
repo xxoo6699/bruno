@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,6 +17,7 @@ import EndpointVisualDiff from './EndpointVisualDiff';
 
 // Expandable row - can be used with or without decision buttons
 const ExpandableEndpointRow = ({ endpoint, decision, onDecisionChange, collectionPath, newSpec, showDecisions = true, decisionLabels, diffLeftLabel, diffRightLabel, swapDiffSides, collectionUid, actions, preserveValues = true }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const rowKey = endpoint.id || `${endpoint.method}-${endpoint.path}`;
   const isExpanded = useSelector((state) => {
@@ -140,14 +142,14 @@ const ExpandableEndpointRow = ({ endpoint, decision, onDecisionChange, collectio
             <button
               className={`decision-btn keep ${decision === 'keep-mine' ? 'selected' : ''}`}
               onClick={() => onDecisionChange('keep-mine')}
-              title="Keep your local version"
+              title={t('Keep your local version')}
             >
               <IconX size={12} /> {decisionLabels?.keep || 'Keep Mine'}
             </button>
             <button
               className={`decision-btn accept ${decision === 'accept-incoming' ? 'selected' : ''}`}
               onClick={() => onDecisionChange('accept-incoming')}
-              title="Accept the spec version"
+              title={t('Accept the spec version')}
             >
               <IconCheck size={12} /> {decisionLabels?.accept || 'Accept Spec'}
             </button>
@@ -163,7 +165,7 @@ const ExpandableEndpointRow = ({ endpoint, decision, onDecisionChange, collectio
           {isLoading && !diffData && !error && (
             <div className="diff-loading">
               <IconLoader2 size={16} className="spinning" />
-              <span>Loading diff...</span>
+              <span>{t('Loading diff...')}</span>
             </div>
           )}
           {error && !diffData && (

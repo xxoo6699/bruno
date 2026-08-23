@@ -1,4 +1,5 @@
 import React, { useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
 
@@ -9,8 +10,9 @@ const CollapsedPanelIndicator = ({
   onDragStart,
   dragThresholdPx
 }) => {
+  const { t } = useTranslation();
   const dragThresholdSq = dragThresholdPx * dragThresholdPx; // to use in distance check
-  const label = panelType === 'request' ? 'Request' : 'Response';
+  const label = panelType === 'request' ? t('Request') : t('Response');
 
   const ChevronIcon = panelType === 'request' ? IconChevronDown : IconChevronUp;
 
@@ -66,8 +68,8 @@ const CollapsedPanelIndicator = ({
       role="button"
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      aria-label={`Expand ${label} pane`}
-      title={`Click to expand ${label} pane, or drag to resize`}
+      aria-label={t('Expand {{label}} pane', { label })}
+      title={t('Click to expand {{label}} pane, or drag to resize', { label })}
     >
       <div className="indicator-content">
         <ChevronIcon size={14} strokeWidth={2} className="expand-icon" />

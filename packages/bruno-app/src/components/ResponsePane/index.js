@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import find from 'lodash/find';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { updateResponsePaneTab, updateResponseFormat, updateResponseViewTab, updateResponseFilter, updateResponseFilterExpanded } from 'providers/ReduxStore/slices/tabs';
 import QueryResult from './QueryResult';
 import Overlay from './Overlay';
@@ -30,6 +31,7 @@ const RIGHT_CONTENT_EXPANDED_WIDTH = 135;
 
 const ResponsePane = ({ item, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
   const isLoading = ['queued', 'sending'].includes(item.requestState);
@@ -122,17 +124,17 @@ const ResponsePane = ({ item, collection }) => {
     return [
       {
         key: 'response',
-        label: 'Response',
+        label: t('Response'),
         indicator: null
       },
       {
         key: 'headers',
-        label: 'Headers',
+        label: t('Headers'),
         indicator: responseHeadersCount > 0 ? <sup className="ml-1 font-medium">{responseHeadersCount}</sup> : null
       },
       {
         key: 'timeline',
-        label: 'Timeline',
+        label: t('Timeline'),
         indicator: null
       },
       {
@@ -194,7 +196,7 @@ const ResponsePane = ({ item, collection }) => {
       }
 
       default: {
-        return <div>404 | Not found</div>;
+        return <div>{t('404 | Not found')}</div>;
       }
     }
   };
@@ -224,11 +226,11 @@ const ResponsePane = ({ item, collection }) => {
   }
 
   if (!activeTabUid) {
-    return <div>Something went wrong</div>;
+    return <div>{t('Something went wrong')}</div>;
   }
 
   if (!focusedTab || !focusedTab.uid || !focusedTab.responsePaneTab) {
-    return <div className="pb-4 px-4">An error occurred!</div>;
+    return <div className="pb-4 px-4">{t('An error occurred!')}</div>;
   }
 
   const rightContent = !isLoading ? (

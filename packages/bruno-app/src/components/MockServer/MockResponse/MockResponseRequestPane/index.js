@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import { IconChevronDown, IconExternalLink, IconPlayerPlay } from '@tabler/icons';
 import Tab from 'components/Tab';
@@ -10,27 +11,30 @@ import { buildDemoRequestFromRules } from 'utils/mock-server/mock-responses';
 import MockResponseRules from '../MockResponseRules';
 import StyledWrapper from './StyledWrapper';
 
-const DemoKeyValueTable = ({ title, rows }) => (
-  <div className="demo-section">
-    <div className="demo-section-title">{title}</div>
-    <table className="demo-table w-full">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row, index) => (
-          <tr key={`${row.name}-${index}`}>
-            <td>{row.name}</td>
-            <td>{row.value}</td>
+const DemoKeyValueTable = ({ title, rows }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="demo-section">
+      <div className="demo-section-title">{title}</div>
+      <table className="demo-table w-full">
+        <thead>
+          <tr>
+            <th>{t('Name')}</th>
+            <th>{t('Value')}</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </thead>
+        <tbody>
+          {rows.map((row, index) => (
+            <tr key={`${row.name}-${index}`}>
+              <td>{row.name}</td>
+              <td>{row.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 const MockResponseRequestPane = ({
   item,
@@ -49,6 +53,7 @@ const MockResponseRequestPane = ({
   onOpenAsRequest,
   onEditToggle
 }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('rules');
   const ruleCount = rules?.conditions?.length || 0;
 
@@ -85,17 +90,17 @@ const MockResponseRequestPane = ({
             {hasDetails ? (
               <>
                 <div className="demo-hint">
-                  Auto-generated from the rules - a request like this matches this mock response.
+                  {t('Auto-generated from the rules - a request like this matches this mock response.')}
                 </div>
                 {demoRequest.headers.length ? (
-                  <DemoKeyValueTable title="Headers" rows={demoRequest.headers} />
+                  <DemoKeyValueTable title={t('Headers')} rows={demoRequest.headers} />
                 ) : null}
                 {demoRequest.params.length ? (
-                  <DemoKeyValueTable title="Query Params" rows={demoRequest.params} />
+                  <DemoKeyValueTable title={t('Query Params')} rows={demoRequest.params} />
                 ) : null}
                 {demoRequest.body ? (
                   <div className="demo-section">
-                    <div className="demo-section-title">Body</div>
+                    <div className="demo-section-title">{t('Body')}</div>
                     <pre className="demo-body">{demoRequest.body.content}</pre>
                   </div>
                 ) : null}
@@ -147,7 +152,7 @@ const MockResponseRequestPane = ({
               icon={<IconPlayerPlay size={14} stroke={1.5} />}
               onClick={onStartServer}
               disabled={isStartingServer}
-              title="Start the mock server to try this response"
+              title={t('Start the mock server to try this response')}
               data-testid="mock-response-start-server-btn"
             >
               {isStartingServer ? 'Starting...' : 'Start Server'}
@@ -158,7 +163,7 @@ const MockResponseRequestPane = ({
               {
                 id: 'open-as-request',
                 leftSection: IconExternalLink,
-                label: 'Open as New Request',
+                label: t('Open as New Request'),
                 testId: 'mock-response-open-as-request',
                 onClick: onOpenAsRequest
               }
@@ -169,7 +174,7 @@ const MockResponseRequestPane = ({
               color="secondary"
               className="try-caret"
               icon={<IconChevronDown size={14} stroke={1.5} />}
-              aria-label="More try options"
+              aria-label={t('More try options')}
               data-testid="mock-response-try-options-btn"
             />
           </MenuDropdown>
@@ -181,7 +186,7 @@ const MockResponseRequestPane = ({
           <Tab
             key={tab.name}
             name={tab.name}
-            label={tab.label}
+            label={t(tab.label)}
             isActive={activeTab === tab.name}
             onClick={setActiveTab}
             count={tab.count}

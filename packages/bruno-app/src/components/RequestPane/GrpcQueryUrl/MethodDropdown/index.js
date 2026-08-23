@@ -10,6 +10,7 @@ import SearchInput from 'components/SearchInput/index';
 import { search } from 'fast-fuzzy';
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { useTheme } from 'providers/Theme';
+import { useTranslation } from 'react-i18next';
 import StyledWrapper from './StyledWrapper';
 
 const MethodDropdown = ({
@@ -19,6 +20,7 @@ const MethodDropdown = ({
   onMethodDropdownCreate
 }) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [searchText, setSearchText] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const searchInputRef = useRef();
@@ -148,7 +150,7 @@ const MethodDropdown = ({
           <SearchInput
             searchText={searchText}
             setSearchText={setSearchText}
-            placeholder="Search"
+            placeholder={t('Search')}
             ref={searchInputRef}
             onKeyDown={handleKeyDown}
             onBlur={focusSearchInput}
@@ -160,7 +162,7 @@ const MethodDropdown = ({
             {Object.entries(groupedMethods).map(([serviceName, methods], serviceIndex) => (
               <div key={serviceIndex} className="method-dropdown-service-group" onKeyDown={handleKeyDown} tabIndex={0}>
                 <div className="method-dropdown-service-header">
-                  {serviceName || 'Default Service'}
+                  {serviceName || t('Default Service')}
                 </div>
                 <div>
                   {methods.map((method, methodIndex) => {
@@ -203,7 +205,7 @@ const MethodDropdown = ({
             {filteredMethods.length === 0 && (
               <div className="method-dropdown-empty-state">
                 <div className="method-dropdown-empty-state-text">
-                  No methods found for the search term
+                  {t('No methods found for the search term')}
                 </div>
               </div>
             )}

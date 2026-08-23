@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from 'react';
 import get from 'lodash/get';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'providers/Theme';
 import { moveRequestHeader, setRequestHeaders } from 'providers/ReduxStore/slices/collections';
 import { sendRequest, saveRequest } from 'providers/ReduxStore/slices/collections/actions';
@@ -20,6 +21,7 @@ const headerAutoCompleteList = StandardHTTPHeaders.map((e) => e.header);
 
 const RequestHeaders = ({ item, collection, addHeaderText }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { storedTheme } = useTheme();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
@@ -60,17 +62,17 @@ const RequestHeaders = ({ item, collection, addHeaderText }) => {
     if (key === 'name') {
       if (!row.name || row.name.trim() === '') return null;
       if (!headerNameRegex.test(row.name)) {
-        return 'Header name cannot contain spaces or newlines';
+        return t('Header name cannot contain spaces or newlines');
       }
     }
     if (key === 'value') {
       if (!row.value) return null;
       if (!headerValueRegex.test(row.value)) {
-        return 'Header value cannot contain newlines';
+        return t('Header value cannot contain newlines');
       }
     }
     return null;
-  }, []);
+  }, [t]);
 
   const toggleBulkEditMode = () => {
     setIsBulkEditMode(!isBulkEditMode);
@@ -87,9 +89,9 @@ const RequestHeaders = ({ item, collection, addHeaderText }) => {
   const columns = [
     {
       key: 'name',
-      name: 'Name',
+      name: t('Name'),
       isKeyField: true,
-      placeholder: 'Name',
+      placeholder: t('Name'),
       width: '20%',
       render: ({ value, onChange }) => (
         <SingleLineEditor
@@ -101,14 +103,14 @@ const RequestHeaders = ({ item, collection, addHeaderText }) => {
           onRun={handleRun}
           collection={collection}
           item={item}
-          placeholder={!value ? 'Name' : ''}
+          placeholder={!value ? t('Name') : ''}
         />
       )
     },
     {
       key: 'value',
-      name: 'Value',
-      placeholder: 'Value',
+      name: t('Value'),
+      placeholder: t('Value'),
       render: ({ value, onChange }) => (
         <SingleLineEditor
           value={value || ''}
@@ -119,7 +121,7 @@ const RequestHeaders = ({ item, collection, addHeaderText }) => {
           autocomplete={MimeTypes}
           collection={collection}
           item={item}
-          placeholder={!value ? 'Value' : ''}
+          placeholder={!value ? t('Value') : ''}
         />
       )
     },

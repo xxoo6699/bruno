@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import get from 'lodash/get';
 import find from 'lodash/find';
@@ -14,6 +15,7 @@ import StyledWrapper from './StyledWrapper';
 import HeightBoundContainer from 'ui/HeightBoundContainer';
 
 const ResponseExampleResponsePane = ({
+
   item,
   collection,
   editMode,
@@ -21,7 +23,9 @@ const ResponseExampleResponsePane = ({
   onSave,
   expectedResponseLabel = 'Response',
   tryResult = null
+
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
@@ -75,7 +79,7 @@ const ResponseExampleResponsePane = ({
         );
       }
       default: {
-        return <div>404 | Not found</div>;
+        return <div>{t('404 | Not found')}</div>;
       }
     }
   };

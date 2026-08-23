@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useRef, useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { IconLoader2, IconChevronUp, IconChevronDown } from '@tabler/icons';
@@ -8,6 +9,7 @@ import { createHighlightCache } from './highlightCache';
 import DiffRow from './DiffRow';
 
 const SpecDiffModal = ({ specDrift, onClose }) => {
+  const { t } = useTranslation();
   const virtuosoRef = useRef(null);
 
   const [cache] = useState(createHighlightCache);
@@ -85,12 +87,12 @@ const SpecDiffModal = ({ specDrift, onClose }) => {
     = changeCount === 0 ? 'No changes' : `${currentIndex + 1} of ${changeCount} changes`;
 
   return (
-    <Modal size="xl" title="Spec Diff" hideFooter handleCancel={onClose}>
+    <Modal size="xl" title={t('Spec Diff')} hideFooter handleCancel={onClose}>
       <div className="spec-diff-modal">
         <div className="spec-diff-header">
           <div className="spec-diff-header-left">
             <div className="spec-diff-badges">
-              <div>Endpoint Changes:</div>
+              <div>{t('Endpoint Changes:')}</div>
               {modifiedCount > 0 && <StatusBadge status="warning">Updated: {modifiedCount}</StatusBadge>}
               {addedCount > 0 && <StatusBadge status="success">Added: {addedCount}</StatusBadge>}
               {removedCount > 0 && <StatusBadge status="danger">Removed: {removedCount}</StatusBadge>}
@@ -112,7 +114,7 @@ const SpecDiffModal = ({ specDrift, onClose }) => {
                   className="spec-diff-nav-btn"
                   onClick={() => goToChange(currentIndex - 1)}
                   disabled={changeCount === 0}
-                  title="Previous change"
+                  title={t('Previous change')}
                 >
                   <IconChevronUp size={14} strokeWidth={1.75} /> Previous
                 </button>
@@ -121,7 +123,7 @@ const SpecDiffModal = ({ specDrift, onClose }) => {
                   className="spec-diff-nav-btn"
                   onClick={() => goToChange(currentIndex + 1)}
                   disabled={changeCount === 0}
-                  title="Next change"
+                  title={t('Next change')}
                 >
                   <IconChevronDown size={14} strokeWidth={1.75} /> Next
                 </button>
@@ -138,12 +140,12 @@ const SpecDiffModal = ({ specDrift, onClose }) => {
                   <span className="diff-column-label">
                     {specDrift?.storedSpecMissing ? 'Current Spec (missing)' : 'Current Spec'}
                   </span>
-                  <span className="diff-column-label">Updated Spec</span>
+                  <span className="diff-column-label">{t('Updated Spec')}</span>
                 </div>
                 {isRendering && (
                   <div className="text-diff-loading">
                     <IconLoader2 className="animate-spin" size={20} strokeWidth={1.5} />
-                    <span>Loading diff...</span>
+                    <span>{t('Loading diff...')}</span>
                   </div>
                 )}
                 {!isRendering && parseError && (
@@ -163,11 +165,11 @@ const SpecDiffModal = ({ specDrift, onClose }) => {
                   />
                 )}
                 {!isRendering && !parseError && rows.length === 0 && (
-                  <div className="text-diff-empty">No changes to display.</div>
+                  <div className="text-diff-empty">{t('No changes to display.')}</div>
                 )}
               </>
             ) : (
-              <div className="text-diff-empty">No text diff available.</div>
+              <div className="text-diff-empty">{t('No text diff available.')}</div>
             )}
           </div>
         </div>

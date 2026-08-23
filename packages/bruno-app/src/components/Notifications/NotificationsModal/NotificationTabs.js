@@ -1,17 +1,18 @@
 import classnames from 'classnames';
 import { IconDotsVertical } from '@tabler/icons';
 import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import Dropdown from 'components/Dropdown';
 import { TABS } from '../hooks/useNotifications';
 
-const menuIcon = (
-  <span className="notif-menu-trigger" aria-label="Notifications menu">
-    <IconDotsVertical size={16} strokeWidth={1.5} />
-  </span>
-);
-
 const NotificationTabs = ({ activeTab, unreadCount, onTabChange, onMarkAllRead, onClearAll }) => {
+  const { t } = useTranslation();
   const dropdownTippyRef = useRef(null);
+  const menuIcon = (
+    <span className="notif-menu-trigger" aria-label={t('Notifications menu')}>
+      <IconDotsVertical size={16} strokeWidth={1.5} />
+    </span>
+  );
   const onDropdownCreate = (ref) => (dropdownTippyRef.current = ref);
   const hideDropdown = () => dropdownTippyRef.current?.hide();
 
@@ -42,7 +43,7 @@ const NotificationTabs = ({ activeTab, unreadCount, onTabChange, onMarkAllRead, 
           className={classnames('notif-tab', { active: activeTab === TABS.UNREAD })}
           onClick={() => onTabChange(TABS.UNREAD)}
         >
-          Unread
+          {t('Unread')}
           {unreadCount > 0 && <span className="notif-tab-badge">{unreadCount}</span>}
         </button>
       </div>
@@ -55,7 +56,7 @@ const NotificationTabs = ({ activeTab, unreadCount, onTabChange, onMarkAllRead, 
             onMarkAllRead();
           }}
         >
-          Mark all as read
+          {t('Mark all as read')}
         </div>
         <div
           className="dropdown-item"
@@ -64,7 +65,7 @@ const NotificationTabs = ({ activeTab, unreadCount, onTabChange, onMarkAllRead, 
             onClearAll();
           }}
         >
-          Clear all
+          {t('Clear all')}
         </div>
       </Dropdown>
     </div>

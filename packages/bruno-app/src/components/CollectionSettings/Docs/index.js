@@ -2,6 +2,7 @@ import 'github-markdown-css/github-markdown.css';
 import get from 'lodash/get';
 import { updateCollectionDocs } from 'providers/ReduxStore/slices/collections';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { saveCollectionSettings } from 'providers/ReduxStore/slices/collections/actions';
 import StyledWrapper from './StyledWrapper';
 import { IconFileText } from '@tabler/icons';
@@ -12,6 +13,7 @@ import DocsEditor from 'components/Documentation/DocsEditor';
 
 const Docs = ({ collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { isEditing, setEditing } = useDocsEditingState();
   const savedDocs = get(collection, 'root.docs', '');
   const docs = collection.draft?.root ? get(collection, 'draft.root.docs', '') : savedDocs;
@@ -53,16 +55,16 @@ const Docs = ({ collection }) => {
       <div className="flex flex-row w-full justify-between items-center mb-4">
         <div className="text-lg font-medium flex items-center gap-2">
           <IconFileText size={20} strokeWidth={1.5} />
-          Documentation
+          {t('Documentation')}
         </div>
         <div className="flex flex-row gap-2 items-center justify-center">
           {isEditing ? (
             <>
               <Button type="button" color="secondary" onClick={handleDiscardChanges}>
-                Cancel
+                {t('Cancel')}
               </Button>
               <Button type="button" onClick={onSave}>
-                Save
+                {t('Save')}
               </Button>
             </>
           ) : null}

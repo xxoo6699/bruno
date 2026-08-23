@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Modal from 'components/Modal';
@@ -9,6 +10,7 @@ import { findCollectionByUid } from 'utils/collections/index';
 
 const RenameCollection = ({ collectionUid, onClose }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const inputRef = useRef();
   const collection = useSelector((state) => findCollectionByUid(state.collections.collections, collectionUid));
   const formik = useFormik({
@@ -18,17 +20,17 @@ const RenameCollection = ({ collectionUid, onClose }) => {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(1, 'must be at least 1 character')
-        .required('name is required')
+        .min(1, t('must be at least 1 character'))
+        .required(t('name is required'))
     }),
     onSubmit: (values) => {
       dispatch(renameCollection(values.name, collection.uid))
         .then(() => {
-          toast.success('Collection renamed!');
+          toast.success(t('Collection renamed!'));
           onClose();
         })
         .catch((err) => {
-          toast.error(err ? err.message : 'An error occurred while renaming the collection');
+          toast.error(err ? err.message : t('An error occurred while renaming the collection'));
         });
     }
   });
@@ -42,11 +44,11 @@ const RenameCollection = ({ collectionUid, onClose }) => {
   const onSubmit = () => formik.handleSubmit();
 
   return (
-    <Modal size="md" title="Rename Collection" confirmText="Rename" handleConfirm={onSubmit} handleCancel={onClose}>
+    <Modal size="md" title={t('Rename Collection')} confirmText={t('Rename')} handleConfirm={onSubmit} handleCancel={onClose}>
       <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
         <div>
           <label htmlFor="name" className="block font-medium">
-            Name
+            {t('Name')}
           </label>
           <input
             id="collection-name"

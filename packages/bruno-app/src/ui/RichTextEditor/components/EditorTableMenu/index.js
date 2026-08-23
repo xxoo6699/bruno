@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import { useEditorState } from '@tiptap/react';
 import {
@@ -80,6 +81,7 @@ const TABLE_MENU_GROUPS = [
 ];
 
 const EditorTableMenu = ({ editor }) => {
+  const { t } = useTranslation();
   useEditorState({
     editor,
     selector: (ctx) => ctx.transactionNumber
@@ -106,7 +108,7 @@ const EditorTableMenu = ({ editor }) => {
     name: group.name,
     options: group.options.map((option) => ({
       id: option.id,
-      label: option.label,
+      label: t(option.label),
       leftSection: option.Icon,
       disabled: disabledById[option.id],
       onClick: () => option.run(editor)
@@ -125,7 +127,7 @@ const EditorTableMenu = ({ editor }) => {
       <button
         type="button"
         className="heading-dropdown-trigger is-active"
-        aria-label="Table options"
+        aria-label={t('Table options')}
         data-testid="toolbar-table-menu"
       >
         <IconTableOptions size={16} strokeWidth={1.5} />

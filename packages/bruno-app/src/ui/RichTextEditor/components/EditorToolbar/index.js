@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { IconCaretDown, IconDots, IconTableOptions } from '@tabler/icons';
 import MenuDropdown from 'ui/MenuDropdown';
@@ -42,6 +43,7 @@ const ToolbarAction = ({ editor, action, isActive, disabled, showLabel = false }
 };
 
 const EditorToolbar = ({ editor }) => {
+  const { t } = useTranslation();
   const {
     toolbarRef,
     measureRef,
@@ -73,7 +75,7 @@ const EditorToolbar = ({ editor }) => {
           {isInTable && (
             <div data-toolbar-part="table-menu" className="heading-dropdown-trigger is-active">
               <IconTableOptions size={16} strokeWidth={1.5} />
-              <span>Table</span>
+              <span>{t('Table')}</span>
               <IconCaretDown size={14} strokeWidth={1.5} fill="currentColor" />
             </div>
           )}
@@ -125,7 +127,7 @@ const EditorToolbar = ({ editor }) => {
             <button
               type="button"
               className="toolbar-btn toolbar-overflow-btn"
-              aria-label="More formatting options"
+              aria-label={t('More formatting options')}
               data-testid="toolbar-overflow-menu"
             >
               <IconDots size={16} strokeWidth={1.5} />

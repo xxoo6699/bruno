@@ -8,6 +8,8 @@ module.exports = {
   ],
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': '<rootDir>/jest.cssMock.js',
+    '^i18n$': '<rootDir>/src/i18n/index.js',
+    '^i18n/(.*)$': '<rootDir>/src/i18n/$1',
     '^assets/(.*)$': '<rootDir>/src/assets/$1',
     '^components/(.*)$': '<rootDir>/src/components/$1',
     '^hooks/(.*)$': '<rootDir>/src/hooks/$1',

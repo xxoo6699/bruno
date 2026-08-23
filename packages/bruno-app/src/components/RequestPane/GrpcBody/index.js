@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'providers/Theme';
 import { updateRequestBody } from 'providers/ReduxStore/slices/collections';
 import { saveRequest } from 'providers/ReduxStore/slices/collections/actions';
@@ -222,6 +223,7 @@ const SingleGrpcMessage = ({ message, item, collection, index, methodType, handl
 };
 
 const GrpcBody = ({ item, collection, handleRun }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const messagesContainerRef = useRef(null);
   const body = item.draft ? get(item, 'draft.request.body') : get(item, 'request.body');
@@ -252,7 +254,7 @@ const GrpcBody = ({ item, collection, handleRun }) => {
     return (
       <StyledWrapper>
         <div className="empty-state">
-          <p>No gRPC messages available</p>
+          <p>{t('No gRPC messages available')}</p>
           <Button
             onClick={addNewMessage}
             variant="filled"
@@ -260,7 +262,7 @@ const GrpcBody = ({ item, collection, handleRun }) => {
             size="sm"
             icon={<IconPlus size={14} strokeWidth={1.5} />}
           >
-            Add Message
+            {t('Add Message')}
           </Button>
         </div>
       </StyledWrapper>
@@ -302,7 +304,7 @@ const GrpcBody = ({ item, collection, handleRun }) => {
             icon={<IconPlus size={14} strokeWidth={1.5} />}
             data-testid="grpc-add-message-button"
           >
-            Add Message
+            {t('Add Message')}
           </Button>
         </div>
       )}

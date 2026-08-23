@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import { usePersistedState } from 'hooks/usePersistedState';
 import { useSelector, useDispatch } from 'react-redux';
@@ -133,6 +134,7 @@ const RequestRow = ({ request, isSelected, onClick, gridTemplateColumns }) => {
 };
 
 const NetworkTab = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [sortConfig, setSortConfig] = usePersistedState({ key: 'devtools-network-sort', default: { key: null, direction: null } });
   const [savedColWidths, setSavedColWidths] = usePersistedState({ key: 'devtools-network-col-widths', default: null });
@@ -199,8 +201,8 @@ const NetworkTab = () => {
         {filteredRequests.length === 0 ? (
           <div className="network-empty">
             <IconNetwork size={48} strokeWidth={1} />
-            <p>No network requests</p>
-            <span>Requests will appear here as you make API calls</span>
+            <p>{t('No network requests')}</p>
+            <span>{t('Requests will appear here as you make API calls')}</span>
           </div>
         ) : (
           <div className={`requests-container${resizingIdx !== null ? ' is-resizing' : ''}`}>
@@ -212,7 +214,7 @@ const NetworkTab = () => {
                   onClick={() => handleHeaderClick(col.key)}
                   data-testid={`network-header-${col.key}`}
                 >
-                  <span title={col.label}>{col.label}</span>
+                  <span title={t(col.label)}>{t(col.label)}</span>
                   {sortConfig.key === col.key && (
                     sortConfig.direction === 'asc'
                       ? <IconArrowUp size={14} strokeWidth={2} data-testid="sort-icon-asc" />

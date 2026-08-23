@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { startMockServer, stopMockServer, refreshMockRoutes, loadMockResponses, syncMockServerState } from 'providers/ReduxStore/slices/mock-server/index';
@@ -40,6 +41,7 @@ const MockServerLogCount = ({ mockServerUid }) => {
 };
 
 const MockServerDashboard = ({ instance, collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const mockServerUid = instance.uid;
   const [activeTab, setActiveTab] = useState('responses');
@@ -321,7 +323,7 @@ const MockServerDashboard = ({ instance, collection }) => {
           </div>
         </div>
         <ActionIcon
-          label="Mock server settings"
+          label={t('Mock server settings')}
           onClick={() => setSettingsOpen(true)}
           data-testid="mock-server-settings-btn"
         >
@@ -337,7 +339,7 @@ const MockServerDashboard = ({ instance, collection }) => {
           </div>
 
           {isRunning && baseUrl && (
-            <button className="copy-url-btn" onClick={handleCopyUrl} title="Copy mock server URL" data-testid="mock-server-copy-url">
+            <button className="copy-url-btn" onClick={handleCopyUrl} title={t('Copy mock server URL')} data-testid="mock-server-copy-url">
               {copied ? <IconCheck size={13} strokeWidth={2} /> : <IconCopy size={13} strokeWidth={1.5} />}
               <span className="url-text">{baseUrl}</span>
             </button>
@@ -352,7 +354,7 @@ const MockServerDashboard = ({ instance, collection }) => {
 
           <div className="server-controls">
             <div className="control-group">
-              <label htmlFor="mock-server-delay-input">Delay (ms)</label>
+              <label htmlFor="mock-server-delay-input">{t('Delay (ms)')}</label>
               <input
                 id="mock-server-delay-input"
                 type="number"
@@ -391,7 +393,7 @@ const MockServerDashboard = ({ instance, collection }) => {
                   {isStopping ? 'Stopping...' : 'Stop Server'}
                 </Button>
                 {!isStopping && (
-                  <ActionIcon label="Refresh routes" onClick={handleRefresh} data-testid="mock-server-refresh-btn">
+                  <ActionIcon label={t('Refresh routes')} onClick={handleRefresh} data-testid="mock-server-refresh-btn">
                     <IconRefresh size={16} stroke={1.5} aria-hidden="true" />
                   </ActionIcon>
                 )}
@@ -414,14 +416,14 @@ const MockServerDashboard = ({ instance, collection }) => {
       <div className="flex flex-wrap items-center tabs" role="tablist">
         <Tab
           name="responses"
-          label="Responses"
+          label={t('Responses')}
           isActive={activeTab === 'responses'}
           onClick={setActiveTab}
           data-testid="mock-server-tab-responses"
         />
         <Tab
           name="routes"
-          label="Routes"
+          label={t('Routes')}
           count={routeCount}
           isActive={activeTab === 'routes'}
           onClick={setActiveTab}
@@ -429,7 +431,7 @@ const MockServerDashboard = ({ instance, collection }) => {
         />
         <Tab
           name="log"
-          label={<>Request Log<MockServerLogCount mockServerUid={mockServerUid} /></>}
+          label={<>{t('Request Log')}<MockServerLogCount mockServerUid={mockServerUid} /></>}
           isActive={activeTab === 'log'}
           onClick={setActiveTab}
           data-testid="mock-server-tab-log"

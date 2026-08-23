@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useRef } from 'react';
 import { IconCheck } from '@tabler/icons';
 import Button from 'ui/Button';
@@ -13,13 +14,14 @@ const FEATURES = [
 ];
 
 const ConnectSpecForm = ({ sourceUrl, setSourceUrl, isLoading, error, setError, onConnect }) => {
+  const { t } = useTranslation();
   const [mode, setMode] = useState('url');
   const fileInputRef = useRef(null);
 
   return (
     <div className="setup-section">
       <div className="setup-header">
-        <h2 className="setup-title">Connect to OpenAPI Spec</h2>
+        <h2 className="setup-title">{t('Connect to OpenAPI Spec')}</h2>
         <p className="setup-description">
           Keep your collection synchronized with an OpenAPI specification. Changes in the spec will be detected automatically.
         </p>
@@ -31,7 +33,7 @@ const ConnectSpecForm = ({ sourceUrl, setSourceUrl, isLoading, error, setError, 
           e.preventDefault(); onConnect();
         }}
       >
-        <label className="url-label">OpenAPI Specification</label>
+        <label className="url-label">{t('OpenAPI Specification')}</label>
         <div className="url-row">
           <div className="setup-mode-toggle">
             <button

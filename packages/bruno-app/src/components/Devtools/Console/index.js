@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { usePersistedState } from 'hooks/usePersistedState';
 import { useSelector, useDispatch } from 'react-redux';
 import ReactJson from 'react-json-view';
@@ -190,6 +191,7 @@ const LogMessage = ({ message, args }) => {
 };
 
 const ConsoleTab = ({ logs, filters, logCounts, onFilterToggle, onToggleAll, onClearLogs }) => {
+  const { t } = useTranslation();
   const logsEndRef = useRef(null);
   const prevLogsCountRef = useRef(0);
 
@@ -209,8 +211,8 @@ const ConsoleTab = ({ logs, filters, logCounts, onFilterToggle, onToggleAll, onC
         {filteredLogs.length === 0 ? (
           <div className="console-empty">
             <IconTerminal2 size={48} strokeWidth={1} />
-            <p>No logs to display</p>
-            <span>Logs will appear here as your application runs</span>
+            <p>{t('No logs to display')}</p>
+            <span>{t('Logs will appear here as your application runs')}</span>
           </div>
         ) : (
           <div className="logs-container">
@@ -233,6 +235,7 @@ const ConsoleTab = ({ logs, filters, logCounts, onFilterToggle, onToggleAll, onC
 
 const Console = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { logs, filters, activeTab, selectedRequest, selectedError, networkFilters, debugErrors } = useSelector((state) => state.logs);
   const collections = useSelector((state) => state.collections.collections);
   const [savedDetailsPanelWidth, setSavedDetailsPanelWidth] = usePersistedState({ key: 'devtools-details-panel-width', default: 400 });
@@ -379,8 +382,8 @@ const Console = () => {
                 counts={logCounts}
                 onFilterToggle={handleFilterToggle}
                 onToggleAll={handleToggleAllFilters}
-                headerLabel="Filter by Type"
-                title="Filter logs by type"
+                headerLabel={t('Filter by Type')}
+                title={t('Filter logs by type')}
                 renderIcon={(type) => <LogIcon type={type} />}
               />
             </div>
@@ -388,7 +391,7 @@ const Console = () => {
               <button
                 className="control-button"
                 onClick={handleClearLogs}
-                title="Clear all logs"
+                title={t('Clear all logs')}
               >
                 <IconTrash size={16} strokeWidth={1.5} />
               </button>
@@ -404,8 +407,8 @@ const Console = () => {
                 counts={requestCounts}
                 onFilterToggle={handleNetworkFilterToggle}
                 onToggleAll={handleToggleAllNetworkFilters}
-                headerLabel="Filter by Method"
-                title="Filter requests by method"
+                headerLabel={t('Filter by Method')}
+                title={t('Filter requests by method')}
               />
             </div>
           </div>
@@ -420,7 +423,7 @@ const Console = () => {
       //           <button
       //             className="control-button"
       //             onClick={handleClearDebugErrors}
-      //             title="Clear all errors"
+      //             title={t('Clear all errors')}
       //           >
       //             <IconTrash size={16} strokeWidth={1.5} />
       //           </button>
@@ -446,7 +449,7 @@ const Console = () => {
             onClick={() => handleTabChange('console')}
           >
             <IconTerminal2 size={16} strokeWidth={1.5} />
-            <span>Console</span>
+            <span>{t('Console')}</span>
           </button>
 
           <button
@@ -455,7 +458,7 @@ const Console = () => {
             onClick={() => handleTabChange('network')}
           >
             <IconNetwork size={16} strokeWidth={1.5} />
-            <span>Network</span>
+            <span>{t('Network')}</span>
           </button>
 
           <button
@@ -463,7 +466,7 @@ const Console = () => {
             onClick={() => handleTabChange('performance')}
           >
             <IconDashboard size={16} strokeWidth={1.5} />
-            <span>Performance</span>
+            <span>{t('Performance')}</span>
           </button>
 
           <button
@@ -471,7 +474,7 @@ const Console = () => {
             onClick={() => handleTabChange('terminal')}
           >
             <IconTerminal2 size={16} strokeWidth={1.5} />
-            <span>Terminal</span>
+            <span>{t('Terminal')}</span>
           </button>
 
           {/* <button
@@ -479,7 +482,7 @@ const Console = () => {
             onClick={() => handleTabChange('debug')}
           >
             <IconBug size={16} strokeWidth={1.5} />
-            <span>Debug</span>
+            <span>{t('Debug')}</span>
           </button> */}
         </div>
 
@@ -488,7 +491,7 @@ const Console = () => {
           <button
             className="control-button close-button"
             onClick={handlecloseConsole}
-            title="Close console"
+            title={t('Close console')}
           >
             <IconX size={16} strokeWidth={1.5} />
           </button>

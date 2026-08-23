@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import get from 'lodash/get';
 import { useTheme } from 'providers/Theme';
@@ -11,6 +12,7 @@ import Table from 'components/Table/index';
 
 const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSave }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { storedTheme } = useTheme();
 
   const oAuth = get(request, 'auth.oauth2', {});
@@ -171,20 +173,20 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
           <IconAdjustmentsHorizontal size={14} className="oauth2-icon" />
         </div>
         <span className="oauth2-section-label">
-          Additional Parameters
+          {t('Additional Parameters')}
         </span>
       </div>
 
       <div className="tabs flex w-full gap-2 my-2">
-        {availableTabs.includes('authorization') && renderTab('authorization', 'Authorization')}
-        {availableTabs.includes('token') && renderTab('token', 'Token')}
-        {availableTabs.includes('refresh') && renderTab('refresh', 'Refresh')}
+        {availableTabs.includes('authorization') && renderTab('authorization', t('Authorization'))}
+        {availableTabs.includes('token') && renderTab('token', t('Token'))}
+        {availableTabs.includes('refresh') && renderTab('refresh', t('Refresh'))}
       </div>
       <Table
         headers={[
-          { name: 'Key', accessor: 'name', width: '30%' },
-          { name: 'Value', accessor: 'value', width: '30%' },
-          { name: 'Send In', accessor: 'sendIn', width: '150px' },
+          { name: t('Key'), accessor: 'name', width: '30%' },
+          { name: t('Value'), accessor: 'value', width: '30%' },
+          { name: t('Send In'), accessor: 'sendIn', width: '150px' },
           { name: '', accessor: '', width: '15%' }
         ]}
       >
@@ -281,7 +283,7 @@ const AdditionalParams = ({ item = {}, request, updateAuth, collection, handleSa
         onClick={addButtonDisabled ? null : handleAddNewAdditionalParam}
       >
         <IconPlus size={16} strokeWidth={1.5} style={{ marginLeft: '2px' }} />
-        <span className="ml-1 text-gray-500">Add Parameter</span>
+        <span className="ml-1 text-gray-500">{t('Add Parameter')}</span>
       </div>
     </StyledWrapper>
   );

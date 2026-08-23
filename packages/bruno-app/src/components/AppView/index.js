@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { sendNetworkRequest } from 'utils/network/index';
 import { findEnvironmentInCollection } from 'utils/collections';
 import {
@@ -147,6 +148,7 @@ const REQUEST_CTX_BOOTSTRAP = `<script>
 
 const AppView = ({ item, collection, code }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { displayedTheme, theme, themeVariantLight, themeVariantDark } = useTheme();
   const src = useMemo(() => toDataUrl(wrapHtml(REQUEST_CTX_BOOTSTRAP, code || '')), [code]);
 
@@ -302,9 +304,9 @@ const AppView = ({ item, collection, code }) => {
   return (
     <StyledWrapper data-testid="app-view">
       <div className="app-view-toolbar">
-        <span>App mode - {item.name}</span>
+        <span>{t('App mode - {{name}}', { name: item.name })}</span>
         <button type="button" className="app-exit-btn" data-testid="app-exit-button" onClick={disableApp}>
-          Exit to editor
+          {t('Exit to editor')}
         </button>
       </div>
       {code && code.trim().length ? (
@@ -319,8 +321,8 @@ const AppView = ({ item, collection, code }) => {
         </div>
       ) : (
         <EmptyAppState
-          title="No app yet"
-          hint="Add HTML/JS in the App tab to render a custom UI for this request."
+          title={t('No app yet')}
+          hint={t('Add HTML/JS in the App tab to render a custom UI for this request.')}
           actions={(
             <>
               <Button
@@ -330,7 +332,7 @@ const AppView = ({ item, collection, code }) => {
                 onClick={goToAppTab}
                 data-testid="empty-app-add-code"
               >
-                Add app code
+                {t('Add app code')}
               </Button>
               <Button
                 size="sm"
@@ -339,7 +341,7 @@ const AppView = ({ item, collection, code }) => {
                 onClick={openAppsDocs}
                 data-testid="empty-app-learn-more"
               >
-                Learn more
+                {t('Learn more')}
               </Button>
             </>
           )}

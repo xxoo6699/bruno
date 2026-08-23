@@ -3,6 +3,7 @@ import find from 'lodash/find';
 import Dropdown from 'components/Dropdown';
 import { IconWorld, IconDatabase, IconCaretDown } from '@tabler/icons';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { addTab } from 'providers/ReduxStore/slices/tabs';
 import { selectEnvironment } from 'providers/ReduxStore/slices/collections/actions';
 import { selectGlobalEnvironment } from 'providers/ReduxStore/slices/global-environments';
@@ -99,6 +100,7 @@ const EnvironmentBadge = ({ environment, icon: Icon }) => {
  * Dropdown trigger component showing active environments
  */
 const DropdownTrigger = forwardRef(({ collectionEnv, globalEnv }, ref) => {
+  const { t } = useTranslation();
   const hasAnyEnv = collectionEnv || globalEnv;
 
   // Empty state - no environments selected
@@ -109,7 +111,7 @@ const DropdownTrigger = forwardRef(({ collectionEnv, globalEnv }, ref) => {
         className="current-environment flex align-center justify-center cursor-pointer bg-transparent no-environments"
         data-testid="environment-selector-trigger"
       >
-        <span className="env-text-inactive max-w-36 truncate no-wrap">No Environment</span>
+        <span className="env-text-inactive max-w-36 truncate no-wrap">{t('No Environment')}</span>
         <IconCaretDown className="caret flex items-center justify-center" size={12} strokeWidth={2} />
       </div>
     );
@@ -176,6 +178,7 @@ const DropdownTrigger = forwardRef(({ collectionEnv, globalEnv }, ref) => {
 
 const EnvironmentSelector = ({ collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const dropdownTippyRef = useRef();
   const [activeTab, setActiveTab] = useState('collection');
   const [showCreateGlobalModal, setShowCreateGlobalModal] = useState(false);
@@ -201,7 +204,7 @@ const EnvironmentSelector = ({ collection }) => {
     [environments, globalEnvironments]
   );
 
-  const description = EMPTY_STATE_DESCRIPTIONS[activeTab];
+  const description = t(EMPTY_STATE_DESCRIPTIONS[activeTab]);
 
   const hideDropdown = () => dropdownTippyRef.current?.hide();
 
@@ -213,11 +216,11 @@ const EnvironmentSelector = ({ collection }) => {
 
     dispatch(action)
       .then(() => {
-        toast.success(environment ? `Environment changed to ${environment.name}` : 'No Environments are active now');
+        toast.success(environment ? t('Environment changed to {{name}}', { name: environment.name }) : t('No Environments are active now'));
         hideDropdown();
       })
       .catch(() => {
-        toast.error('An error occurred while selecting the environment');
+        toast.error(t('An error occurred while selecting the environment'));
       });
   };
 
@@ -287,7 +290,7 @@ const EnvironmentSelector = ({ collection }) => {
               >
                 <span className="tab-content-wrapper">
                   {tab.icon}
-                  {tab.label}
+                  {t(tab.label)}
                 </span>
               </button>
             ))}

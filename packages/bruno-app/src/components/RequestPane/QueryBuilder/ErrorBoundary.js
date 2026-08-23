@@ -1,3 +1,4 @@
+import i18n from 'i18n';
 import React from 'react';
 import { IconAlertTriangle } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
@@ -28,7 +29,7 @@ class QueryBuilderErrorBoundary extends React.Component {
         <StyledWrapper>
           <div className="schema-empty-state">
             <IconAlertTriangle size={32} strokeWidth={1.5} className="empty-state-icon warning" />
-            <div className="empty-state-title">Something went wrong</div>
+            <div className="empty-state-title">{i18n.t('Something went wrong')}</div>
             <div className="empty-state-description">
               The Query Builder encountered an unexpected error. Try reloading the schema or manually using the editor.
             </div>

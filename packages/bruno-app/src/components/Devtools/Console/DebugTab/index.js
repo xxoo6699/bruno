@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { IconBug } from '@tabler/icons';
 import {
   setSelectedError,
@@ -59,6 +60,7 @@ const ErrorRow = ({ error, isSelected, onClick }) => {
 
 const DebugTab = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { debugErrors, selectedError } = useSelector((state) => state.logs);
 
   const handleErrorClick = (error) => {
@@ -75,15 +77,15 @@ const DebugTab = () => {
         {debugErrors.length === 0 ? (
           <div className="debug-empty">
             <IconBug size={48} strokeWidth={1} />
-            <p>No errors</p>
-            <span>console.error() calls will appear here</span>
+            <p>{t('No errors')}</p>
+            <span>{t('console.error() calls will appear here')}</span>
           </div>
         ) : (
           <div className="errors-container">
             <div className="errors-header">
-              <div>Message</div>
-              <div>Location</div>
-              <div className="text-right">Time</div>
+              <div>{t('Message')}</div>
+              <div>{t('Location')}</div>
+              <div className="text-right">{t('Time')}</div>
             </div>
 
             <div className="errors-list">

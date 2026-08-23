@@ -16,11 +16,13 @@ import { openDevtoolsAndSwitchToTerminal } from 'utils/terminal';
 import { isEnvironmentValidationError } from 'utils/environments';
 import toast from 'react-hot-toast';
 import { getKeyBindingsForActionAllOS } from './keyMappings';
+import { useTranslation } from 'react-i18next';
 
 export const HotkeysContext = React.createContext();
 
 export const HotkeysProvider = (props) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const tabs = useSelector((state) => state.tabs.tabs);
   const collections = useSelector((state) => state.collections.collections);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
@@ -229,7 +231,7 @@ export const HotkeysProvider = (props) => {
         if (environment && variables) {
           dispatch(saveEnvironment(variables, environmentUid, collectionUid))
             .catch((err) =>
-              toast.error(isEnvironmentValidationError(err) ? err.message : 'Failed to save environment')
+              toast.error(isEnvironmentValidationError(err) ? err.message : t('Failed to save environment'))
             );
         }
       }

@@ -23,8 +23,10 @@ import GitNotFoundModal from 'components/Git/GitNotFoundModal/index';
 import SkippedPathsWarning from 'components/SkippedPathsWarning';
 import toast from 'react-hot-toast';
 import get from 'lodash/get';
+import { useTranslation } from 'react-i18next';
 
 const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null }) => {
+  const { t } = useTranslation();
   const [collectionPaths, setCollectionPaths] = useState([]);
   const [skippedCollectionPaths, setSkippedCollectionPaths] = useState([]);
   const [selectedCollectionPaths, setSelectedCollectionPaths] = useState([]);
@@ -205,7 +207,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
           onClick={handleBackButtonClick}
           data-testid="clone-git-repository-modal-back-btn"
         >
-          Back
+          {t('Back')}
         </Button>
       );
     }
@@ -255,7 +257,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
     <Portal id="clone-repository-portal">
       <Modal
         size="md"
-        title="Clone Git Repository"
+        title={t('Clone Git Repository')}
         confirmText={getConfirmText()}
         handleConfirm={handleConfirm}
         handleCancel={onClose}
@@ -285,7 +287,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
                   : (
                       <>
                         <label htmlFor="repository-url" className="flex items-center font-semibold">
-                          Git Repository URL
+                          {t('Git Repository URL')}
                         </label>
                         <input
                           id="repository-url"
@@ -306,7 +308,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
                   <div className="text-red-500">{formik.errors.repositoryUrl}</div>
                 )}
                 <label htmlFor="collection-location" className="block font-semibold mt-3">
-                  Location
+                  {t('Location')}
                 </label>
                 <input
                   id="collection-location"
@@ -326,7 +328,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
                 )}
                 <div className="mt-1">
                   <span className="text-link cursor-pointer hover:underline" onClick={browse}>
-                    Browse
+                    {t('Browse')}
                   </span>
                 </div>
               </div>
@@ -363,13 +365,13 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
                   {collectionPaths.length === 0 && (
                     <div className="scan-warning flex items-start gap-2">
                       <IconAlertCircle className="scan-warning-icon" size={18} strokeWidth={1.5} />
-                      <div>No Bruno collections were found in this repository.</div>
+                      <div>{t('No Bruno collections were found in this repository.')}</div>
                     </div>
                   )}
                   {collectionPaths.length > 0 && (
                     <SelectionList
-                      title="Collections"
-                      searchPlaceholder="Search Collections"
+                      title={t('Collections')}
+                      searchPlaceholder={t('Search Collections')}
                       items={collectionPaths}
                       selectedItems={selectedCollectionPaths}
                       onSelectAll={handleSelectAllCollections}

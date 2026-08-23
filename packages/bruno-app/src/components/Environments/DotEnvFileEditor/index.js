@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useMemo, useEffect, useState } from 'react';
 import { useTheme } from 'providers/Theme';
+import { useTranslation } from 'react-i18next';
 import { uuid } from 'utils/common';
 import { useFormik } from 'formik';
 import { variableNameRegex } from 'utils/common/regex';
@@ -25,6 +26,7 @@ const DotEnvFileEditor = ({
   item
 }) => {
   const { displayedTheme } = useTheme();
+  const { t } = useTranslation();
   const [tableHeight, setTableHeight] = useState(MIN_TABLE_HEIGHT);
   // Derive a single baseline raw value for consistent dirty-tracking
   const baselineRaw = rawContent ?? variablesToRaw(variables || []);
@@ -205,14 +207,14 @@ const DotEnvFileEditor = ({
     });
 
     if (hasValidationErrors) {
-      toast.error('Please fix validation errors before saving');
+      toast.error(t('Please fix validation errors before saving'));
       return;
     }
 
     setIsSaving(true);
     onSave(variablesToSave)
       .then(() => {
-        toast.success('Changes saved successfully');
+        toast.success(t('Changes saved successfully'));
         const newValues = [
           ...variablesToSave,
           { uid: uuid(), name: '', value: '' }
@@ -223,7 +225,7 @@ const DotEnvFileEditor = ({
       })
       .catch((error) => {
         console.error(error);
-        toast.error('An error occurred while saving the changes');
+        toast.error(t('An error occurred while saving the changes'));
         window.dispatchEvent(new Event('dotenv-save-failed'));
       })
       .finally(() => {
@@ -235,20 +237,20 @@ const DotEnvFileEditor = ({
     if (isSaving) return;
 
     if (!onSaveRaw) {
-      toast.error('Raw save is not supported');
+      toast.error(t('Raw save is not supported'));
       return;
     }
 
     setIsSaving(true);
     onSaveRaw(rawValue)
       .then(() => {
-        toast.success('Changes saved successfully');
+        toast.success(t('Changes saved successfully'));
         setIsModified(false);
         window.dispatchEvent(new Event('dotenv-save-complete'));
       })
       .catch((error) => {
         console.error(error);
-        toast.error('An error occurred while saving the changes');
+        toast.error(t('An error occurred while saving the changes'));
         window.dispatchEvent(new Event('dotenv-save-failed'));
       })
       .finally(() => {

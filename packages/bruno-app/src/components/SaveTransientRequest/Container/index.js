@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { pluralizeWord } from 'utils/common';
@@ -11,6 +12,7 @@ import SaveTransientRequest from 'components/SaveTransientRequest';
 import StyledWrapper from './StyledWrapper';
 
 const SaveTransientRequestContainer = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const modals = useSelector((state) => state.collections.saveTransientRequestModals);
   const [openItemUid, setOpenItemUid] = useState(null);
@@ -62,7 +64,7 @@ const SaveTransientRequestContainer = () => {
   return (
     <Modal
       size="md"
-      title="Unsaved Transient Requests"
+      title={t('Unsaved Transient Requests')}
       hideFooter={true}
       disableEscapeKey={true}
       disableCloseOnOutsideClick={true}
@@ -70,7 +72,7 @@ const SaveTransientRequestContainer = () => {
     >
       <div className="flex items-center">
         <IconAlertTriangle size={32} strokeWidth={1.5} className="text-yellow-600" />
-        <h1 className="ml-2 text-lg font-medium">You have unsaved transient requests</h1>
+        <h1 className="ml-2 text-lg font-medium">{t('You have unsaved transient requests')}</h1>
       </div>
       <p className="mt-4">
         You have <span className="font-medium">{modals.length}</span>{' '}

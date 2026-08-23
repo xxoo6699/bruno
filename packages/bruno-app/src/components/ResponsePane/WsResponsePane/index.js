@@ -15,6 +15,7 @@ import ResponseLayoutToggle from '../ResponseLayoutToggle';
 import ResponsiveTabs from 'ui/ResponsiveTabs';
 import WSMessagesList from './WSMessagesList';
 import WSResponseHeaders from './WSResponseHeaders';
+import { useTranslation } from 'react-i18next';
 
 const WSResult = ({ response }) => {
   return <WSMessagesList messages={response.responses || []} />;
@@ -22,6 +23,7 @@ const WSResult = ({ response }) => {
 
 const WSResponsePane = ({ item, collection }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
   const isLoading = ['queued', 'sending'].includes(item.requestState);
@@ -47,17 +49,17 @@ const WSResponsePane = ({ item, collection }) => {
     return [
       {
         key: 'response',
-        label: 'Messages',
+        label: t('Messages'),
         indicator: messagesCount > 0 ? <sup className="ml-1 font-medium">{messagesCount}</sup> : null
       },
       {
         key: 'headers',
-        label: 'Headers',
+        label: t('Headers'),
         indicator: headersCount > 0 ? <sup className="ml-1 font-medium">{headersCount}</sup> : null
       },
       {
         key: 'timeline',
-        label: 'Timeline',
+        label: t('Timeline'),
         indicator: null
       }
     ];
@@ -75,7 +77,7 @@ const WSResponsePane = ({ item, collection }) => {
         return <Timeline collection={collection} item={item} activeTabUid={activeTabUid} />;
       }
       default: {
-        return <div>404 | Not found</div>;
+        return <div>{t('404 | Not found')}</div>;
       }
     }
   };
@@ -97,12 +99,12 @@ const WSResponsePane = ({ item, collection }) => {
   }
 
   if (!activeTabUid) {
-    return <div>Something went wrong</div>;
+    return <div>{t('Something went wrong')}</div>;
   }
 
   const focusedTab = find(tabs, (t) => t.uid === activeTabUid);
   if (!focusedTab || !focusedTab.uid || !focusedTab.responsePaneTab) {
-    return <div className="pb-4 px-4">An error occurred!</div>;
+    return <div className="pb-4 px-4">{t('An error occurred!')}</div>;
   }
 
   const rightContent = !isLoading ? (

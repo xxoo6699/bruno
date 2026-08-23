@@ -18,6 +18,7 @@ import Button from 'ui/Button';
 import { saveCollectionSecurityConfig } from 'providers/ReduxStore/slices/collections/actions';
 import { findCollectionByPathname } from 'utils/collections';
 import StyledWrapper from './StyledWrapper';
+import { useTranslation } from 'react-i18next';
 
 const PackageList = ({ items }) => (
   <ul className="pkg-list">
@@ -67,6 +68,7 @@ const getInstallFailureMessage = (result) => {
 };
 
 const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const collections = useSelector((state) => state.collections.collections);
   const collection = useMemo(
@@ -176,9 +178,9 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
     <StyledWrapper>
       <Modal
         size="md"
-        title="Install packages"
+        title={t('Install packages')}
         confirmText={confirmText}
-        cancelText="Skip"
+        cancelText={t('Skip')}
         hideCancel={installDone || (needsInstall.length === 0 && !installFailed)}
         confirmDisabled={installing}
         confirmButtonColor={isDismissAction ? 'secondary' : 'primary'}
@@ -190,7 +192,7 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
         {needsInstall.length > 0 && (
           <div className="pkg-section">
             <div className="pkg-section-head">
-              <span className="pkg-section-title">Packages used in scripts</span>
+              <span className="pkg-section-title">{t('Packages used in scripts')}</span>
               <span className="pkg-section-count">{needsInstall.length}</span>
             </div>
             {!installing && !installDone && (
@@ -205,7 +207,7 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
               <div className="pkg-cmd-block">
                 <div className="pkg-cmd-label">
                   <IconTerminal2 size={12} strokeWidth={1.75} />
-                  <span>Or install manually</span>
+                  <span>{t('Or install manually')}</span>
                 </div>
                 <div className="pkg-cmd-row">
                   <code className="pkg-cmd-code">{installCommand}</code>
@@ -213,7 +215,7 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
                     type="button"
                     className="pkg-cmd-copy"
                     onClick={handleCopyCommand}
-                    aria-label="Copy command"
+                    aria-label={t('Copy command')}
                   >
                     {copied ? <IconCheck size={14} strokeWidth={1.75} /> : <IconCopy size={14} strokeWidth={1.5} />}
                   </button>
@@ -244,16 +246,17 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
           <div className="pkg-section pkg-devmode">
             <div className="pkg-devmode-head">
               <IconAlertTriangle size={18} strokeWidth={1.75} />
-              <span className="pkg-devmode-title">Scripts use libraries that need Developer Mode</span>
+              <span className="pkg-devmode-title">{t('Scripts use libraries that need Developer Mode')}</span>
             </div>
             <p className="pkg-devmode-desc">
-              Your imported scripts call {renderPackageExamples(devMode)}
-              {', '}which need <strong>Developer Mode</strong> to run.
+              {t('Your imported scripts call')} {renderPackageExamples(devMode)}
+              {', '}
+              {t('which need')} <strong>{t('Developer Mode')}</strong> {t('to run.')}
             </p>
             <PackageList items={devMode} />
             <div className="pkg-devmode-trust">
               <IconShieldLock size={15} strokeWidth={1.75} />
-              <span>Only enable Developer Mode for collections you trust.</span>
+              <span>{t('Only enable Developer Mode for collections you trust.')}</span>
             </div>
             <Button
               color="primary"
@@ -263,7 +266,7 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
               onClick={handleSwitchToDeveloperMode}
               data-testid="switch-to-developer-mode"
             >
-              Switch to Developer Mode
+              {t('Switch to Developer Mode')}
             </Button>
           </div>
         )}
@@ -272,7 +275,7 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
           <div className="pkg-section pkg-section-danger">
             <div className="pkg-section-head">
               <IconBan size={14} strokeWidth={1.75} />
-              <span className="pkg-section-title">Not supported in Bruno</span>
+              <span className="pkg-section-title">{t('Not supported in Bruno')}</span>
               <span className="pkg-section-count">{unsupported.length}</span>
             </div>
             <p className="pkg-section-help">
@@ -288,23 +291,24 @@ const PostmanPackageReport = ({ report, collectionPath, onClose }) => {
             <div className="pkg-status pkg-status-success">
               <IconCircleCheck size={14} strokeWidth={1.75} />
               <span>
-                This collection runs in <strong>Developer Mode</strong> - your scripts can use these
-                packages right away.
+                {t('This collection runs in')} <strong>{t('Developer Mode')}</strong> -{' '}
+                {t('your scripts can use these packages right away.')}
               </span>
             </div>
           ) : (
             <div className="pkg-section pkg-devmode">
               <div className="pkg-devmode-head">
                 <IconAlertTriangle size={18} strokeWidth={1.75} />
-                <span className="pkg-devmode-title">External modules require Developer Mode</span>
+                <span className="pkg-devmode-title">{t('External modules require Developer Mode')}</span>
               </div>
               <p className="pkg-devmode-desc">
-                Custom npm packages (such as {renderPackageExamples(installResult.installed || needsInstall)})
-                {' '}are installed, but this collection is currently running in <strong>Safe Mode</strong>.
+                {t('Custom npm packages (such as')} {renderPackageExamples(installResult.installed || needsInstall)})
+                {' '}
+                {t('are installed, but this collection is currently running in')} <strong>{t('Safe Mode')}</strong>.
               </p>
               <div className="pkg-devmode-trust">
                 <IconShieldLock size={15} strokeWidth={1.75} />
-                <span>Only enable Developer Mode for collections you trust.</span>
+                <span>{t('Only enable Developer Mode for collections you trust.')}</span>
               </div>
               <Button
                 color="primary"

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useId } from 'react';
 import { getRelativePathWithinBasePath, getBasename } from 'utils/common/path';
 import { useDispatch } from 'react-redux';
@@ -22,6 +23,7 @@ import StyledWrapper from './StyledWrapper';
  * @param {React.ComponentType} props.icon - Custom icon component (defaults to IconUpload)
  */
 const FilePickerEditor = ({
+
   value,
   onChange,
   collection,
@@ -30,7 +32,9 @@ const FilePickerEditor = ({
   displayMode = 'label',
   label,
   icon: CustomIcon
+
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const warningTooltipId = `file-picker-warning-${useId().replace(/:/g, '')}`;
 
@@ -120,7 +124,7 @@ const FilePickerEditor = ({
             <button
               className="clear-btn"
               onClick={clear}
-              title="Remove file"
+              title={t('Remove file')}
               type="button"
             >
               <IconX size={16} />
@@ -134,7 +138,7 @@ const FilePickerEditor = ({
             >
               <div className="warning-tooltip" data-testid="file-picker-warning-tooltip">
                 <IconAlertTriangleFilled size={14} />
-                <span>The file above is not in the given directory, please upload it again.</span>
+                <span>{t('The file above is not in the given directory, please upload it again.')}</span>
               </div>
             </Tooltip>
           )}

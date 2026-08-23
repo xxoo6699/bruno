@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import i18n, { storeLanguage } from 'i18n';
 import {
   updateCookies,
   updatePreferences,
@@ -219,10 +220,10 @@ const useIpcEvents = () => {
 
     const removeDisplayErrorListener = ipcRenderer.on('main:display-error', (error) => {
       if (typeof error === 'string') {
-        return toast.error(error || 'Something went wrong!');
+        return toast.error(error || i18n.t('Something went wrong!'));
       }
       if (typeof error === 'object') {
-        return toast.error(error.message || 'Something went wrong!');
+        return toast.error(error.message || i18n.t('Something went wrong!'));
       }
     });
 
@@ -338,6 +339,13 @@ const useIpcEvents = () => {
 
     const removePreferencesUpdatesListener = ipcRenderer.on('main:load-preferences', (val) => {
       dispatch(updatePreferences(val));
+
+      // keep the i18n language in sync with the persisted preference
+      const locale = val?.general?.locale;
+      if (locale && locale !== i18n.language) {
+        i18n.changeLanguage(locale);
+        storeLanguage(locale);
+      }
     });
 
     const removeCookieUpdateListener = ipcRenderer.on('main:cookies-update', (val) => {

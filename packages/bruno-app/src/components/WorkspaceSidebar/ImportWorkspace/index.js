@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
@@ -13,6 +14,7 @@ import { multiLineMsg } from 'utils/common/index';
 import Help from 'components/Help';
 
 const ImportWorkspace = ({ onClose }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const preferences = useSelector((state) => state.app.preferences);
   const [dragActive, setDragActive] = useState(false);
@@ -137,7 +139,7 @@ const ImportWorkspace = ({ onClose }) => {
   return (
     <Modal
       size="md"
-      title="Import Workspace"
+      title={t('Import Workspace')}
       confirmText={isSubmitting ? 'Importing...' : 'Import'}
       handleConfirm={formik.handleSubmit}
       handleCancel={onClose}
@@ -145,7 +147,7 @@ const ImportWorkspace = ({ onClose }) => {
     >
       <div className="flex flex-col">
         <div className="mb-4">
-          <h3 className="font-semibold mb-2">Workspace File</h3>
+          <h3 className="font-semibold mb-2">{t('Workspace File')}</h3>
           {selectedFile ? (
             <div className="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800">
               <div className="flex items-center gap-2">

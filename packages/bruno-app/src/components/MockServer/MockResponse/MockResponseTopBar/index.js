@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import IconEdit from 'components/Icons/IconEdit';
 import { IconDeviceFloppy } from '@tabler/icons';
 import StyledWrapper from 'components/ResponseExample/ResponseExampleTopBar/StyledWrapper';
@@ -24,6 +25,7 @@ const MockResponseTopBar = ({
   copiedFrom
 }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const example = useMemo(() => {
     return item.draft
@@ -69,7 +71,7 @@ const MockResponseTopBar = ({
                     value={example?.name || ''}
                     onChange={handleNameChange}
                     className="example-input example-input-name"
-                    placeholder="Mock response name"
+                    placeholder={t('Mock response name')}
                     autoFocus
                     data-testid="mock-response-name-input"
                   />
@@ -82,7 +84,7 @@ const MockResponseTopBar = ({
                     value={example?.description || ''}
                     onChange={handleDescriptionChange}
                     className="example-input example-input-description"
-                    placeholder="Description"
+                    placeholder={t('Description')}
                     rows={3}
                     data-testid="mock-response-description-input"
                   />
@@ -105,7 +107,7 @@ const MockResponseTopBar = ({
                 onClick={onCancel}
                 data-testid="mock-response-cancel-btn"
               >
-                Cancel
+                {t('Cancel')}
               </Button>
               <Button
                 color="primary"
@@ -115,7 +117,7 @@ const MockResponseTopBar = ({
                 disabled={Boolean(nameError || descriptionError)}
                 data-testid="mock-response-save-btn"
               >
-                Save
+                {t('Save')}
               </Button>
             </div>
           </div>
@@ -159,7 +161,7 @@ const MockResponseTopBar = ({
               onClick={onEditToggle}
               data-testid="mock-response-edit-btn"
             >
-              Edit
+              {t('Edit')}
             </Button>
             <Button
               variant="outline"
@@ -168,7 +170,7 @@ const MockResponseTopBar = ({
               onClick={onDelete}
               data-testid="mock-response-delete-btn"
             >
-              Delete
+              {t('Delete')}
             </Button>
           </div>
         </div>

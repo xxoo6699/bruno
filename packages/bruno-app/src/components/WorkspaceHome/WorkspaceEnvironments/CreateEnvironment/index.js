@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import Portal from 'components/Portal';
 import Modal from 'components/Modal';
 import { addGlobalEnvironment } from 'providers/ReduxStore/slices/global-environments';
@@ -10,6 +11,7 @@ import { validateName, validateNameError } from 'utils/common/regex';
 
 const CreateEnvironment = ({ onClose, onEnvironmentCreated }) => {
   const globalEnvs = useSelector((state) => state?.globalEnvironments?.globalEnvironments);
+  const { t } = useTranslation();
 
   const validateEnvironmentName = (name) => {
     const trimmedName = name?.toLowerCase().trim();
@@ -25,26 +27,26 @@ const CreateEnvironment = ({ onClose, onEnvironmentCreated }) => {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(1, 'Must be at least 1 character')
-        .max(255, 'Must be 255 characters or less')
+        .min(1, t('Must be at least 1 character'))
+        .max(255, t('Must be 255 characters or less'))
         .test('is-valid-filename', function (value) {
           const isValid = validateName(value);
           return isValid ? true : this.createError({ message: validateNameError(value) });
         })
-        .required('Name is required')
-        .test('duplicate-name', 'Global environment already exists', validateEnvironmentName)
+        .required(t('Name is required'))
+        .test('duplicate-name', t('Global environment already exists'), validateEnvironmentName)
     }),
     onSubmit: (values) => {
       dispatch(addGlobalEnvironment({ name: values.name }))
         .then(() => {
-          toast.success('Global environment created!');
+          toast.success(t('Global environment created!'));
           onClose();
           // Call the callback if provided
           if (onEnvironmentCreated) {
             onEnvironmentCreated();
           }
         })
-        .catch(() => toast.error('An error occurred while creating the environment'));
+        .catch(() => toast.error(t('An error occurred while creating the environment')));
     }
   });
 
@@ -62,15 +64,15 @@ const CreateEnvironment = ({ onClose, onEnvironmentCreated }) => {
     <Portal>
       <Modal
         size="md"
-        title="Create Global Environment"
-        confirmText="Create"
+        title={t('Create Global Environment')}
+        confirmText={t('Create')}
         handleConfirm={onSubmit}
         handleCancel={onClose}
       >
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="environment-name" className="block font-semibold">
-              Environment Name
+              {t('Environment Name')}
             </label>
             <div className="flex items-center mt-2">
               <input

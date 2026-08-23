@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'providers/Theme';
@@ -14,6 +15,7 @@ import StyledWrapper from './StyledWrapper';
 const headerAutoCompleteList = StandardHTTPHeaders.map((e) => e.header);
 
 const ResponseExampleHeaders = ({ editMode, item, collection, exampleUid }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const tabs = useSelector((state) => state.tabs.tabs);
@@ -141,7 +143,7 @@ const ResponseExampleHeaders = ({ editMode, item, collection, exampleUid }) => {
 
   return (
     <StyledWrapper className="w-full mt-4">
-      <div className="mb-3 title text-xs font-bold">Headers</div>
+      <div className="mb-3 title text-xs font-bold">{t('Headers')}</div>
       <EditableTable
         tableId="example-headers"
         columnWidths={exampleHeadersWidths}

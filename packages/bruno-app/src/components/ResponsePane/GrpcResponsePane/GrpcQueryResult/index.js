@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CodeEditor from 'components/CodeEditor';
 import { get } from 'lodash';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'providers/Theme/index';
 import StyledWrapper from './StyledWrapper';
 import GrpcError from '../GrpcError';
@@ -9,6 +10,7 @@ import { IconChevronDown, IconChevronUp } from '@tabler/icons';
 
 const GrpcQueryResult = ({ item, collection }) => {
   const { displayedTheme } = useTheme();
+  const { t } = useTranslation();
   const preferences = useSelector((state) => state.app.preferences);
   const [showErrorMessage, setShowErrorMessage] = useState(true);
   const [expandedIndex, setExpandedIndex] = useState(0);
@@ -40,7 +42,7 @@ const GrpcQueryResult = ({ item, collection }) => {
   if (!hasResponses && !hasError) {
     return (
       <StyledWrapper className="w-full h-full relative flex flex-col">
-        <div className="empty-state">No messages received</div>
+        <div className="empty-state">{t('No messages received')}</div>
       </StyledWrapper>
     );
   }
@@ -80,7 +82,7 @@ const GrpcQueryResult = ({ item, collection }) => {
                     >
                       <span className="message-label">
                         Response {originalIndex + 1}
-                        {index === 0 && <span className="latest-badge">Latest</span>}
+                        {index === 0 && <span className="latest-badge">{t('Latest')}</span>}
                       </span>
                       <button className="toggle-btn">
                         {isExpanded ? (
@@ -112,7 +114,7 @@ const GrpcQueryResult = ({ item, collection }) => {
       )}
       {hasError && !hasResponses && !showErrorMessage && (
         <div className="empty-state">
-          No messages received. A server error occurred but has been dismissed.
+          {t('No messages received. A server error occurred but has been dismissed.')}
         </div>
       )}
     </StyledWrapper>

@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import EditableTable from 'components/EditableTable';
 import { uuid } from 'utils/common';
 import StyledWrapper from './StyledWrapper';
@@ -30,6 +31,7 @@ const KEY_PLACEHOLDERS = {
 };
 
 const MockResponseRules = ({ rules, editMode, onChange, onAddRule }) => {
+  const { t } = useTranslation();
   const conditions = rules?.conditions || [];
   const operator = rules?.operator === 'OR' ? 'OR' : 'AND';
   const rowUidsRef = useRef([]);
@@ -90,24 +92,24 @@ const MockResponseRules = ({ rules, editMode, onChange, onAddRule }) => {
   const columns = [
     {
       key: 'target',
-      name: 'Target',
+      name: t('Target'),
       width: '20%',
       render: ({ value, onChange: onCellChange }) => (
         <select
           value={value || DEFAULT_CONDITION.target}
           disabled={!editMode}
           onChange={(event) => onCellChange(event.target.value)}
-          aria-label="Rule target"
+          aria-label={t('Rule target')}
         >
           {TARGET_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+            <option key={option.value} value={option.value}>{t(option.label)}</option>
           ))}
         </select>
       )
     },
     {
       key: 'key',
-      name: 'Key',
+      name: t('Key'),
       isKeyField: true,
       width: '27%',
       readOnly: !editMode,
@@ -127,27 +129,27 @@ const MockResponseRules = ({ rules, editMode, onChange, onAddRule }) => {
     },
     {
       key: 'operator',
-      name: 'Operator',
+      name: t('Operator'),
       width: '22%',
       render: ({ value, onChange: onCellChange }) => (
         <select
           value={value === 'regex' ? 'matches' : (value || DEFAULT_CONDITION.operator)}
           disabled={!editMode}
           onChange={(event) => onCellChange(event.target.value)}
-          aria-label="Rule operator"
+          aria-label={t('Rule operator')}
         >
           {OPERATOR_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+            <option key={option.value} value={option.value}>{t(option.label)}</option>
           ))}
         </select>
       )
     },
     {
       key: 'value',
-      name: 'Value',
+      name: t('Value'),
       width: '31%',
       readOnly: !editMode,
-      placeholder: 'Value'
+      placeholder: t('Value')
     }
   ];
 
@@ -155,7 +157,7 @@ const MockResponseRules = ({ rules, editMode, onChange, onAddRule }) => {
     <StyledWrapper ref={wrapperRef}>
       <div className="flex items-center justify-between mb-3 text-xs">
         <div className="flex items-center gap-2">
-          <label htmlFor="mock-response-rule-operator" className="font-medium">Match</label>
+          <label htmlFor="mock-response-rule-operator" className="font-medium">{t('Match')}</label>
           <select
             id="mock-response-rule-operator"
             className="rule-operator"
@@ -163,8 +165,8 @@ const MockResponseRules = ({ rules, editMode, onChange, onAddRule }) => {
             disabled={!editMode}
             onChange={(event) => onChange({ operator: event.target.value, conditions })}
           >
-            <option value="AND">All rules (AND)</option>
-            <option value="OR">Any rule (OR)</option>
+            <option value="AND">{t('All rules (AND)')}</option>
+            <option value="OR">{t('Any rule (OR)')}</option>
           </select>
         </div>
         {!editMode ? (
@@ -174,14 +176,14 @@ const MockResponseRules = ({ rules, editMode, onChange, onAddRule }) => {
             onClick={handleAddRule}
             data-testid="mock-response-add-rule-btn"
           >
-            + Add Rule
+            {t('+ Add Rule')}
           </button>
         ) : null}
       </div>
 
       {rows.length === 0 && !editMode ? (
         <div className="text-xs opacity-70">
-          No rules - every request on this route gets this response.
+          {t('No rules - every request on this route gets this response.')}
         </div>
       ) : (
         <EditableTable

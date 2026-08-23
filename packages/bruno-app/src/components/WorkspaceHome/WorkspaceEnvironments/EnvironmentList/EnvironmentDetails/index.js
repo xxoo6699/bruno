@@ -1,6 +1,7 @@
 import { IconCopy, IconEdit, IconTrash, IconCheck, IconX, IconSearch, IconDeviceFloppy } from '@tabler/icons';
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { renameGlobalEnvironment, updateGlobalEnvironmentColor } from 'providers/ReduxStore/slices/global-environments';
 import { updateTabState } from 'providers/ReduxStore/slices/tabs';
 import { validateName, validateNameError } from 'utils/common/regex';
@@ -16,6 +17,7 @@ import StyledWrapper from './StyledWrapper';
 
 const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuery, setSearchQuery, isSearchExpanded, setIsSearchExpanded, debouncedSearchQuery, searchInputRef }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const globalEnvs = useSelector((state) => state?.globalEnvironments?.globalEnvironments);
   const globalEnvironmentDraft = useSelector((state) => state.globalEnvironments.globalEnvironmentDraft);
 
@@ -44,15 +46,15 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
 
   const validateEnvironmentName = (name) => {
     if (!name || name.trim() === '') {
-      return 'Name is required';
+      return t('Name is required');
     }
 
     if (name.length < 1) {
-      return 'Must be at least 1 character';
+      return t('Must be at least 1 character');
     }
 
     if (name.length > 255) {
-      return 'Must be 255 characters or less';
+      return t('Must be 255 characters or less');
     }
 
     if (!validateName(name)) {
@@ -63,7 +65,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
     const isDuplicate = (globalEnvs || []).some((env) =>
       env?.uid !== environment.uid && env?.name?.toLowerCase().trim() === trimmedName);
     if (isDuplicate) {
-      return 'Environment already exists';
+      return t('Environment already exists');
     }
 
     return null;
@@ -88,13 +90,13 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
 
     dispatch(renameGlobalEnvironment({ name: newName, environmentUid: environment.uid }))
       .then(() => {
-        toast.success('Environment renamed!');
+        toast.success(t('Environment renamed!'));
         setIsRenaming(false);
         setNewName('');
         setNameError('');
       })
       .catch(() => {
-        toast.error('An error occurred while renaming the environment');
+        toast.error(t('An error occurred while renaming the environment'));
       });
   };
 
@@ -191,7 +193,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
                   className="inline-action-btn save"
                   onClick={handleSaveRename}
                   onMouseDown={(e) => e.preventDefault()}
-                  title="Save"
+                  title={t('Save')}
                 >
                   <IconCheck size={14} strokeWidth={2} />
                 </button>
@@ -199,7 +201,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
                   className="inline-action-btn cancel"
                   onClick={handleCancelRename}
                   onMouseDown={(e) => e.preventDefault()}
-                  title="Cancel"
+                  title={t('Cancel')}
                 >
                   <IconX size={14} strokeWidth={2} />
                 </button>
@@ -214,16 +216,16 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
         </div>
         {nameError && isRenaming && <div className="title-error">{nameError}</div>}
         <div className="actions">
-          <ActionIcon label="Save All" onClick={handleSaveAll} data-testid="save-all-env">
+          <ActionIcon label={t('Save All')} onClick={handleSaveAll} data-testid="save-all-env">
             <IconDeviceFloppy size={15} strokeWidth={1.5} />
           </ActionIcon>
-          <ActionIcon label="Rename" onClick={handleRenameClick} data-testid="env-rename-action">
+          <ActionIcon label={t('Rename')} onClick={handleRenameClick} data-testid="env-rename-action">
             <IconEdit size={15} strokeWidth={1.5} />
           </ActionIcon>
-          <ActionIcon label="Copy" onClick={() => setOpenCopyModal(true)} data-testid="env-copy-action">
+          <ActionIcon label={t('Copy')} onClick={() => setOpenCopyModal(true)} data-testid="env-copy-action">
             <IconCopy size={15} strokeWidth={1.5} />
           </ActionIcon>
-          <ActionIcon label="Delete" onClick={() => setOpenDeleteModal(true)} colorOnHover="danger" data-testid="env-delete-action">
+          <ActionIcon label={t('Delete')} onClick={() => setOpenDeleteModal(true)} colorOnHover="danger" data-testid="env-delete-action">
             <IconTrash size={15} strokeWidth={1.5} />
           </ActionIcon>
         </div>
@@ -242,7 +244,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
                   <input
                     ref={searchInputRef}
                     type="text"
-                    placeholder={activeTab === 'secrets' ? 'Search secrets...' : 'Search variables...'}
+                    placeholder={activeTab === 'secrets' ? t('Search secrets...') : t('Search variables...')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onBlur={handleSearchBlur}
@@ -258,7 +260,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
                       className="clear-search"
                       onClick={handleClearSearch}
                       onMouseDown={(e) => e.preventDefault()}
-                      title="Clear search"
+                      title={t('Clear search')}
                       data-testid="env-clear-search"
                     >
                       <IconX size={14} strokeWidth={1.5} />
@@ -266,7 +268,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
                   )}
                 </div>
               ) : (
-                <ActionIcon label="Search" onClick={handleSearchIconClick} data-testid="env-search-action">
+                <ActionIcon label={t('Search')} onClick={handleSearchIconClick} data-testid="env-search-action">
                   <IconSearch size={15} strokeWidth={1.5} />
                 </ActionIcon>
               )}

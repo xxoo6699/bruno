@@ -25,6 +25,7 @@ import { normalizePath } from 'utils/common/path';
 import { hydrateMockServerInstances } from 'utils/mock-server/mock-server-instances';
 import { hydrateTabs, getActiveTabFromSnapshot, hydrateSnapshotLookups, getCollectionSnapshotFromLookups, WORKSPACE_TAB_UID_SUFFIX_BY_TYPE } from 'utils/snapshot';
 import toast from 'react-hot-toast';
+import i18n from 'i18n';
 import { closeAiSidebar } from '../chat';
 
 const { ipcRenderer } = window;
@@ -279,7 +280,7 @@ export const connectCollectionToGit = ({ workspaceUid, collectionPath, remoteUrl
 
       return true;
     } catch (error) {
-      toast.error(error.message || 'Failed to connect Git remote');
+      toast.error(error.message || i18n.t('Failed to connect Git remote'));
       throw error;
     }
   };
@@ -301,7 +302,7 @@ export const disconnectCollectionFromGit = ({ workspaceUid, collectionPath }) =>
 
       return true;
     } catch (error) {
-      toast.error(error.message || 'Failed to remove Git remote');
+      toast.error(error.message || i18n.t('Failed to remove Git remote'));
       throw error;
     }
   };
@@ -407,7 +408,7 @@ const loadWorkspaceCollectionsForSwitch = async (dispatch, workspace) => {
 
     if (unopenedCollectionPaths.size > 0) {
       const unopenedCount = unopenedCollectionPaths.size;
-      toast.error(`Failed to open ${unopenedCount} collection${unopenedCount === 1 ? '' : 's'}`);
+      toast.error(i18n.t('Failed to open {{count}} collection{{suffix}}', { count: unopenedCount, suffix: unopenedCount === 1 ? '' : 's' }));
     }
 
     // Load API specs for this workspace
@@ -1103,7 +1104,7 @@ export const closeWorkspaceAction = (workspaceUid) => {
         }
       }
     } catch (error) {
-      toast.error(error.message || 'Failed to close workspace');
+      toast.error(error.message || i18n.t('Failed to close workspace'));
       throw error;
     }
   };

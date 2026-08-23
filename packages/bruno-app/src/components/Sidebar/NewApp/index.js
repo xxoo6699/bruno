@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
@@ -10,6 +11,7 @@ import { sanitizeName, validateName, validateNameError } from 'utils/common/rege
 
 const NewApp = ({ collectionUid, item, onClose }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const submitLockRef = useRef(false);
 
   const collection = useSelector((state) =>
@@ -22,10 +24,10 @@ const NewApp = ({ collectionUid, item, onClose }) => {
     validationSchema: Yup.object({
       appName: Yup.string()
         .trim()
-        .min(1, 'App name is required')
-        .max(255, 'Must be 255 characters or less')
+        .min(1, t('App name is required'))
+        .max(255, t('Must be 255 characters or less'))
         .test('valid-name', validateNameError, (value) => validateName(value || ''))
-        .required('App name is required')
+        .required(t('App name is required'))
     }),
     onSubmit: (values) => {
       const name = values.appName.trim();
@@ -38,10 +40,10 @@ const NewApp = ({ collectionUid, item, onClose }) => {
         })
       )
         .then(() => {
-          toast.success('App created');
+          toast.success(t('App created'));
           onClose();
         })
-        .catch((err) => toast.error(err?.message || 'Failed to create app'))
+        .catch((err) => toast.error(err?.message || t('Failed to create app')))
         .finally(() => { submitLockRef.current = false; });
     }
   });
@@ -57,8 +59,8 @@ const NewApp = ({ collectionUid, item, onClose }) => {
     <Portal>
       <Modal
         size="md"
-        title="New App"
-        confirmText="Create"
+        title={t('New App')}
+        confirmText={t('Create')}
         handleConfirm={onSubmit}
         handleCancel={onClose}
         disableEscapeKey={false}
@@ -71,7 +73,7 @@ const NewApp = ({ collectionUid, item, onClose }) => {
           data-testid="new-app-form"
         >
           <label htmlFor="appName" className="block font-semibold">
-            Name
+            {t('Name')}
           </label>
           <input
             id="appName"
@@ -89,7 +91,7 @@ const NewApp = ({ collectionUid, item, onClose }) => {
             <div className="text-red-500 text-xs mt-2">{formik.errors.appName}</div>
           ) : (
             <div className="text-xs mt-2 opacity-70">
-              Creates a standalone app file in {item ? 'this folder' : `collection "${collection?.name || ''}"`}.
+              {t('Creates a standalone app file in {{target}}.', { target: item ? t('this folder') : t('collection "{{name}}"', { name: collection?.name || '' }) })}
             </div>
           )}
         </form>

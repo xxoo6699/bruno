@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Virtuoso } from 'react-virtuoso';
 import ColorBadge from 'components/ColorBadge';
 
@@ -27,6 +28,7 @@ const EnvironmentSelectionList = ({
   title = 'Environments',
   disabled = false
 }) => {
+  const { t } = useTranslation();
   // O(1) membership checks regardless of how many environments are rendered.
   const selectedSet = useMemo(() => new Set(selectedUids), [selectedUids]);
 
@@ -79,7 +81,7 @@ const EnvironmentSelectionList = ({
         <div className="env-section-heading">
           <h4 className="env-section-title" data-testid="env-section-title">{title}</h4>
           <span className="env-section-count" data-testid="env-selected-count">
-            ({selectedCount}/{environments.length} selected)
+            {t('({{selected}}/{{total}} selected)', { selected: selectedCount, total: environments.length })}
           </span>
         </div>
         <label className="env-select-all">
@@ -92,7 +94,7 @@ const EnvironmentSelectionList = ({
             onChange={handleToggleAll}
             data-testid="env-select-all"
           />
-          <span className="env-select-all-label" data-testid="env-select-all-label">Select All</span>
+          <span className="env-select-all-label" data-testid="env-select-all-label">{t('Select All')}</span>
         </label>
       </div>
       <Virtuoso

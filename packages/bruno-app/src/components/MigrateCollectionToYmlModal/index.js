@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import i18n from 'i18n';
 import React, { useMemo, useState } from 'react';
 import filter from 'lodash/filter';
 import each from 'lodash/each';
@@ -290,7 +292,7 @@ const MigrateCollectionToYmlModal = () => {
       <StyledWrapper>
         <Modal
           size="md"
-          title="Unsaved changes"
+          title={i18n.t('Unsaved changes')}
           dataTestId="migration-drafts-step"
           handleCancel={handleBackToConfirm}
           disableEscapeKey={true}
@@ -300,7 +302,7 @@ const MigrateCollectionToYmlModal = () => {
         >
           <div className="flex items-center">
             <IconAlertTriangle size={32} strokeWidth={1.5} className="warning-text" />
-            <h1 className="ml-2 text-lg font-medium">Hold on..</h1>
+            <h1 className="ml-2 text-lg font-medium">{i18n.t('Hold on..')}</h1>
           </div>
           <p className="mt-4">
             You have unsaved changes in <span className="font-medium">{totalDraftsCount}</span>{' '}
@@ -398,7 +400,7 @@ const MigrateCollectionToYmlModal = () => {
     <StyledWrapper>
       <Modal
         size="md"
-        title="Migrate to YML format"
+        title={i18n.t('Migrate to YML format')}
         confirmText={isMigrating ? (isCancelling ? 'Cancelling…' : 'Cancel') : 'Migrate'}
         confirmButtonColor={isMigrating ? 'danger' : 'primary'}
         confirmDisabled={confirmDisabled}
@@ -411,7 +413,7 @@ const MigrateCollectionToYmlModal = () => {
       >
         <div>
           <p>
-            This will convert all files in <strong>{migration.collectionName}</strong> from <code>.bru</code> format to <code>.yml</code> format.
+            This will convert all files in <strong>{migration.collectionName}</strong> from <code>.bru</code> {i18n.t('format to')} <code>.yml</code> format.
           </p>
           {isMigrating ? (
             <div
@@ -437,20 +439,20 @@ const MigrateCollectionToYmlModal = () => {
           ) : (
             <>
               <div className="mt-4 text-sm text-muted">
-                <p className="font-medium mb-2">What will happen:</p>
+                <p className="font-medium mb-2">{i18n.t('What will happen:')}</p>
                 <ul className="list-disc ml-5 flex flex-col gap-1">
-                  <li>All <code>.bru</code> request files will be converted to <code>.yml</code></li>
-                  <li>Environment files will be converted to YML format</li>
-                  <li><code>bruno.json</code> will be replaced with <code>opencollection.yml</code></li>
-                  <li>Open tabs will be closed and the collection will be reloaded</li>
+                  <li>All <code>.bru</code> {i18n.t('request files will be converted to')} <code>.yml</code></li>
+                  <li>{i18n.t('Environment files will be converted to YML format')}</li>
+                  <li><code>{i18n.t('bruno.json')}</code> will be replaced with <code>opencollection.yml</code></li>
+                  <li>{i18n.t('Open tabs will be closed and the collection will be reloaded')}</li>
                 </ul>
                 {!isCollectionMounted && (
-                  <p className="mt-3">Waiting for the collection to finish loading before migration can start…</p>
+                  <p className="mt-3">{i18n.t('Waiting for the collection to finish loading before migration can start…')}</p>
                 )}
               </div>
               <div className="backup-section mt-4">
                 <div className="backup-section-head">
-                  <span className="backup-section-title">Backup</span>
+                  <span className="backup-section-title">{i18n.t('Backup')}</span>
                 </div>
                 <p className="backup-section-help">
                   Export this collection as a ZIP archive before migrating, in case you want to restore it later.

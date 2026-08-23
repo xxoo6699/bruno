@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo, useCallback, useRef } from 'react';
 import Documentation from 'components/Documentation/index';
 import DocsAction from 'components/Documentation/DocsAction';
@@ -26,6 +27,7 @@ import { hasEffectiveAuth } from 'utils/auth';
 import { AUTH_MODES_WS } from 'utils/common/constants';
 
 const WSRequestPane = ({ item, collection, handleRun }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const tabs = useSelector((state) => state.tabs.tabs);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
@@ -168,13 +170,13 @@ const WSRequestPane = ({ item, collection, handleRun }) => {
         return <Documentation item={item} collection={collection} />;
       }
       default: {
-        return <div className="mt-4">404 | Not found</div>;
+        return <div className="mt-4">{t('404 | Not found')}</div>;
       }
     }
   }, [requestPaneTab, item, collection, handleRun, addNewMessage]);
 
   if (!activeTabUid || !focusedTab?.uid || !requestPaneTab) {
-    return <div className="pb-4 px-4">An error occurred!</div>;
+    return <div className="pb-4 px-4">{t('An error occurred!')}</div>;
   }
 
   let rightContent = null;

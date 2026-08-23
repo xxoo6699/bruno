@@ -5,10 +5,12 @@ import { copyGlobalEnvironment } from 'providers/ReduxStore/slices/global-enviro
 import { useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 const CopyEnvironment = ({ environment, onClose }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const inputRef = useRef();
   const formik = useFormik({
     enableReinitialize: true,
@@ -17,18 +19,18 @@ const CopyEnvironment = ({ environment, onClose }) => {
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(1, 'must be at least 1 character')
-        .max(50, 'must be 50 characters or less')
-        .required('name is required')
+        .min(1, t('must be at least 1 character'))
+        .max(50, t('must be 50 characters or less'))
+        .required(t('name is required'))
     }),
     onSubmit: (values) => {
       dispatch(copyGlobalEnvironment({ name: values.name, environmentUid: environment.uid }))
         .then(() => {
-          toast.success('Environment created!');
+          toast.success(t('Environment created!'));
           onClose();
         })
         .catch((error) => {
-          toast.error('An error occurred while creating the environment');
+          toast.error(t('An error occurred while creating the environment'));
           console.error(error);
         });
     }
@@ -46,11 +48,11 @@ const CopyEnvironment = ({ environment, onClose }) => {
 
   return (
     <Portal>
-      <Modal size="sm" title="Copy Environment" confirmText="Copy" handleConfirm={onSubmit} handleCancel={onClose}>
+      <Modal size="sm" title={t('Copy Environment')} confirmText={t('Copy')} handleConfirm={onSubmit} handleCancel={onClose}>
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="environment-name" className="block font-semibold">
-              New Environment Name
+              {t('New Environment Name')}
             </label>
             <input
               id="environment-name"

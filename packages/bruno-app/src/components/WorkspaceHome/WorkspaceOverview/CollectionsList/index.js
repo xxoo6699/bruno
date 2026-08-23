@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
   IconBox,
   IconTrash,
@@ -30,6 +31,7 @@ import StyledWrapper from './StyledWrapper';
 
 const CollectionsList = ({ workspace }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { collections } = useSelector((state) => state.collections);
   const dropdownRefs = useRef({});
 
@@ -334,8 +336,8 @@ const CollectionsList = ({ workspace }) => {
         {workspaceCollections.length === 0 ? (
           <div className="empty-state">
             <IconBox size={32} strokeWidth={1.5} className="empty-icon" />
-            <h3 className="empty-title">No collections yet</h3>
-            <p className="empty-description">Create your first collection or open an existing one to get started.</p>
+            <h3 className="empty-title">{t('No collections yet')}</h3>
+            <p className="empty-description">{t('Create your first collection or open an existing one to get started.')}</p>
           </div>
         ) : (
           workspaceCollections.map((collection, index) => (
@@ -360,10 +362,10 @@ const CollectionsList = ({ workspace }) => {
                     </StatusBadge>
                   )}
                   {collection.failedToOpen && (
-                    <StatusBadge status="danger" size="xs">Failed to open</StatusBadge>
+                    <StatusBadge status="danger" size="xs">{t('Failed to open')}</StatusBadge>
                   )}
                   {isNotCloned(collection) && (
-                    <StatusBadge status="warning" size="xs">Not cloned</StatusBadge>
+                    <StatusBadge status="warning" size="xs">{t('Not cloned')}</StatusBadge>
                   )}
                 </div>
                 <div className="collection-path">{collection.pathname}</div>
@@ -392,7 +394,7 @@ const CollectionsList = ({ workspace }) => {
                           }}
                         >
                           <IconEdit size={16} strokeWidth={1.5} />
-                          <span>Rename</span>
+                          <span>{t('Rename')}</span>
                         </div>
                         <div
                           className="dropdown-item"
@@ -402,7 +404,7 @@ const CollectionsList = ({ workspace }) => {
                           }}
                         >
                           <IconShare size={16} strokeWidth={1.5} />
-                          <span>Share</span>
+                          <span>{t('Share')}</span>
                         </div>
                         <div
                           className="dropdown-item"
@@ -429,7 +431,7 @@ const CollectionsList = ({ workspace }) => {
                                 }}
                               >
                                 <IconCopy size={16} strokeWidth={1.5} />
-                                <span>Copy Git URL</span>
+                                <span>{t('Copy Git URL')}</span>
                               </div>
                             )}
                             {!collection.isGitBacked && collection.isLoaded !== false && (
@@ -441,7 +443,7 @@ const CollectionsList = ({ workspace }) => {
                                 }}
                               >
                                 <IconBrandGit size={16} strokeWidth={1.5} />
-                                <span>Connect to Git</span>
+                                <span>{t('Connect to Git')}</span>
                               </div>
                             )}
                             {collection.isGitBacked && (
@@ -453,7 +455,7 @@ const CollectionsList = ({ workspace }) => {
                                 }}
                               >
                                 <IconUnlink size={16} strokeWidth={1.5} />
-                                <span>Remove Git Remote</span>
+                                <span>{t('Remove Git Remote')}</span>
                               </div>
                             )}
                           </>
@@ -468,7 +470,7 @@ const CollectionsList = ({ workspace }) => {
                       }}
                     >
                       <IconX size={16} strokeWidth={1.5} />
-                      <span>Remove</span>
+                      <span>{t('Remove')}</span>
                     </div>
                     {!collection.failedToOpen && !isNotCloned(collection) && (
                       <div
@@ -479,7 +481,7 @@ const CollectionsList = ({ workspace }) => {
                         }}
                       >
                         <IconTrash size={16} strokeWidth={1.5} />
-                        <span>Delete</span>
+                        <span>{t('Delete')}</span>
                       </div>
                     )}
                   </div>

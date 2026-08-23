@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -18,6 +19,7 @@ import get from 'lodash/get';
 const CloneCollection = ({ onClose, collectionUid }) => {
   const inputRef = useRef();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const [isEditing, toggleEditing] = useState(false);
   const collection = useSelector((state) => findCollectionByUid(state.collections.collections, collectionUid));
   const preferences = useSelector((state) => state.app.preferences);
@@ -34,24 +36,24 @@ const CloneCollection = ({ onClose, collectionUid }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      collectionName: `${name} copy`,
-      collectionFolderName: `${sanitizeName(name)} copy`,
+      collectionName: `${name} ${t('copy')}`,
+      collectionFolderName: `${sanitizeName(name)} ${t('copy')}`,
       collectionLocation: defaultLocation
     },
     validationSchema: Yup.object({
       collectionName: Yup.string()
-        .min(1, 'must be at least 1 character')
-        .max(255, 'must be 255 characters or less')
-        .required('collection name is required'),
+        .min(1, t('must be at least 1 character'))
+        .max(255, t('must be 255 characters or less'))
+        .required(t('collection name is required')),
       collectionFolderName: Yup.string()
-        .min(1, 'must be at least 1 character')
-        .max(255, 'must be 255 characters or less')
+        .min(1, t('must be at least 1 character'))
+        .max(255, t('must be 255 characters or less'))
         .test('is-valid-collection-name', function (value) {
           const isValid = validateName(value);
           return isValid ? true : this.createError({ message: validateNameError(value) });
         })
-        .required('folder name is required'),
-      collectionLocation: Yup.string().min(1, 'location is required').required('location is required')
+        .required(t('folder name is required')),
+      collectionLocation: Yup.string().min(1, t('location is required')).required(t('location is required'))
     }),
     onSubmit: (values) => {
       dispatch(
@@ -63,10 +65,10 @@ const CloneCollection = ({ onClose, collectionUid }) => {
         )
       )
         .then(() => {
-          toast.success('Collection created!');
+          toast.success(t('Collection created!'));
           onClose();
         })
-        .catch((e) => toast.error('An error occurred while creating the collection - ' + e));
+        .catch((e) => toast.error(t('An error occurred while creating the collection - ') + e));
     }
   });
 
@@ -93,11 +95,11 @@ const CloneCollection = ({ onClose, collectionUid }) => {
   const onSubmit = () => formik.handleSubmit();
 
   return (
-    <Modal size="md" title="Clone Collection" confirmText="Create" handleConfirm={onSubmit} handleCancel={onClose}>
+    <Modal size="md" title={t('Clone Collection')} confirmText={t('Create')} handleConfirm={onSubmit} handleCancel={onClose}>
       <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
         <div>
           <label htmlFor="collection-name" className="flex items-center font-medium">
-            Name
+            {t('Name')}
           </label>
           <input
             id="collection-name"
@@ -120,7 +122,7 @@ const CloneCollection = ({ onClose, collectionUid }) => {
           ) : null}
 
           <label htmlFor="collection-location" className="block font-medium mt-3">
-            Location
+            {t('Location')}
           </label>
           <input
             id="collection-location"
@@ -143,20 +145,20 @@ const CloneCollection = ({ onClose, collectionUid }) => {
               className="text-link cursor-pointer hover:underline"
               onClick={browse}
             >
-              Browse
+              {t('Browse')}
             </span>
           </div>
 
           <div className="mt-4">
             <div className="flex items-center justify-between">
               <label htmlFor="filename" className="flex items-center font-medium">
-                Folder Name
+                {t('Folder Name')}
                 <Help width="300">
                   <p>
-                    The name of the folder used to store the collection.
+                    {t('The name of the folder used to store the collection.')}
                   </p>
                   <p className="mt-2">
-                    You can choose a folder name different from your collection's name or one compatible with filesystem rules.
+                    {t('You can choose a folder name different from your collection\'s name or one compatible with filesystem rules.')}
                   </p>
                 </Help>
               </label>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState, useRef } from 'react';
 import toast from 'react-hot-toast';
 import Button from 'ui/Button';
@@ -7,6 +8,7 @@ import { isOpenApiSpec } from 'utils/importers/openapi-collection';
 import { parseFileAsJsonOrYaml } from 'utils/importers/file-reader';
 
 const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, onClose }) => {
+  const { t } = useTranslation();
   const openApiSyncConfig = collection?.brunoConfig?.openapi?.[0];
   const normalizedSourceUrl = (sourceUrl || '').trim();
   const isUrl = isHttpUrl(normalizedSourceUrl);
@@ -39,14 +41,14 @@ const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, 
   return (
     <Modal
       size="md"
-      title="Connection Settings"
+      title={t('Connection Settings')}
       hideFooter={true}
       handleCancel={onClose}
     >
       <div className="settings-modal">
         <div className="settings-body">
           <div className="settings-field">
-            <label className="settings-label">Spec Source</label>
+            <label className="settings-label">{t('Spec Source')}</label>
             <div className="setup-mode-toggle" style={{ marginBottom: '8px' }}>
               <button
                 type="button"
@@ -108,7 +110,7 @@ const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, 
           </div>
 
           <div className="settings-field">
-            <label className="settings-label">Auto-check for updates</label>
+            <label className="settings-label">{t('Auto-check for updates')}</label>
             <div className="settings-toggle-row">
               <div className="toggle-info">
                 <div className="toggle-description">
@@ -127,7 +129,7 @@ const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, 
 
           {autoCheck && (
             <div className="settings-field">
-              <label className="settings-label">Check interval</label>
+              <label className="settings-label">{t('Check interval')}</label>
               <div className="interval-buttons">
                 {intervals.map((mins) => (
                   <button
@@ -149,8 +151,8 @@ const ConnectionSettingsModal = ({ collection, sourceUrl, onSave, onDisconnect, 
             Disconnect sync
           </button>
           <div className="settings-actions">
-            <Button variant="ghost" color="secondary" size="sm" onClick={onClose}>Cancel</Button>
-            <Button size="sm" onClick={handleSave} loading={isSaving} disabled={!canSave || isSaving}>Save</Button>
+            <Button variant="ghost" color="secondary" size="sm" onClick={onClose}>{t('Cancel')}</Button>
+            <Button size="sm" onClick={handleSave} loading={isSaving} disabled={!canSave || isSaving}>{t('Save')}</Button>
           </div>
         </div>
       </div>

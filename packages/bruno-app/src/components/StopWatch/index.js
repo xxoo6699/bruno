@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect } from 'react';
 
 const StopWatch = ({ startTime }) => {
+  const { t } = useTranslation();
   const [currentTime, setCurrentTime] = useState(Date.now());
 
   useEffect(() => {
@@ -13,10 +15,10 @@ const StopWatch = ({ startTime }) => {
     return () => clearInterval(intervalId);
   }, [startTime]);
 
-  if (!startTime) return <span>Loading...</span>;
+  if (!startTime) return <span>{t('Loading...')}</span>;
 
   const elapsedTime = currentTime - startTime;
-  if (elapsedTime < 250) return <span>Loading...</span>;
+  if (elapsedTime < 250) return <span>{t('Loading...')}</span>;
 
   const seconds = elapsedTime / 1000;
   return <span>{seconds.toFixed(1)}s</span>;

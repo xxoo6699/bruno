@@ -2,6 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { get } from 'lodash';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { saveEnvironment } from 'providers/ReduxStore/slices/collections/actions';
 import { setEnvironmentsDraft, clearEnvironmentsDraft } from 'providers/ReduxStore/slices/collections';
 import { flattenItems, isItemARequest } from 'utils/collections';
@@ -11,6 +12,7 @@ import { sensitiveFields } from './constants';
 
 const EnvironmentVariables = ({ environment, setIsModified, collection, searchQuery = '', variableType = 'variables' }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const environmentsDraft = collection?.environmentsDraft;
   const hasDraftForThisEnv = environmentsDraft?.environmentUid === environment.uid;
@@ -92,7 +94,7 @@ const EnvironmentVariables = ({ environment, setIsModified, collection, searchQu
         return (
           <SensitiveFieldWarning
             fieldName={variable.name}
-            warningMessage="This variable is used in sensitive fields. Add it as a secret in the Secrets tab for security"
+            warningMessage={t('This variable is used in sensitive fields. Add it as a secret in the Secrets tab for security')}
           />
         );
       }

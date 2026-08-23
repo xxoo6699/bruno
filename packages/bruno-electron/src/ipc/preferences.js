@@ -53,7 +53,16 @@ const registerPreferencesIpc = (mainWindow) => {
 
   ipcMain.handle('renderer:save-preferences', async (event, preferences) => {
     try {
+      const previousLocale = getPreferences()?.general?.locale;
       await savePreferences(preferences);
+
+      // rebuild the application menu when the language preference changes
+      const newLocale = preferences?.general?.locale;
+      if (newLocale && newLocale !== previousLocale) {
+        const { Menu } = require('electron');
+        const buildMenuTemplate = require('../app/menu-template');
+        Menu.setApplicationMenu(Menu.buildFromTemplate(buildMenuTemplate(newLocale)));
+      }
     } catch (error) {
       return Promise.reject(error);
     }

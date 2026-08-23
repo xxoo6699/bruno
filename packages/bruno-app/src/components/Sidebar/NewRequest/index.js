@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useCallback, forwardRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import get from 'lodash/get';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -26,6 +27,7 @@ import Button from 'ui/Button';
 
 const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const inputRef = useRef();
 
   const storedTheme = useTheme();
@@ -117,31 +119,31 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
     validationSchema: Yup.object({
       requestName: Yup.string()
         .trim()
-        .min(1, 'must be at least 1 character')
-        .max(255, 'must be 255 characters or less')
-        .required('name is required'),
+        .min(1, t('must be at least 1 character'))
+        .max(255, t('must be 255 characters or less'))
+        .required(t('name is required')),
       filename: Yup.string()
         .trim()
-        .min(1, 'must be at least 1 character')
-        .max(255, 'must be 255 characters or less')
-        .required('filename is required')
+        .min(1, t('must be at least 1 character'))
+        .max(255, t('must be 255 characters or less'))
+        .required(t('filename is required'))
         .test('is-valid-filename', function (value) {
           const isValid = validateName(value);
           return isValid ? true : this.createError({ message: validateNameError(value) });
         })
         .test(
           'not-reserved',
-          `The file names "collection" and "folder" are reserved in bruno`,
+          t('The file names "collection" and "folder" are reserved in bruno'),
           (value) => !['collection', 'folder'].includes(value)
         ),
       curlCommand: Yup.string().when('requestType', {
         is: (requestType) => requestType === 'from-curl',
         then: Yup.string()
-          .min(1, 'must be at least 1 character')
-          .required('curlCommand is required')
+          .min(1, t('must be at least 1 character'))
+          .required(t('curlCommand is required'))
           .test({
             name: 'curlCommand',
-            message: `Invalid cURL Command`,
+            message: t('Invalid cURL Command'),
             test: (value) => getRequestFromCurlCommand(value) !== null
           })
       })
@@ -163,10 +165,10 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
           })
         )
           .then(() => {
-            toast.success('New request created!');
+            toast.success(t('New request created!'));
             onClose();
           })
-          .catch((err) => toast.error(err ? err.message : 'An error occurred while adding the request'));
+          .catch((err) => toast.error(err ? err.message : t('An error occurred while adding the request')));
 
         // will need to handle import from grpcurl command when we support it, now it is just for creating new requests
       } else if (isWsRequest) {
@@ -180,10 +182,10 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
           itemUid: item ? item.uid : null
         }))
           .then(() => {
-            toast.success('New request created!');
+            toast.success(t('New request created!'));
             onClose();
           })
-          .catch((err) => toast.error(err ? err.message : 'An error occurred while adding the request'));
+          .catch((err) => toast.error(err ? err.message : t('An error occurred while adding the request')));
       } else if (isEphemeral) {
         const uid = uuid();
         dispatch(
@@ -207,7 +209,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
             );
             onClose();
           })
-          .catch((err) => toast.error(err ? err.message : 'An error occurred while adding the request'));
+          .catch((err) => toast.error(err ? err.message : t('An error occurred while adding the request')));
       } else if (values.requestType === 'from-curl') {
         const request = getRequestFromCurlCommand(values.curlCommand, curlRequestTypeDetected);
         const settings = { encodeUrl: false, forwardAuthorizationHeader: false };
@@ -228,10 +230,10 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
           })
         )
           .then(() => {
-            toast.success('New request created!');
+            toast.success(t('New request created!'));
             onClose();
           })
-          .catch((err) => toast.error(err ? err.message : 'An error occurred while adding the request'));
+          .catch((err) => toast.error(err ? err.message : t('An error occurred while adding the request')));
       } else {
         dispatch(
           newHttpRequest({
@@ -245,10 +247,10 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
           })
         )
           .then(() => {
-            toast.success('New request created!');
+            toast.success(t('New request created!'));
             onClose();
           })
-          .catch((err) => toast.error(err ? err.message : 'An error occurred while adding the request'));
+          .catch((err) => toast.error(err ? err.message : t('An error occurred while adding the request')));
       }
     }
   });
@@ -302,7 +304,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
     return (
       <div ref={ref} className="flex mr-2 text-link cursor-pointer items-center">
         <button className="btn-advanced" type="button">
-          Options
+          {t('Options')}
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
       </div>
@@ -312,14 +314,14 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
   return (
     <Portal>
       <StyledWrapper>
-        <Modal size="md" title="New Request" hideFooter handleCancel={onClose}>
+        <Modal size="md" title={t('New Request')} hideFooter handleCancel={onClose}>
           <form
             className="bruno-form"
             onSubmit={formik.handleSubmit}
           >
             <div>
               <label htmlFor="requestName" className="block font-medium">
-                Type
+                {t('Type')}
               </label>
 
               <div className="mt-2 grid grid-cols-3 gap-2">
@@ -398,7 +400,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
                       data-testid="from-curl"
                     />
                     <label htmlFor="from-curl" className="ml-1 cursor-pointer select-none">
-                      From cURL
+                      {t('From cURL')}
                     </label>
                   </div>
                 </div>
@@ -406,13 +408,13 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
             </div>
             <div className="mt-4">
               <label htmlFor="requestName" className="block font-medium">
-                Request Name
+                {t('Request Name')}
               </label>
               <input
                 id="request-name"
                 type="text"
                 name="requestName"
-                placeholder="Request Name"
+                placeholder={t('Request Name')}
                 ref={inputRef}
                 className="block textbox mt-2 w-full"
                 autoComplete="off"
@@ -434,12 +436,11 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
               <div className="mt-4">
                 <div className="flex items-center justify-between">
                   <label htmlFor="filename" className="flex items-center font-medium">
-                    File Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
+                    {t('File Name')} <small className="font-normal text-muted ml-1">{t('(on filesystem)')}</small>
                     <Help width="300">
-                      <p>Bruno saves each request as a file in your collection's folder.</p>
+                      <p>{t('Bruno saves each request as a file in your collection\'s folder.')}</p>
                       <p className="mt-2">
-                        You can choose a file name different from your request's name or one compatible with filesystem
-                        rules.
+                        {t('You can choose a file name different from your request\'s name or one compatible with filesystem rules.')}
                       </p>
                     </Help>
                   </label>
@@ -465,7 +466,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
                       id="file-name"
                       type="text"
                       name="filename"
-                      placeholder="File Name"
+                      placeholder={t('File Name')}
                       className="!pr-10 block textbox mt-2 w-full"
                       autoComplete="off"
                       autoCorrect="off"
@@ -513,7 +514,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
                       <SingleLineEditor
                         onRun={() => formik.handleSubmit()}
                         onPaste={handlePaste}
-                        placeholder="Request URL"
+                        placeholder={t('Request URL')}
                         value={formik.values.requestUrl || ''}
                         theme={storedTheme}
                         onChange={(value) => {
@@ -538,7 +539,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
               <div className="mt-4">
                 <div className="flex justify-between">
                   <label htmlFor="request-url" className="block font-medium">
-                    cURL Command
+                    {t('cURL Command')}
                   </label>
                   <Dropdown className="dropdown" onCreate={onDropdownCreate} icon={<Icon />} placement="bottom-end">
                     <div
@@ -563,7 +564,7 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
                 </div>
                 <textarea
                   name="curlCommand"
-                  placeholder="Enter cURL request here.."
+                  placeholder={t('Enter cURL request here..')}
                   className="block textbox w-full mt-4 curl-command"
                   value={formik.values.curlCommand}
                   onChange={handleCurlCommandChange}
@@ -586,16 +587,16 @@ const NewRequest = ({ collectionUid, item, isEphemeral, onClose }) => {
                       toggleShowFilesystemName(!showFilesystemName);
                     }}
                   >
-                    {showFilesystemName ? 'Hide Filesystem Name' : 'Show Filesystem Name'}
+                    {showFilesystemName ? t('Hide Filesystem Name') : t('Show Filesystem Name')}
                   </div>
                 </Dropdown>
               </div>
               <div className="flex justify-end">
                 <Button type="button" color="secondary" variant="ghost" onClick={onClose} className="mr-2">
-                  Cancel
+                  {t('Cancel')}
                 </Button>
                 <Button type="submit" data-testid="create-new-request-button">
-                  Create
+                  {t('Create')}
                 </Button>
               </div>
             </div>

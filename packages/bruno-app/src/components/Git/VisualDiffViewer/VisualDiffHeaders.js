@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import get from 'lodash/get';
 
 const VisualDiffHeaders = ({ oldData, newData, showSide }) => {
+  const { t } = useTranslation();
   const oldHeaders = get(oldData, 'request.headers', []);
   const newHeaders = get(newData, 'request.headers', []);
 
@@ -40,7 +42,7 @@ const VisualDiffHeaders = ({ oldData, newData, showSide }) => {
             <th style={{ width: '30px' }}></th>
             <th className="checkbox-cell"></th>
             <th style={{ width: '40%' }}>Key</th>
-            <th>Value</th>
+            <th>{t('Value')}</th>
           </tr>
         </thead>
         <tbody>

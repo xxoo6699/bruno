@@ -126,7 +126,8 @@ find packages/bruno-electron/web -name '*.map' -type f -delete
 
 step "7/7 electron-builder 打包（未签名 arm64 dmg + zip）"
 cd packages/bruno-electron
-CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --config electron-builder-config.local.js
+# --publish never: 仅本地出包，避免 CI 中 electron-builder 尝试发布到 GitHub Release
+CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --publish never --config electron-builder-config.local.js
 
 echo
 echo "完成。产物位于 packages/bruno-electron/out/:"

@@ -54,9 +54,17 @@ jobs:
           git config user.name "zh-CN bot"
           git config user.email "bot@users.noreply.github.com"
           # Actions 中 origin 指向的是本 fork，fork 不会自动获得官方的新提交与
-          # release tag，必须显式从官方仓库拉取
+          # release tag，必须显式从官方仓库拉取。
+          # 注意: fork 自己发版的 v* tag 与官方同名但指向不同提交，git fetch --tags
+          # 会因 "would clobber existing tag" 返回 1（本地 tag 必须保留——release tag
+          # 指向 zh-CN 构建提交，是无变化跳过的对比基准），所以只要 upstream/main
+          # 到手就不视为失败。
           git remote add upstream https://github.com/usebruno/bruno.git
-          git fetch upstream main --tags --quiet
+          if ! git fetch upstream main --tags; then
+            git rev-parse -q --verify refs/remotes/upstream/main >/dev/null 2>&1 \
+              || { echo "::error::拉取官方仓库失败"; exit 1; }
+            echo "（官方与 fork 同名 release tag 冲突被跳过，属预期）"
+          fi
           if git merge-base --is-ancestor upstream/main HEAD; then
             echo "已是最新，无需合并。"
           elif git merge --no-edit upstream/main; then
@@ -73,7 +81,6 @@ jobs:
       - name: Resolve version
         id: resolve
         run: |
-          git fetch upstream main --tags --quiet
           MANUAL="${{ github.event.inputs.version }}"
           if [ -z "$MANUAL" ]; then
             # 上游 main 的 package.json 长期不随发布更新（停在旧大版本），

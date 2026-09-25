@@ -49,24 +49,31 @@ jobs:
           ref: zh-CN
           fetch-depth: 0
 
-      - name: Fetch upstream and merge origin/main into zh-CN
+      - name: Fetch official upstream and merge into zh-CN
         run: |
           git config user.name "zh-CN bot"
           git config user.email "bot@users.noreply.github.com"
-          if git merge-base --is-ancestor origin/main HEAD; then
+          # Actions 中 origin 指向的是本 fork，fork 不会自动获得官方的新提交与
+          # release tag，必须显式从官方仓库拉取
+          git remote add upstream https://github.com/usebruno/bruno.git
+          git fetch upstream main --tags --quiet
+          if git merge-base --is-ancestor upstream/main HEAD; then
             echo "已是最新，无需合并。"
-          elif git merge --no-edit origin/main; then
+          elif git merge --no-edit upstream/main; then
             git push origin zh-CN
           else
             echo "以下文件存在冲突，请在本地按 docs/zh-maintenance.md 解决后重推:"
             git diff --name-only --diff-filter=U
             exit 2
           fi
+          # 顺带同步 fork 的 main，保持「main 跟踪官方」的分支模型（失败不阻塞）
+          git push origin upstream/main:main 2>/dev/null \
+            || echo "fork main 同步跳过（非快进或已是最新），不影响构建"
 
       - name: Resolve version
         id: resolve
         run: |
-          git fetch origin --tags --quiet
+          git fetch upstream main --tags --quiet
           MANUAL="${{ github.event.inputs.version }}"
           if [ -z "$MANUAL" ]; then
             # 上游 main 的 package.json 长期不随发布更新（停在旧大版本），

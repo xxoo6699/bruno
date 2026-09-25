@@ -70,6 +70,9 @@ git checkout zh-CN
   已启用 `schedule` 每晚零点（北京时间，cron `0 16 * * *`）自动构建，注释掉即可关闭。
   **无变化跳过**：zh-CN 当前提交与已发布的版本 tag 一致（上游、本地均无新改动）时，
   自动跳过 build 与 release，不会重复发版；本地推送翻译修正后会自动重新打包
+- **上游来源**：workflow 显式从 `usebruno/bruno` 拉取提交与 tag（Actions 中
+  `origin` 指向自己的 fork，fork 不会自动获得官方的新提交与 release tag），
+  并顺带把 fork 的 `main` 同步为官方镜像
 - 三个 job 串联：
   1. `merge` —— 合并 origin/main 回推 `zh-CN` 分支，并解析出版本号
   2. `build` —— macos / ubuntu / windows 三平台矩阵并行打包（均未签名），

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback, useRef, useState, useEffect, useMemo } from 'react';
 import { TableVirtuoso } from 'react-virtuoso';
 import cloneDeep from 'lodash/cloneDeep';
@@ -148,6 +149,7 @@ const EnvVarValueCell = ({
   handleSave,
   renderExtraValueContent
 }) => {
+  const { t } = useTranslation();
   const editorRef = useRef(null);
   const [compact, setCompact] = useState(true);
 
@@ -252,6 +254,7 @@ const EnvironmentVariablesTable = ({
   searchQuery = '',
   variableType = 'variables'
 }) => {
+  const { t } = useTranslation();
   const isSecretTab = variableType === 'secrets';
   const { storedTheme } = useTheme();
   const { globalEnvironments, activeGlobalEnvironmentUid } = useSelector((state) => state.globalEnvironments);
@@ -986,7 +989,7 @@ const EnvironmentVariablesTable = ({
                 />
               </td>
               <td data-testid="env-vars-header-value" style={{ width: columnWidths.value }}>
-                Value
+                {t('Value')}
                 <div
                   data-testid="env-vars-resize-handle-value"
                   className={`resize-handle ${resizingIdx === 1 ? 'resizing' : ''}`}

@@ -1,16 +1,18 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import Modal from 'components/Modal';
 import Help from 'components/Help';
 import { getItemTypeLabel } from 'utils/collections';
 
 const CollectionItemInfo = ({ item, onClose }) => {
+  const { t } = useTranslation();
   const { name, filename, type } = item;
   const itemTypeLabel = getItemTypeLabel(item);
 
   return (
     <Modal
       size="md"
-      title="Info"
+      title={t('Info')}
       handleCancel={onClose}
       hideCancel={true}
       hideFooter={true}
@@ -29,17 +31,17 @@ const CollectionItemInfo = ({ item, onClose }) => {
             <tr className="">
               <td className="py-2 px-2 text-left text-muted flex items-center">
                 {type == 'folder' ? 'Folder Name' : 'File Name'}
-                <small className="font-normal text-muted ml-1">(on filesystem)</small>
+                <small className="font-normal text-muted ml-1">{t('(on filesystem)')}</small>
                 {type == 'folder' ? (
                   <Help width="300">
                     <p>
-                      The name of the folder on your filesystem.
+                      {t('The name of the folder on your filesystem.')}
                     </p>
                   </Help>
                 ) : (
                   <Help width="300">
                     <p>
-                      Bruno saves each request as a file in your collection's folder.
+                      {t('Bruno saves each request as a file in your collection\'s folder.')}
                     </p>
                   </Help>
                 )}

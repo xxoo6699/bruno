@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import usePrevious from 'hooks/usePrevious';
 import useOnClickOutside from 'hooks/useOnClickOutside';
@@ -42,6 +43,7 @@ const EnvironmentList = ({
   workspace,
   setShowExportModal
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const globalEnvs = useSelector((state) => state?.globalEnvironments?.globalEnvironments);
   const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
@@ -534,13 +536,13 @@ const EnvironmentList = ({
     return (
       <div className="empty-state">
         <IconFileAlert size={48} strokeWidth={1.5} />
-        <div className="title">No Environments</div>
+        <div className="title">{t('No Environments')}</div>
         <div className="actions">
           <Button size="sm" color="secondary" onClick={() => handleCreateEnvClick()}>
-            Create Environment
+            {t('Create Environment')}
           </Button>
           <Button size="sm" color="secondary" onClick={() => handleImportClick()}>
-            Import Environment
+            {t('Import Environment')}
           </Button>
         </div>
       </div>
@@ -562,7 +564,7 @@ const EnvironmentList = ({
 
           <div className="sections-container">
             <CollapsibleSection
-              title="Environments"
+              title={t('Environments')}
               expanded={environmentsExpanded}
               onToggle={() => setEnvironmentsExpanded(!environmentsExpanded)}
               actions={(
@@ -576,7 +578,7 @@ const EnvironmentList = ({
                       }
                       handleCreateEnvClick();
                     }}
-                    title="Create environment"
+                    title={t('Create environment')}
                     data-testid="create-environment"
                   >
                     <IconPlus size={14} strokeWidth={1.5} />
@@ -590,7 +592,7 @@ const EnvironmentList = ({
                       }
                       handleImportClick();
                     }}
-                    title="Import environment"
+                    title={t('Import environment')}
                     data-testid="import-environment-btn"
                   >
                     <IconDownload size={14} strokeWidth={1.5} />
@@ -604,7 +606,7 @@ const EnvironmentList = ({
                       }
                       handleExportClick();
                     }}
-                    title="Export environment"
+                    title={t('Export environment')}
                   >
                     <IconUpload size={14} strokeWidth={1.5} />
                   </button>
@@ -616,7 +618,7 @@ const EnvironmentList = ({
                 <input
                   ref={envListSearchInputRef}
                   type="text"
-                  placeholder="Search environments..."
+                  placeholder={t('Search environments...')}
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   className="env-list-search-input"
@@ -626,7 +628,7 @@ const EnvironmentList = ({
                   spellCheck="false"
                 />
                 {searchText && (
-                  <button className="env-list-search-clear" title="Clear search" onClick={() => setSearchText('')} onMouseDown={(e) => e.preventDefault()}>
+                  <button className="env-list-search-clear" title={t('Clear search')} onClick={() => setSearchText('')} onMouseDown={(e) => e.preventDefault()}>
                     <IconX size={12} strokeWidth={1.5} />
                   </button>
                 )}
@@ -684,14 +686,14 @@ const EnvironmentList = ({
                         <span className="environment-name">{env.name}</span>
                         <div className="environment-actions">
                           {activeEnvironmentUid === env.uid ? (
-                            <div className="activated-checkmark" title="Active environment">
+                            <div className="activated-checkmark" title={t('Active environment')}>
                               <IconCheck size={16} strokeWidth={2} />
                             </div>
                           ) : (
                             <button
                               className="activate-btn"
                               onClick={(e) => handleActivateEnvironment(e, env)}
-                              title="Activate environment"
+                              title={t('Activate environment')}
                             >
                               <IconCheck size={16} strokeWidth={2} />
                             </button>
@@ -712,7 +714,7 @@ const EnvironmentList = ({
                       value={newEnvName}
                       onChange={handleEnvNameChange}
                       onKeyDown={handleEnvNameKeyDown}
-                      placeholder="Environment name..."
+                      placeholder={t('Environment name...')}
                       autoComplete="off"
                       autoCorrect="off"
                       autoCapitalize="off"
@@ -744,14 +746,14 @@ const EnvironmentList = ({
 
                 {filteredEnvironments.length === 0 && !isCreatingInline && (
                   <div className="no-env-file">
-                    <span>No environments</span>
+                    <span>{t('No environments')}</span>
                   </div>
                 )}
               </div>
             </CollapsibleSection>
 
             <CollapsibleSection
-              title=".env Files"
+              title={t('.env Files')}
               testId="dotenv-files-section"
               expanded={dotEnvExpanded}
               onToggle={() => setDotEnvExpanded(!dotEnvExpanded)}
@@ -760,7 +762,7 @@ const EnvironmentList = ({
                 <button
                   className="btn-action"
                   onClick={handleCreateDotEnvInlineClick}
-                  title="Create .env file"
+                  title={t('Create .env file')}
                   data-testid="create-dotenv-file"
                 >
                   <IconPlus size={14} strokeWidth={1.5} />
@@ -821,7 +823,7 @@ const EnvironmentList = ({
 
                 {dotEnvFiles.length === 0 && !isCreatingDotEnvInline && (
                   <div className="no-env-file">
-                    <span>No .env files</span>
+                    <span>{t('No .env files')}</span>
                   </div>
                 )}
               </div>

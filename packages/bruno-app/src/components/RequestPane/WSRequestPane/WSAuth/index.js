@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useMemo } from 'react';
 import get from 'lodash/get';
 import { useDispatch } from 'react-redux';
@@ -15,6 +16,7 @@ import { AUTH_MODES, AUTH_MODES_WS } from 'utils/common/constants';
 const WS_INHERITED_AUTH_MODES = AUTH_MODES_WS.filter((mode) => mode !== AUTH_MODES.OAUTH2);
 
 const WSAuth = ({ item, collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const authMode = item.draft ? get(item, 'draft.request.auth.mode') : get(item, 'request.auth.mode');
 
@@ -41,7 +43,7 @@ const WSAuth = ({ item, collection }) => {
   const getAuthView = () => {
     switch (authMode) {
       case 'none': {
-        return <div>No Auth</div>;
+        return <div>{t('No Auth')}</div>;
       }
       case 'basic': {
         return <BasicAuth collection={collection} item={item} updateAuth={updateAuth} request={request} />;

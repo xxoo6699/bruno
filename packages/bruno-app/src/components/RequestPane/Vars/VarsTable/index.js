@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'providers/Theme';
@@ -17,6 +18,7 @@ import { variableNameRegex } from 'utils/common/regex';
 import { getAllVariables } from 'utils/collections';
 
 const VarsTable = ({ item, collection, vars, varType, initialScroll = 0, isDraft }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const tabs = useSelector((state) => state.tabs.tabs);
@@ -84,7 +86,7 @@ const VarsTable = ({ item, collection, vars, varType, initialScroll = 0, isDraft
       key: 'value',
       name: varType === 'request' ? 'Value' : (
         <div className="flex items-center">
-          <span>Expr</span>
+          <span>{t('Expr')}</span>
           <InfoTip className="tooltip-mod" content="You can write any valid JS expression here" infotipId={`request-${varType}-var`} />
         </div>
       ),

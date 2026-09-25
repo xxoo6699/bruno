@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback } from 'react';
 import { IconAppWindow } from '@tabler/icons';
 import Button from 'ui/Button';
@@ -6,6 +7,7 @@ import StyledWrapper from './StyledWrapper';
 const APPS_DOCS_URL = 'https://link.usebruno.com/apps';
 
 const EmptyAppState = ({ title = 'No app yet', hint, onAddCode }) => {
+  const { t } = useTranslation();
   const openAppsDocs = useCallback(() => {
     window?.ipcRenderer?.openExternal(APPS_DOCS_URL);
   }, []);
@@ -25,7 +27,7 @@ const EmptyAppState = ({ title = 'No app yet', hint, onAddCode }) => {
               onClick={onAddCode}
               data-testid="empty-app-add-code"
             >
-              Add app code
+              {t('Add app code')}
             </Button>
             <Button
               size="sm"
@@ -34,7 +36,7 @@ const EmptyAppState = ({ title = 'No app yet', hint, onAddCode }) => {
               onClick={openAppsDocs}
               data-testid="empty-app-learn-more"
             >
-              Learn more
+              {t('Learn more')}
             </Button>
           </div>
         ) : null}

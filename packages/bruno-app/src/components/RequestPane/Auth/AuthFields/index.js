@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import AwsV4Auth from '../AwsV4Auth';
 import BearerAuth from '../BearerAuth';
@@ -11,11 +12,12 @@ import EdgeGridAuth from '../EdgeGridAuth';
 import OAuth2 from '../OAuth2/index';
 
 const AuthFields = ({ authMode, collection, item, request, save, updateAuth, disabled }) => {
+  const { t } = useTranslation();
   const authProps = { collection, item, request, save, updateAuth, disabled };
 
   switch (authMode) {
     case 'none': {
-      return <div className="mt-2">No Auth</div>;
+      return <div className="mt-2">{t('No Auth')}</div>;
     }
     case 'awsv4': {
       return <AwsV4Auth {...authProps} />;

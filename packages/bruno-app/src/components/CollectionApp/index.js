@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import classnames from 'classnames';
 import cloneDeep from 'lodash/cloneDeep';
@@ -170,6 +171,7 @@ const listRequestSummaries = (collection) =>
     }));
 
 const CollectionApp = ({ item, collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { displayedTheme, theme, themeVariantLight, themeVariantDark } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
@@ -365,7 +367,7 @@ const CollectionApp = ({ item, collection }) => {
               className={classnames('view-btn', { active: view === 'code' })}
               onClick={() => setView('code')}
             >
-              Code
+              {t('Code')}
             </button>
             <button
               type="button"
@@ -373,7 +375,7 @@ const CollectionApp = ({ item, collection }) => {
               className={classnames('view-btn', { active: view === 'preview' })}
               onClick={() => setView('preview')}
             >
-              Preview
+              {t('Preview')}
             </button>
           </div>
         </div>

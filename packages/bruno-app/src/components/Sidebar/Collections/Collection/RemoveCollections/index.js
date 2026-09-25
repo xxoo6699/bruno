@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import toast from 'react-hot-toast';
 import Modal from 'components/Modal';
@@ -11,6 +12,7 @@ import { clearSidebarSelection } from 'providers/ReduxStore/slices/collections';
 import Portal from 'ui/Portal';
 
 const RemoveCollections = ({ onClose, collectionUid, collectionUids }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const allCollections = useSelector((state) => state.collections.collections || []);
 
@@ -60,7 +62,7 @@ const RemoveCollections = ({ onClose, collectionUid, collectionUids }) => {
   };
 
   if (!collections.length) {
-    return <div>Collection not found</div>;
+    return <div>{t('Collection not found')}</div>;
   }
 
   // If there are drafts, show the draft confirmation modal

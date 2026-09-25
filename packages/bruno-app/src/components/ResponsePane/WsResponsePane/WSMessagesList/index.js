@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useRef, useEffect, useCallback, memo } from 'react';
 import classnames from 'classnames';
 import StyledWrapper from './StyledWrapper';
@@ -60,6 +61,7 @@ const TypeIcon = ({ type }) => {
 };
 
 const WSMessageItem = memo(({ message, isOpen, onToggle, item, collection }) => {
+  const { t } = useTranslation();
   const [showHex, setShowHex] = useState(false);
   const preferences = useSelector((state) => state.app.preferences);
   const { displayedTheme } = useTheme();
@@ -179,6 +181,7 @@ const WSMessageItem = memo(({ message, isOpen, onToggle, item, collection }) => 
 });
 
 const WSMessagesList = ({ messages = [], item, collection }) => {
+  const { t } = useTranslation();
   const virtuosoRef = useRef(null);
   const [scrollerElement, setScrollerElement] = useState(null);
   const [openMessages, setOpenMessages] = useState(new Set());
@@ -242,7 +245,7 @@ const WSMessagesList = ({ messages = [], item, collection }) => {
   }, []);
 
   if (!messages.length) {
-    return <StyledWrapper><div className="empty-state">No messages yet.</div></StyledWrapper>;
+    return <StyledWrapper><div className="empty-state">{t('No messages yet.')}</div></StyledWrapper>;
   }
 
   return (

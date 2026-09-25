@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useFormik } from 'formik';
@@ -29,6 +30,7 @@ const CloneMockServerModal = ({
   activeWorkspace,
   onClose
 }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const inputRef = useRef();
   const activeWorkspaceUid = useSelector((state) => state.workspaces.activeWorkspaceUid);
@@ -152,7 +154,7 @@ const CloneMockServerModal = ({
     <Portal>
       <Modal
         size="md"
-        title="Clone Mock Server"
+        title={t('Clone Mock Server')}
         confirmText="Clone"
         handleConfirm={async () => {
           const errors = await formik.validateForm();
@@ -196,7 +198,7 @@ const CloneMockServerModal = ({
 
           <div className="mt-4">
             <label htmlFor="mock-server-clone-port" className="block font-medium">
-              Port
+              {t('Port')}
             </label>
             <input
               id="mock-server-clone-port"
@@ -221,7 +223,7 @@ const CloneMockServerModal = ({
           </div>
 
           <p className="text-xs opacity-70 mt-4">
-            Clones mock responses and server settings. The clone starts stopped.
+            {t('Clones mock responses and server settings. The clone starts stopped.')}
           </p>
         </form>
       </Modal>

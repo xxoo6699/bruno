@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useEffect, useCallback } from 'react';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
@@ -13,6 +14,7 @@ import path from 'utils/common/path';
 import { SettingsGroup, CheckboxSetting, SettingsField } from '../SettingsLayout';
 
 const General = () => {
+  const { t } = useTranslation();
   const preferences = useSelector((state) => state.app.preferences);
   const dispatch = useDispatch();
   // The file input is hidden; the visible button forwards its click here.
@@ -191,20 +193,20 @@ const General = () => {
 
   return (
     <StyledWrapper className="w-full">
-      <div className="section-header">General Settings</div>
+      <div className="section-header">{t('General Settings')}</div>
       <form className="bruno-form settings-form" onSubmit={formik.handleSubmit}>
-        <SettingsGroup title="Certificates">
+        <SettingsGroup title={t('Certificates')}>
           <CheckboxSetting
             id="sslVerification"
             name="sslVerification"
-            label="SSL/TLS Certificate Verification"
+            label={t('SSL/TLS Certificate Verification')}
             checked={formik.values.sslVerification}
             onChange={formik.handleChange}
           />
           <CheckboxSetting
             id="customCaCertificateEnabled"
             name="customCaCertificate.enabled"
-            label="Use Custom CA Certificate"
+            label={t('Use Custom CA Certificate')}
             checked={customCaCertificateEnabled}
             onChange={formik.handleChange}
           >
@@ -215,7 +217,7 @@ const General = () => {
                   <button
                     type="button"
                     className="ca-certificate-remove"
-                    aria-label="Remove custom CA certificate"
+                    aria-label={t('Remove custom CA certificate')}
                     data-testid="general-remove-ca-certificate"
                     disabled={!customCaCertificateEnabled}
                     onClick={deleteCaCertificate}
@@ -233,7 +235,7 @@ const General = () => {
                     onClick={() => inputFileCaCertificateRef.current.click()}
                   >
                     <IconUpload strokeWidth={1.5} size={14} aria-hidden="true" />
-                    Select File
+                    {t('Select File')}
                   </button>
                   <input
                     id="caCertFilePath"
@@ -250,7 +252,7 @@ const General = () => {
             <CheckboxSetting
               id="keepDefaultCaCertificatesEnabled"
               name="keepDefaultCaCertificates.enabled"
-              label="Keep Default CA Certificates"
+              label={t('Keep Default CA Certificates')}
               checked={formik.values.keepDefaultCaCertificates.enabled}
               onChange={formik.handleChange}
               disabled={keepDefaultCaCertificatesDisabled}
@@ -258,40 +260,40 @@ const General = () => {
           </CheckboxSetting>
         </SettingsGroup>
 
-        <SettingsGroup title="Cookies & Authorization">
+        <SettingsGroup title={t('Cookies & Authorization')}>
           <CheckboxSetting
             id="storeCookies"
             name="storeCookies"
-            label="Store Cookies automatically"
+            label={t('Store Cookies automatically')}
             checked={formik.values.storeCookies}
             onChange={formik.handleChange}
           />
           <CheckboxSetting
             id="sendCookies"
             name="sendCookies"
-            label="Send Cookies automatically"
+            label={t('Send Cookies automatically')}
             checked={formik.values.sendCookies}
             onChange={formik.handleChange}
           />
           <CheckboxSetting
             id="oauth2.useSystemBrowser"
             name="oauth2.useSystemBrowser"
-            label="Use System Browser for OAuth2 Authorization"
+            label={t('Use System Browser for OAuth2 Authorization')}
             checked={formik.values.oauth2.useSystemBrowser}
             onChange={formik.handleChange}
           />
         </SettingsGroup>
 
-        <SettingsGroup title="Auto Save">
+        <SettingsGroup title={t('Auto Save')}>
           <CheckboxSetting
             id="autoSaveEnabled"
             name="autoSave.enabled"
-            label="Enable Auto Save"
+            label={t('Enable Auto Save')}
             checked={autoSaveEnabled}
             onChange={formik.handleChange}
           />
           <SettingsField
-            label="Auto Save Delay (ms)"
+            label={t('Auto Save Delay (ms)')}
             htmlFor="autoSaveInterval"
             disabled={!autoSaveEnabled}
             error={autoSaveError}
@@ -313,8 +315,8 @@ const General = () => {
           </SettingsField>
         </SettingsGroup>
 
-        <SettingsGroup title="Requests">
-          <SettingsField label="Request Timeout (ms)" htmlFor="timeout" error={timeoutError}>
+        <SettingsGroup title={t('Requests')}>
+          <SettingsField label={t('Request Timeout (ms)')} htmlFor="timeout" error={timeoutError}>
             <input
               id="timeout"
               type="text"
@@ -332,7 +334,7 @@ const General = () => {
         </SettingsGroup>
 
         <SettingsGroup
-          title="Default Location"
+          title={t('Default Location')}
           description="Used as the default location for new workspaces and collections"
         >
           <SettingsField error={formik.errors.defaultLocation} className="default-location-field">
@@ -340,7 +342,7 @@ const General = () => {
               type="text"
               name="defaultLocation"
               id="defaultLocation"
-              aria-label="Default Location"
+              aria-label={t('Default Location')}
               data-testid="general-default-location-input"
               className="textbox cursor-pointer default-location-input"
               autoComplete="off"
@@ -351,7 +353,7 @@ const General = () => {
               onChange={formik.handleChange}
               value={formik.values.defaultLocation || ''}
               onClick={browseDefaultLocation}
-              placeholder="Click to browse for default location"
+              placeholder={t('Click to browse for default location')}
             />
             <button
               type="button"

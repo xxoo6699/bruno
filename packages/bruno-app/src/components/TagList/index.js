@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { IconX, IconTag, IconFolder, IconChevronRight, IconChevronDown } from '@tabler/icons';
 import StyledWrapper from './StyledWrapper';
@@ -6,6 +7,7 @@ import ToolHint from 'components/ToolHint/index';
 import { useTheme } from 'providers/Theme/index';
 
 const TagList = ({ tagsHintList = [], handleAddTag, tags, handleRemoveTag, onSave, handleValidation, collectionFormat, inheritedTags = [] }) => {
+  const { t } = useTranslation();
   const { displayedTheme } = useTheme();
   const isBruFormat = collectionFormat === 'bru';
   const tagNameRegex = isBruFormat ? /^[\p{L}\p{N}_-]+$/u : /^[\p{L}\p{N}_-](?:[\p{L}\p{N}_\s-]*[\p{L}\p{N}_-])?$/u;
@@ -54,7 +56,7 @@ const TagList = ({ tagsHintList = [], handleAddTag, tags, handleRemoveTag, onSav
       <SingleLineEditor
         className="border border-gray-500/50 px-2"
         value={text}
-        placeholder="e.g., smoke, regression"
+        placeholder={t('e.g., smoke, regression')}
         autocomplete={tagsHintList}
         showHintsOnClick={true}
         showHintsFor={[]}
@@ -77,7 +79,7 @@ const TagList = ({ tagsHintList = [], handleAddTag, tags, handleRemoveTag, onSav
                   <span className="tag-text" title={_tag}>
                     {_tag}
                   </span>
-                  <span className="tag-remove" title="Remove tag" onClick={() => handleRemoveTag(_tag)}>
+                  <span className="tag-remove" title={t('Remove tag')} onClick={() => handleRemoveTag(_tag)}>
                     <IconX size={12} strokeWidth={2} aria-hidden="true" />
                   </span>
                 </button>

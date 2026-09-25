@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import EmptyAppState from 'components/EmptyAppState';
 
@@ -7,6 +8,7 @@ import EmptyAppState from 'components/EmptyAppState';
  * registration error, or a loading placeholder while the URL resolves.
  */
 const AppWebviewPane = ({ src, error, webviewRef }) => {
+  const { t } = useTranslation();
   if (src) {
     return (
       <webview
@@ -19,9 +21,9 @@ const AppWebviewPane = ({ src, error, webviewRef }) => {
     );
   }
   if (error) {
-    return <EmptyAppState title="App failed to load" hint={error} />;
+    return <EmptyAppState title={t('App failed to load')} hint={error} />;
   }
-  return <div className="p-4 text-xs opacity-60">Loading app…</div>;
+  return <div className="p-4 text-xs opacity-60">{t('Loading app…')}</div>;
 };
 
 export default AppWebviewPane;

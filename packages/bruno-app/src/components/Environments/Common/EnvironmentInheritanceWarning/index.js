@@ -1,3 +1,5 @@
+import i18n from 'i18n';
+import { useTranslation } from 'react-i18next';
 import { Fragment, memo, useMemo } from 'react';
 import { IconAlertTriangle } from '@tabler/icons';
 import { getInheritedEnvironments } from '@usebruno/common/utils';
@@ -11,7 +13,7 @@ const getInheritanceWarning = ({ missingInheritedEnvironmentName, cyclicInherita
       testId: 'env-missing-inherited-environment',
       content: (
         <>
-          Referenced parent environment not found: <EnvironmentName name={missingInheritedEnvironmentName} />
+          {i18n.t('Referenced parent environment not found:')} <EnvironmentName name={missingInheritedEnvironmentName} />
         </>
       )
     };

@@ -1,3 +1,5 @@
+import i18n from 'i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useState, useRef } from 'react';
 import StyledWrapper from './StyledWrapper';
 import { usePersistedState } from 'hooks/usePersistedState';
@@ -37,9 +39,9 @@ const ResultIcon = ({ status }) => (
     className={`inline-flex items-center ${status === 'pass' ? 'test-success' : 'test-failure'}`}
   >
     {status === 'pass' ? (
-      <IconCircleCheck size={14} className="mr-1" aria-label="Test passed" />
+      <IconCircleCheck size={14} className="mr-1" aria-label={i18n.t('Test passed')} />
     ) : (
-      <IconCircleX size={14} className="mr-1" aria-label="Test failed" />
+      <IconCircleX size={14} className="mr-1" aria-label={i18n.t('Test failed')} />
     )}
   </span>
 );
@@ -108,6 +110,7 @@ export const countGrpcTestResults = (sections) =>
   sections.reduce((total, section) => total + section.results.length, 0);
 
 const GrpcTestResults = ({ item, sections }) => {
+  const { t } = useTranslation();
   const wrapperRef = useRef(null);
   const [scroll, setScroll] = usePersistedState({ key: `grpc-response-tests-scroll-${item?.uid}`, default: 0 });
   useTrackScroll({ ref: wrapperRef, selector: '.response-tab-content', onChange: setScroll, initialValue: scroll });
@@ -124,7 +127,7 @@ const GrpcTestResults = ({ item, sections }) => {
   };
 
   if (!countGrpcTestResults(sections)) {
-    return <div>No tests found</div>;
+    return <div>{t('No tests found')}</div>;
   }
 
   return (

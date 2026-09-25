@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import StyledWrapper from './StyledWrapper';
 
 const GrpcTestResultsLabel = ({ sections }) => {
+  const { t } = useTranslation();
   const results = sections.flatMap((section) => section.results);
 
   if (!results.length) {
@@ -12,7 +14,7 @@ const GrpcTestResultsLabel = ({ sections }) => {
 
   return (
     <StyledWrapper className="flex items-center">
-      <div>Tests</div>
+      <div>{t('Tests')}</div>
       {failedCount ? (
         <sup className="some-tests-failed ml-1 font-medium" data-testid="grpc-tests-failed-count">{failedCount}</sup>
       ) : (

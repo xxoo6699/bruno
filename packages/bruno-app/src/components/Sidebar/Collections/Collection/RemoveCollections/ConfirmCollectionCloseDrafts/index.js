@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,6 +20,7 @@ import StyledWrapper from './StyledWrapper';
 const MAX_UNSAVED_REQUESTS_TO_SHOW = 5;
 
 const ConfirmCollectionCloseDrafts = ({ onClose, collectionUids }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const allCollections = useSelector((state) => state.collections.collections || []);
 
@@ -121,7 +123,7 @@ const ConfirmCollectionCloseDrafts = ({ onClose, collectionUids }) => {
       >
         <div className="flex items-center">
           <IconAlertTriangle size={32} strokeWidth={1.5} className="warning-text" />
-          <h1 className="ml-2 text-lg font-medium">Hold on..</h1>
+          <h1 className="ml-2 text-lg font-medium">{t('Hold on..')}</h1>
         </div>
         <p className="mt-4">
           You have unsaved changes in <span className="font-medium">{allDraftsCount}</span>{' '}
@@ -174,7 +176,7 @@ const ConfirmCollectionCloseDrafts = ({ onClose, collectionUids }) => {
               Transient {pluralizeWord('Request', currentTransientDrafts.length)} ({currentTransientDrafts.length})
             </p>
             <p className="text-xs transient-hint mb-3">
-              These requests need to be saved individually before closing the collection.
+              {t('These requests need to be saved individually before closing the collection.')}
             </p>
             <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {currentTransientDrafts.map((item) => {
@@ -203,7 +205,7 @@ const ConfirmCollectionCloseDrafts = ({ onClose, collectionUids }) => {
         <div className="flex justify-between mt-6">
           <div>
             <Button color="danger" onClick={handleDiscardAll}>
-              Discard All and Remove
+              {t('Discard All and Remove')}
             </Button>
           </div>
           <div>

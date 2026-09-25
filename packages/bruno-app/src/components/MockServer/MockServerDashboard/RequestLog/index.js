@@ -1,3 +1,5 @@
+import i18n from 'i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IconTrash } from '@tabler/icons';
@@ -77,6 +79,7 @@ const getFailureLabel = (failureReason) => {
 };
 
 const MatchTracePanel = ({ entry }) => {
+  const { t } = useTranslation();
   const trace = entry?.matchTrace;
   const failureLabel = trace ? getFailureLabel(trace.failureReason) : null;
   const routeLabel = trace ? (trace.routeKey || `${entry.method} ${entry.path}`) : null;
@@ -88,7 +91,7 @@ const MatchTracePanel = ({ entry }) => {
       ) : null}
 
       {!trace && !entry?.error ? (
-        <div className="match-trace-empty">No match trace for this entry.</div>
+        <div className="match-trace-empty">{t('No match trace for this entry.')}</div>
       ) : null}
 
       {trace ? (
@@ -106,7 +109,7 @@ const MatchTracePanel = ({ entry }) => {
 
       {trace?.availableRoutes?.length ? (
         <div className="match-trace-section">
-          <div className="match-trace-section-title">Available routes</div>
+          <div className="match-trace-section-title">{t('Available routes')}</div>
           <ul className="match-trace-list">
             {trace.availableRoutes.map((route) => (
               <li key={route} title={route}>{route}</li>
@@ -117,7 +120,7 @@ const MatchTracePanel = ({ entry }) => {
 
       {trace?.candidates?.length ? (
         <div className="match-trace-section">
-          <div className="match-trace-section-title">Responses considered</div>
+          <div className="match-trace-section-title">{t('Responses considered')}</div>
           {trace.candidates.map((candidate) => {
             const candidateKey = candidate.responseUid || candidate.responseName;
 
@@ -128,10 +131,10 @@ const MatchTracePanel = ({ entry }) => {
               >
                 <div className="match-trace-candidate-header">
                   <span className="match-trace-candidate-name">{candidate.responseName}</span>
-                  {candidate.isFallback ? <StatusBadge size="sm">fallback</StatusBadge> : null}
-                  {candidate.selected ? <StatusBadge status="success" size="sm">selected</StatusBadge> : null}
+                  {candidate.isFallback ? <StatusBadge size="sm">{t('fallback')}</StatusBadge> : null}
+                  {candidate.selected ? <StatusBadge status="success" size="sm">{t('selected')}</StatusBadge> : null}
                   {candidate.matched && !candidate.selected ? (
-                    <StatusBadge status="warning" size="sm">matched, not selected</StatusBadge>
+                    <StatusBadge status="warning" size="sm">{t('matched, not selected')}</StatusBadge>
                   ) : null}
                 </div>
 
@@ -189,6 +192,7 @@ const STATUS_FILTER_OPTIONS = [
 ];
 
 const RequestLog = ({ mockServerUid, location }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const logs = useSelector((state) => state.mockServer.requestLogs[mockServerUid]) || [];
   const tabs = useSelector((state) => state.tabs.tabs);
@@ -297,7 +301,7 @@ const RequestLog = ({ mockServerUid, location }) => {
       render: ({ value, row }) => (
         row.matched
           ? <span className="truncate-cell" title={value || undefined}>{value || '-'}</span>
-          : <span className="no-match-label">No Match</span>
+          : <span className="no-match-label">{t('No Match')}</span>
       )
     },
     {
@@ -330,7 +334,7 @@ const RequestLog = ({ mockServerUid, location }) => {
     return (
       <StyledWrapper className="h-full w-full">
         <div className="text-xs text-muted empty-state">
-          No requests logged yet. Send requests to the mock server to see them here.
+          {t('No requests logged yet. Send requests to the mock server to see them here.')}
         </div>
       </StyledWrapper>
     );
@@ -340,7 +344,7 @@ const RequestLog = ({ mockServerUid, location }) => {
     <StyledWrapper className="h-full w-full">
       <div className="flex items-center gap-2 mb-4">
         <FilterDropdown
-          label="Match"
+          label={t('Match')}
           options={MATCH_FILTER_OPTIONS}
           value={matchFilter}
           onChange={setMatchFilter}
@@ -348,7 +352,7 @@ const RequestLog = ({ mockServerUid, location }) => {
           testId="mock-server-match-filter"
         />
         <FilterDropdown
-          label="Status"
+          label={t('Status')}
           options={STATUS_FILTER_OPTIONS}
           value={statusFilter}
           onChange={setStatusFilter}
@@ -365,7 +369,7 @@ const RequestLog = ({ mockServerUid, location }) => {
           onClick={handleClear}
           data-testid="mock-server-log-clear"
         >
-          Clear
+          {t('Clear')}
         </Button>
       </div>
 

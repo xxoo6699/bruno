@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { IconCopy, IconEdit, IconTrash, IconCheck, IconX, IconSearch, IconDeviceFloppy } from '@tabler/icons';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +23,7 @@ import useEnvironmentTabs from 'hooks/useEnvironmentTabs';
 import StyledWrapper from './StyledWrapper';
 
 const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuery, setSearchQuery, isSearchExpanded, setIsSearchExpanded, debouncedSearchQuery, searchInputRef }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const globalEnvs = useSelector((state) => state?.globalEnvironments?.globalEnvironments);
   const globalEnvironmentDraft = useSelector((state) => state.globalEnvironments.globalEnvironmentDraft);
@@ -260,13 +262,13 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
             inheritedEnvironmentName={environment.extends}
             onChange={handleExtendsChange}
           />
-          <ActionIcon label="Save All" onClick={handleSaveAll} data-testid="save-all-env">
+          <ActionIcon label={t('Save All')} onClick={handleSaveAll} data-testid="save-all-env">
             <IconDeviceFloppy size={15} strokeWidth={1.5} />
           </ActionIcon>
-          <ActionIcon label="Rename" onClick={handleRenameClick} data-testid="env-rename-action">
+          <ActionIcon label={t('Rename')} onClick={handleRenameClick} data-testid="env-rename-action">
             <IconEdit size={15} strokeWidth={1.5} />
           </ActionIcon>
-          <ActionIcon label="Copy" onClick={() => setOpenCopyModal(true)} data-testid="env-copy-action">
+          <ActionIcon label={t('Copy')} onClick={() => setOpenCopyModal(true)} data-testid="env-copy-action">
             <IconCopy size={15} strokeWidth={1.5} />
           </ActionIcon>
           <ActionIcon label="Delete" onClick={() => setOpenDeleteModal(true)} colorOnHover="danger" data-testid="env-delete-action">
@@ -306,7 +308,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
                       className="clear-search"
                       onClick={handleClearSearch}
                       onMouseDown={(e) => e.preventDefault()}
-                      title="Clear search"
+                      title={t('Clear search')}
                       data-testid="env-clear-search"
                     >
                       <IconX size={14} strokeWidth={1.5} />
@@ -314,7 +316,7 @@ const EnvironmentDetails = ({ environment, setIsModified, collection, searchQuer
                   )}
                 </div>
               ) : (
-                <ActionIcon label="Search" onClick={handleSearchIconClick} data-testid="env-search-action">
+                <ActionIcon label={t('Search')} onClick={handleSearchIconClick} data-testid="env-search-action">
                   <IconSearch size={15} strokeWidth={1.5} />
                 </ActionIcon>
               )}

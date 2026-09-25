@@ -1,3 +1,5 @@
+import i18n from 'i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { IconX, IconChevronDown, IconChevronRight, IconExternalLink } from '@tabler/icons';
@@ -99,6 +101,7 @@ const formatErrorForClipboard = (errorContext, message, displayFilePath) => {
 };
 
 const ScriptErrorCard = ({ title, message, errorContext, item, collection, scriptPhase, onClose }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [showStack, setShowStack] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -188,7 +191,7 @@ const ScriptErrorCard = ({ title, message, errorContext, item, collection, scrip
               className="icon-button flex-shrink-0 cursor-pointer"
               data-testid="script-error-copy"
               onClick={handleCopy}
-              aria-label="Copy script error"
+              aria-label={t('Copy script error')}
               title={copied ? 'Copied' : 'Copy script error'}
             >
               {copied ? <IconCheck size={16} strokeWidth={1.5} /> : <IconCopy size={16} strokeWidth={1.5} />}
@@ -205,7 +208,7 @@ const ScriptErrorCard = ({ title, message, errorContext, item, collection, scrip
             </button>
 
             {onClose && (
-              <button className="icon-button flex-shrink-0 cursor-pointer" data-testid="script-error-close" onClick={onClose} aria-label="Close script error">
+              <button className="icon-button flex-shrink-0 cursor-pointer" data-testid="script-error-close" onClick={onClose} aria-label={t('Close script error')}>
                 <IconX size={16} strokeWidth={1.5} />
               </button>
             )}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import StyledWrapper from './StyledWrapper';
@@ -12,6 +13,7 @@ import { DEFAULT_PRESET_REQUEST_TYPE } from 'utils/common/constants';
 import { requestTypeItems } from './constants';
 
 const PresetsSettings = ({ collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const initialPresets = { requestType: DEFAULT_PRESET_REQUEST_TYPE, requestUrl: '' };
 
@@ -69,8 +71,8 @@ const PresetsSettings = ({ collection }) => {
     <StyledWrapper className="h-full w-full">
       <div className="bruno-form">
         <div className="preset-field">
-          <label className="preset-field-label">Default Request Type</label>
-          <p className="preset-field-subtitle">Selected by default for new requests.</p>
+          <label className="preset-field-label">{t('Default Request Type')}</label>
+          <p className="preset-field-subtitle">{t('Selected by default for new requests.')}</p>
           <SegmentedControl
             ariaLabel="Default Request Type"
             name="requestType"
@@ -82,14 +84,14 @@ const PresetsSettings = ({ collection }) => {
         </div>
 
         <div className="preset-field">
-          <label className="preset-field-label" htmlFor="request-url">Default Base URL</label>
-          <p className="preset-field-subtitle">Pre-fills the URL field for new requests.</p>
+          <label className="preset-field-label" htmlFor="request-url">{t('Default Base URL')}</label>
+          <p className="preset-field-subtitle">{t('Pre-fills the URL field for new requests.')}</p>
           <input
             id="request-url"
             data-testid="presets-request-url"
             type="text"
             name="requestUrl"
-            placeholder="Request URL"
+            placeholder={t('Request URL')}
             className="block textbox preset-input mousetrap"
             autoComplete="off"
             autoCorrect="off"
@@ -101,8 +103,8 @@ const PresetsSettings = ({ collection }) => {
         </div>
 
         <div className="preset-field">
-          <label className="preset-field-label" htmlFor="default-environment">Default Environment</label>
-          <p className="preset-field-subtitle">Selected when this collection is shared and first opened.</p>
+          <label className="preset-field-label" htmlFor="default-environment">{t('Default Environment')}</label>
+          <p className="preset-field-subtitle">{t('Selected when this collection is shared and first opened.')}</p>
           <div className="default-env-dropdown">
             <MenuDropdown
               items={defaultEnvironmentItems}

@@ -119,8 +119,8 @@ const GrpcRequestPane = ({ item, collection, handleRun }) => {
         key: 'script',
         label: (
           <span className="flex items-center gap-2">
-            Script
-            <StatusBadge status="info" size="xs">Beta</StatusBadge>
+            {t('Script')}
+            <StatusBadge status="info" size="xs">{t('Beta')}</StatusBadge>
           </span>
         ),
         indicator: hasScript ? <StatusDot type={hasScriptError ? 'error' : 'default'} dataTestId="script" /> : null

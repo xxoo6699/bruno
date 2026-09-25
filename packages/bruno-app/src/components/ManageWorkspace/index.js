@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IconArrowLeft, IconPlus, IconFolder, IconLock, IconDots, IconCategory, IconLogin } from '@tabler/icons';
@@ -19,6 +20,7 @@ import { getRevealInFolderLabel } from 'utils/common/platform';
 import { openDevtoolsAndSwitchToTerminal } from 'utils/terminal';
 
 const ManageWorkspace = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { workspaces, activeWorkspaceUid } = useSelector((state) => state.workspaces);
   const preferences = useSelector((state) => state.app.preferences);
@@ -101,7 +103,7 @@ const ManageWorkspace = () => {
           <div className="back-button" onClick={handleBack} data-testid="manage-workspace-back-btn">
             <IconArrowLeft size={18} strokeWidth={1.5} />
           </div>
-          <span className="header-title" data-testid="manage-workspace-title">Manage Workspace</span>
+          <span className="header-title" data-testid="manage-workspace-title">{t('Manage Workspace')}</span>
         </div>
         <Button
           size="sm"
@@ -109,14 +111,14 @@ const ManageWorkspace = () => {
           icon={<IconPlus size={14} strokeWidth={2} />}
           data-testid="manage-workspace-create"
         >
-          Create Workspace
+          {t('Create Workspace')}
         </Button>
       </div>
 
       <div className="workspace-list">
         {sortedWorkspaces.length === 0 ? (
           <div className="empty-state">
-            <span>No workspaces found</span>
+            <span>{t('No workspaces found')}</span>
           </div>
         ) : (
           sortedWorkspaces.map((workspace) => {
@@ -135,7 +137,7 @@ const ManageWorkspace = () => {
                       )}
                     </span>
                     <span className="workspace-name" data-testid="workspace-row-name">{workspace.name}</span>
-                    {isDefault && <span className="default-badge" data-testid="workspace-default-badge">Default</span>}
+                    {isDefault && <span className="default-badge" data-testid="workspace-default-badge">{t('Default')}</span>}
                   </div>
                   {workspace.pathname && (
                     <div className="workspace-path" data-testid="workspace-path">{workspace.pathname}</div>

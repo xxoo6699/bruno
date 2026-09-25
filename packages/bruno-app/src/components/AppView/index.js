@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { useDispatch } from 'react-redux';
@@ -146,6 +147,7 @@ const REQUEST_CTX_BOOTSTRAP = `<script>
 </script>`;
 
 const AppView = ({ item, collection, code }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { displayedTheme, theme, themeVariantLight, themeVariantDark } = useTheme();
   const { url: src, error: appDocumentError } = useAppDocumentUrl(`request:${item.uid}`, REQUEST_CTX_BOOTSTRAP, code);
@@ -304,7 +306,7 @@ const AppView = ({ item, collection, code }) => {
       <div className="app-view-toolbar">
         <span>App mode - {item.name}</span>
         <button type="button" className="app-exit-btn" data-testid="app-exit-button" onClick={disableApp}>
-          Exit to editor
+          {t('Exit to editor')}
         </button>
       </div>
       {code && code.trim().length ? (

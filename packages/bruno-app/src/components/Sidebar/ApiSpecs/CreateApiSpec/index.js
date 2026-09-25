@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
@@ -14,6 +15,7 @@ import { validateName, validateNameError } from 'utils/common/regex';
 import { buildSkippedFilesMessage, buildExportWarningsMessage, buildSpecVariables } from 'utils/common/apiSpec';
 
 const CreateApiSpec = ({ onClose }) => {
+  const { t } = useTranslation();
   const inputRef = useRef();
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -179,7 +181,7 @@ const CreateApiSpec = ({ onClose }) => {
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="api-spec-location" className="block font-semibold mb-2">
-              Template
+              {t('Template')}
             </label>
             <div className="flex items-center">
               <input
@@ -192,7 +194,7 @@ const CreateApiSpec = ({ onClose }) => {
                 checked={formik.values.importFrom === 'blank'}
               />
               <label htmlFor="blank" className="ml-1 cursor-pointer select-none">
-                Blank spec
+                {t('Blank spec')}
               </label>
               <input
                 id="collection"
@@ -204,7 +206,7 @@ const CreateApiSpec = ({ onClose }) => {
                 checked={formik.values.importFrom === 'collection'}
               />
               <label htmlFor="collection" className="ml-1 cursor-pointer select-none">
-                From Bruno Collection
+                {t('From Bruno Collection')}
               </label>
             </div>
             {formik.touched.importFrom && formik.errors.importFrom ? (
@@ -213,7 +215,7 @@ const CreateApiSpec = ({ onClose }) => {
             {formik.values.importFrom === 'collection' ? (
               <>
                 <label htmlFor="collection-location" className="block font-semibold mt-3">
-                  Collection Location
+                  {t('Collection Location')}
                 </label>
                 <input
                   id="collection-location"
@@ -240,7 +242,7 @@ const CreateApiSpec = ({ onClose }) => {
                 {environments && Object.keys(environments || {})?.length > 0 ? (
                   <>
                     <label htmlFor="api-spec-name" className="flex items-center font-semibold mt-3">
-                      Environment
+                      {t('Environment')}
                     </label>
                     <div className="relative">
                       <select
@@ -269,7 +271,7 @@ const CreateApiSpec = ({ onClose }) => {
               <div className="text-red-500">{formik.errors.environment}</div>
             ) : null}
             <label htmlFor="api-spec-name" className="flex items-center font-semibold mt-3">
-              Spec Name
+              {t('Spec Name')}
             </label>
             <div className="relative">
               <input
@@ -296,7 +298,7 @@ const CreateApiSpec = ({ onClose }) => {
             ) : null}
 
             <label htmlFor="api-spec-location" className="block font-semibold mt-3">
-              Spec Location
+              {t('Spec Location')}
             </label>
             <input
               id="api-spec-location"
@@ -321,7 +323,7 @@ const CreateApiSpec = ({ onClose }) => {
               </span>
               {!isDefaultWorkspace && (
                 <span className="text-xs opacity-60 ml-2">
-                  (defaults to workspace's apispec folder)
+                  {t('(defaults to workspace\'s apispec folder)')}
                 </span>
               )}
             </div>

@@ -1,3 +1,5 @@
+import i18n from 'i18n';
+import { useTranslation } from 'react-i18next';
 import React, { useCallback, useMemo, useState, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
@@ -27,11 +29,11 @@ const FEATURES = [
 
 const CollectionNotFound = ({ onClose }) => (
   <Portal>
-    <Modal size="md" title="Generate Documentation" confirmText="Close" handleConfirm={onClose} hideCancel>
+    <Modal size="md" title={i18n.t('Generate Documentation')} confirmText="Close" handleConfirm={onClose} hideCancel>
       <StyledWrapper>
         <div className="flex items-center gap-2 text-warning">
           <IconAlertTriangle size={16} className="shrink-0" />
-          <span>Collection not found. It may have been deleted or is no longer available.</span>
+          <span>{i18n.t('Collection not found. It may have been deleted or is no longer available.')}</span>
         </div>
       </StyledWrapper>
     </Modal>
@@ -39,6 +41,7 @@ const CollectionNotFound = ({ onClose }) => (
 );
 
 const GenerateDocumentation = ({ onClose, collectionUid }) => {
+  const { t } = useTranslation();
   const { version } = useApp();
   const collection = useSelector((state) =>
     findCollectionByUid(state.collections.collections, collectionUid)
@@ -143,7 +146,7 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
     <Portal>
       <Modal
         size="md"
-        title="Generate Documentation"
+        title={t('Generate Documentation')}
         confirmText={isLoading ? 'Loading...' : 'Generate'}
         cancelText="Cancel"
         handleConfirm={isLoading ? undefined : handleGenerate}
@@ -154,16 +157,16 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
           {isLoading ? (
             <div className="flex items-center justify-center gap-3 py-8">
               <IconLoader2 size={20} className="animate-spin" aria-hidden="true" />
-              <span>Loading collection...</span>
+              <span>{t('Loading collection...')}</span>
             </div>
           ) : (
             <div className="content">
               <h3 className="title flex items-center gap-2 mt-2 font-medium">
                 <IconBook size={18} aria-hidden="true" />
-                <span>Interactive API Documentation</span>
+                <span>{t('Interactive API Documentation')}</span>
               </h3>
               <p className="description mb-4">
-                Generate a standalone HTML file that can be hosted anywhere or shared with your team.
+                {t('Generate a standalone HTML file that can be hosted anywhere or shared with your team.')}
               </p>
 
               <ul className="features flex flex-col list-none gap-2 p-0 mb-4">
@@ -182,7 +185,7 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
                     <div className="card-divider" />
                     <div className="env-section">
                       <EnvironmentSelectionList
-                        title="Environments To Include"
+                        title={t('Environments To Include')}
                         environments={environments}
                         selectedUids={selectedEnvUids}
                         onToggle={toggleEnv}
@@ -206,7 +209,7 @@ const GenerateDocumentation = ({ onClose, collectionUid }) => {
               </div>
 
               <p className="note m-0">
-                The generated file loads Bruno's JavaScript and CSS files from a CDN, which requires an internet connection.
+                {t('The generated file loads Bruno\'s JavaScript and CSS files from a CDN, which requires an internet connection.')}
               </p>
             </div>
           )}

@@ -360,7 +360,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
                 </div>
                 <Select
                   className="branch-select mt-5"
-                  label="Branch"
+                  label={t('Branch')}
                   data={branchListing.branches}
                   value={formik.values.branch || branchListing.defaultBranch}
                   onChange={(branch) => formik.setFieldValue('branch', branch || '')}
@@ -375,7 +375,7 @@ const CloneGitRepository = ({ onClose, onFinish, collectionRepositoryUrl = null 
                 />
                 {branchListing.failed && (
                   <div className="text-muted text-xs mt-1">
-                    Branches could not be listed for this repository. Cloning will use the default branch.
+                    {t('Branches could not be listed for this repository. Cloning will use the default branch.')}
                   </div>
                 )}
               </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { IconExternalLink } from '@tabler/icons';
 import { useDispatch } from 'react-redux';
@@ -28,6 +29,7 @@ const getUnsupportedInheritedAuthMessage = (inheritedMode, protocolLabel) => {
 };
 
 export const InheritedAuthSourceLabel = ({ collection, inheritedSource, supportedModes, protocolLabel, unsupportedMessage }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const inheritedMode = inheritedSource?.auth?.mode;
 
@@ -88,7 +90,7 @@ export const InheritedAuthSourceLabel = ({ collection, inheritedSource, supporte
     <StyledWrapper className="inherited-auth-source">
       <div className="inherited-auth-source-row">
         <div className="inherited-auth-source-copy" title={`Auth inherited from ${inheritedSource.name}`}>
-          Auth inherited from <span className="inherited-auth-source-name">{inheritedSource.name}</span>:
+          {t('Auth inherited from')} <span className="inherited-auth-source-name">{inheritedSource.name}</span>:
         </div>
         <button
           type="button"

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useEffect, useState, forwardRef } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -18,6 +19,7 @@ import StyledWrapper from './StyledWrapper';
 import Button from 'ui/Button';
 
 const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const collection = useSelector((state) => state.collections.collections?.find((c) => c.uid === collectionUid));
   const isFolder = isItemAFolder(item);
@@ -96,7 +98,7 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
           className="btn-advanced"
           type="button"
         >
-          Options
+          {t('Options')}
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
       </div>
@@ -140,7 +142,7 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
               <div className="mt-4">
                 <div className="flex items-center justify-between">
                   <label htmlFor="filename" className="flex items-center font-medium">
-                    {isFolder ? 'Folder' : 'File'} Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
+                    {isFolder ? 'Folder' : 'File'} Name <small className="font-normal text-muted ml-1">{t('(on filesystem)')}</small>
                     { isFolder ? (
                       <Help width="300">
                         <p>
@@ -150,10 +152,10 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
                     ) : (
                       <Help width="300">
                         <p>
-                          Bruno saves each request as a file in your collection's folder.
+                          {t('Bruno saves each request as a file in your collection\'s folder.')}
                         </p>
                         <p className="mt-2">
-                          You can choose a file name different from your request's name or one compatible with filesystem rules.
+                          {t('You can choose a file name different from your request\'s name or one compatible with filesystem rules.')}
                         </p>
                       </Help>
                     )}
@@ -224,7 +226,7 @@ const RenameCollectionItem = ({ collectionUid, item, onClose }) => {
                   Cancel
                 </Button>
                 <Button type="submit" data-testid="rename-item-button">
-                  Rename
+                  {t('Rename')}
                 </Button>
               </div>
             </div>

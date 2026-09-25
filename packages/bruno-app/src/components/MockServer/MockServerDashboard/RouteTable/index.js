@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useMemo, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { IconCopy, IconCheck } from '@tabler/icons';
@@ -11,6 +12,7 @@ import { buildMockRouteTable, countMatchedRouteHits } from 'utils/mock-server/mo
 import StyledWrapper from './StyledWrapper';
 
 const RouteTable = ({ mockServerUid }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const responses = useSelector((state) => state.mockServer.mockResponses[mockServerUid]) || [];
   const requestLogs = useSelector((state) => state.mockServer.requestLogs[mockServerUid]) || [];
@@ -93,8 +95,8 @@ const RouteTable = ({ mockServerUid }) => {
                 e.stopPropagation();
                 handleCopyRouteUrl(row.uid, value);
               }}
-              title="Copy route URL"
-              aria-label="Copy route URL"
+              title={t('Copy route URL')}
+              aria-label={t('Copy route URL')}
             >
               {copiedRouteUid === row.uid
                 ? <IconCheck size={13} strokeWidth={2} />
@@ -145,13 +147,13 @@ const RouteTable = ({ mockServerUid }) => {
       <div className="flex items-center gap-2 mb-4">
         <MockSearchInput
           className="flex-1"
-          placeholder="Search routes"
+          placeholder={t('Search routes')}
           value={searchQuery}
           onChange={setSearchQuery}
           data-testid="mock-server-route-search"
         />
         <FilterDropdown
-          label="Method"
+          label={t('Method')}
           options={methodOptions}
           value={methodFilter}
           onChange={setMethodFilter}
@@ -175,7 +177,7 @@ const RouteTable = ({ mockServerUid }) => {
       />
 
       {filteredRoutes.length === 0 && routes.length > 0 && (
-        <div className="text-xs text-muted mt-4 empty-state">No routes match your filter.</div>
+        <div className="text-xs text-muted mt-4 empty-state">{t('No routes match your filter.')}</div>
       )}
     </StyledWrapper>
   );

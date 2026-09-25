@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import ApiKeyAuth from 'components/RequestPane/Auth/ApiKeyAuth';
 import AwsV4Auth from 'components/RequestPane/Auth/AwsV4Auth';
 import BasicAuth from 'components/RequestPane/Auth/BasicAuth';
@@ -24,6 +25,7 @@ import AuthMode from '../AuthMode';
 import StyledWrapper from './StyledWrapper';
 
 const GrantTypeComponentMap = ({ collection, folder, updateFolderAuth }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const save = () => {
@@ -49,6 +51,7 @@ const GrantTypeComponentMap = ({ collection, folder, updateFolderAuth }) => {
 };
 
 const Auth = ({ collection, folder }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const folderRoot = folder?.draft || folder?.root;
   let request = get(folderRoot, 'request', {});
@@ -201,7 +204,7 @@ const Auth = ({ collection, folder }) => {
     <StyledWrapper className="w-full">
       <div className="text-xs mb-4 text-muted">
         Configures authentication for the entire folder. This applies to all requests using the{' '}
-        <span className="font-medium">Inherit</span> option in the <span className="font-medium">Auth</span> tab.
+        <span className="font-medium">Inherit</span> {t('option in the')} <span className="font-medium">Auth</span> tab.
       </div>
       <div className="flex flex-col items-start gap-2 mb-4 min-w-0">
         <AuthMode collection={collection} folder={folder} />

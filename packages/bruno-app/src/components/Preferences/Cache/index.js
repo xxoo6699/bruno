@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { savePreferences, clearHttpHttpsAgentCache } from 'providers/ReduxStore/slices/app';
@@ -12,6 +13,7 @@ import StyledWrapper from './StyledWrapper';
 import { formatSize } from 'utils/common';
 
 const Cache = () => {
+  const { t } = useTranslation();
   const preferences = useSelector((state) => state.app.preferences);
   const dispatch = useDispatch();
   const { theme } = useTheme();
@@ -65,13 +67,13 @@ const Cache = () => {
 
   return (
     <StyledWrapper className="w-full">
-      <div className="cache-section-title">Cache</div>
+      <div className="cache-section-title">{t('Cache')}</div>
 
       <div className="cache-item">
         <div className="cache-item-header">
           <div className="cache-item-title-group">
-            <span className="cache-item-title">File cache</span>
-            <span className="beta-badge">Beta</span>
+            <span className="cache-item-title">{t('File cache')}</span>
+            <span className="beta-badge">{t('Beta')}</span>
           </div>
           <ToggleSwitch
             data-testid="cache.file.enabled"
@@ -88,11 +90,11 @@ const Cache = () => {
               changes. Clearing it won't affect your original files.
             </p>
             <p className="cache-item-size">
-              Cache size <strong>{fileCacheSize == null ? '—' : formatSize(fileCacheSize)}</strong>
+              {t('Cache size')} <strong>{fileCacheSize == null ? '—' : formatSize(fileCacheSize)}</strong>
             </p>
           </div>
           <ActionIcon
-            label="Clear cache"
+            label={t('Clear cache')}
             onClick={handleClearFileCache}
             disabled={!fileCacheSize}
             colorOnHover={theme.colors.text.danger}
@@ -105,7 +107,7 @@ const Cache = () => {
       <div className="cache-item">
         <div className="cache-item-header">
           <div className="cache-item-title-group">
-            <span className="cache-item-title">SSL session cache</span>
+            <span className="cache-item-title">{t('SSL session cache')}</span>
           </div>
           <ToggleSwitch
             data-testid="sslSession.enabled"
@@ -123,7 +125,7 @@ const Cache = () => {
             </p>
           </div>
           <ActionIcon
-            label="Clear cache"
+            label={t('Clear cache')}
             onClick={handleClearSslSession}
             colorOnHover={theme.colors.text.danger}
           >

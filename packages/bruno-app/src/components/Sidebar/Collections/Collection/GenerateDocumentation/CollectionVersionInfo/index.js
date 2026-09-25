@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import React, { memo, Fragment } from 'react';
 
 const CollectionVersionInfo = ({ name, version, folderCount = 0, requestCount = 0, environmentCount = 0 }) => {
+  const { t } = useTranslation();
   const folderLabel = folderCount === 1 ? 'Folder' : 'Folders';
   const requestLabel = requestCount === 1 ? 'request' : 'requests';
 
@@ -17,7 +19,7 @@ const CollectionVersionInfo = ({ name, version, folderCount = 0, requestCount = 
         {environmentCount === 0 ? (
           <Fragment>
             <span className="version-dot" aria-hidden="true" />
-            <span>0 environments</span>
+            <span>{t('0 environments')}</span>
           </Fragment>
         ) : null}
       </p>

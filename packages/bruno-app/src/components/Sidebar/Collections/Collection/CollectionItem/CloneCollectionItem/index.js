@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import toast from 'react-hot-toast';
 import { useFormik } from 'formik';
@@ -18,6 +19,7 @@ import StyledWrapper from './StyledWrapper';
 import Button from 'ui/Button';
 
 const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const collection = useSelector((state) => state.collections.collections?.find((c) => c.uid === collectionUid));
   const isFolder = isItemAFolder(item);
@@ -77,7 +79,7 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
           className="btn-advanced"
           type="button"
         >
-          Options
+          {t('Options')}
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
       </div>
@@ -102,7 +104,7 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
                 id="collection-item-name"
                 type="text"
                 name="name"
-                placeholder="Enter Item name"
+                placeholder={t('Enter Item name')}
                 ref={inputRef}
                 className="block textbox mt-2 w-full"
                 autoComplete="off"
@@ -122,7 +124,7 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
               <div className="mt-4">
                 <div className="flex items-center justify-between">
                   <label htmlFor="filename" className="flex items-center font-medium">
-                    {isFolder ? 'Folder' : 'File'} Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
+                    {isFolder ? 'Folder' : 'File'} Name <small className="font-normal text-muted ml-1">{t('(on filesystem)')}</small>
                     { isFolder ? (
                       <Help width="300">
                         <p>
@@ -132,10 +134,10 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
                     ) : (
                       <Help width="300">
                         <p>
-                          Bruno saves each request as a file in your collection's folder.
+                          {t('Bruno saves each request as a file in your collection\'s folder.')}
                         </p>
                         <p className="mt-2">
-                          You can choose a file name different from your request's name or one compatible with filesystem rules.
+                          {t('You can choose a file name different from your request\'s name or one compatible with filesystem rules.')}
                         </p>
                       </Help>
                     )}
@@ -206,7 +208,7 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
                   Cancel
                 </Button>
                 <Button type="submit" data-testid="clone-item-button">
-                  Clone
+                  {t('Clone')}
                 </Button>
               </div>
             </div>

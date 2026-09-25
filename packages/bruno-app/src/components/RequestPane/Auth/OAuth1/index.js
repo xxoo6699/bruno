@@ -30,7 +30,7 @@ const placementLabels = {
   body: 'Body'
 };
 
-const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
+const OAuth1 = ({ item = {}, collection, request, save, updateAuth, disabled }) => {
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const { t } = useTranslation();
@@ -43,9 +43,17 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
   const privateKeySensitive = isSensitive(oauth1.privateKey);
 
   const handleRun = item?.uid ? () => dispatch(sendRequest(item, collection.uid)) : undefined;
-  const handleSave = () => save();
+  const handleSave = () => {
+    if (!save) {
+      return;
+    }
+    save();
+  };
 
   const handleChange = (field, value) => {
+    if (disabled) {
+      return;
+    }
     dispatch(
       updateAuth({
         mode: 'oauth1',
@@ -133,6 +141,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
             onRun={handleRun}
             collection={collection}
             item={item}
+            readOnly={disabled}
             isCompact
           />
         </div>
@@ -151,6 +160,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
               collection={collection}
               item={item}
               isSecret={true}
+              readOnly={disabled}
               isCompact
             />
             {consumerSecretSensitive.showWarning && <SensitiveFieldWarning fieldName="oauth1-consumer-secret" warningMessage={consumerSecretSensitive.warningMessage} />}
@@ -169,6 +179,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
             onRun={handleRun}
             collection={collection}
             item={item}
+            readOnly={disabled}
             isCompact
           />
         </div>
@@ -186,6 +197,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
             collection={collection}
             item={item}
             isSecret={true}
+            readOnly={disabled}
             isCompact
           />
           {tokenSecretSensitive.showWarning && <SensitiveFieldWarning fieldName="oauth1-token-secret" warningMessage={tokenSecretSensitive.warningMessage} />}
@@ -234,6 +246,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                 onClick={handleClearFile}
                 title={t('Clear file')}
                 type="button"
+                disabled={disabled}
               >
                 <IconX size={14} />
               </button>
@@ -250,6 +263,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                   collection={collection}
                   item={item}
                   isSecret={true}
+                  readOnly={disabled}
                   allowNewlines={true}
                 />
                 {privateKeySensitive.showWarning && <SensitiveFieldWarning fieldName="oauth1-private-key" warningMessage={privateKeySensitive.warningMessage} />}
@@ -260,6 +274,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                   onClick={handleBrowse}
                   title={t('Select File')}
                   type="button"
+                  disabled={disabled}
                 >
                   <IconUpload size={14} />
                   <span className="text-xs">{t('Upload File')}</span>
@@ -305,12 +320,17 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
           <input
             type="checkbox"
             checked={oauth1.includeBodyHash || false}
+            disabled={disabled}
             onChange={(e) => handleChange('includeBodyHash', e.target.checked)}
           />
           <label
-            className="block cursor-pointer"
+            className={`block ${disabled ? '' : 'cursor-pointer'}`}
             onClick={(e) => {
-              e.preventDefault(); handleChange('includeBodyHash', !oauth1.includeBodyHash);
+              if (disabled) {
+                return;
+              }
+              e.preventDefault();
+              handleChange('includeBodyHash', !oauth1.includeBodyHash);
             }}
           >
             {t('Include Body Hash')}
@@ -319,9 +339,11 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
       </div>
 
       {/* Advanced Section (collapsible) */}
-      <div
-        className="flex items-center gap-2.5 mt-2 cursor-pointer select-none"
+      <button
+        type="button"
+        className="flex items-center gap-2.5 mt-2 cursor-pointer select-none auth-advanced-toggle"
         onClick={() => setAdvancedOpen(!advancedOpen)}
+        aria-expanded={advancedOpen}
       >
         <div className="flex items-center px-2.5 py-1.5 oauth1-icon-container rounded-md">
           <IconAdjustmentsHorizontal size={14} className="oauth1-icon" />
@@ -333,7 +355,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
           size={14}
           className={`oauth1-icon transition-transform ${advancedOpen ? 'rotate-90' : ''}`}
         />
-      </div>
+      </button>
 
       {advancedOpen && (
         <>
@@ -348,6 +370,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                 onRun={handleRun}
                 collection={collection}
                 item={item}
+                readOnly={disabled}
                 isCompact
               />
             </div>
@@ -364,6 +387,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                 onRun={handleRun}
                 collection={collection}
                 item={item}
+                readOnly={disabled}
                 isCompact
               />
             </div>
@@ -380,6 +404,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                 onRun={handleRun}
                 collection={collection}
                 item={item}
+                readOnly={disabled}
                 isCompact
               />
             </div>
@@ -396,6 +421,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                 onRun={handleRun}
                 collection={collection}
                 item={item}
+                readOnly={disabled}
                 isCompact
               />
             </div>
@@ -412,6 +438,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                 onRun={handleRun}
                 collection={collection}
                 item={item}
+                readOnly={disabled}
                 isCompact
               />
             </div>
@@ -428,6 +455,7 @@ const OAuth1 = ({ item = {}, collection, request, save, updateAuth }) => {
                 onRun={handleRun}
                 collection={collection}
                 item={item}
+                readOnly={disabled}
                 isCompact
               />
             </div>

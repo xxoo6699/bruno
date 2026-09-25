@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { IconArrowLeft, IconPlus, IconFolder, IconLock, IconDots, IconCategory, IconLogin } from '@tabler/icons';
 import toast from 'react-hot-toast';
 
@@ -21,7 +20,6 @@ import { openDevtoolsAndSwitchToTerminal } from 'utils/terminal';
 
 const ManageWorkspace = () => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const { workspaces, activeWorkspaceUid } = useSelector((state) => state.workspaces);
   const preferences = useSelector((state) => state.app.preferences);
 
@@ -41,13 +39,13 @@ const ManageWorkspace = () => {
   const handleOpenWorkspace = (workspace) => {
     dispatch(switchWorkspace(workspace.uid));
     dispatch(showHomePage());
-    toast.success(t('Switched to {{name}}', { name: workspace.name }));
+    toast.success(`Switched to ${workspace.name}`);
   };
 
   const handleShowInFolder = (workspace) => {
     if (workspace.pathname) {
       dispatch(showInFolder(workspace.pathname)).catch(() => {
-        toast.error(t('Error opening the folder'));
+        toast.error('Error opening the folder');
       });
     }
   };
@@ -58,7 +56,7 @@ const ManageWorkspace = () => {
 
   const handleCloseClick = (workspace) => {
     if (workspace.type === 'default') {
-      toast.error(t('Cannot remove the default workspace'));
+      toast.error('Cannot remove the default workspace');
       return;
     }
     setDeleteWorkspaceModal({ open: true, workspace });
@@ -74,7 +72,7 @@ const ManageWorkspace = () => {
     try {
       await dispatch(createWorkspaceWithUniqueName(defaultLocation));
     } catch (error) {
-      toast.error(error?.message || t('Failed to create workspace'));
+      toast.error(error?.message || 'Failed to create workspace');
     }
   };
 
@@ -100,20 +98,25 @@ const ManageWorkspace = () => {
 
       <div className="manage-workspace-header">
         <div className="header-left">
-          <div className="back-button" onClick={handleBack}>
+          <div className="back-button" onClick={handleBack} data-testid="manage-workspace-back-btn">
             <IconArrowLeft size={18} strokeWidth={1.5} />
           </div>
-          <span className="header-title">{t('Manage Workspace')}</span>
+          <span className="header-title" data-testid="manage-workspace-title">Manage Workspace</span>
         </div>
-        <Button size="sm" onClick={handleCreateWorkspace} icon={<IconPlus size={14} strokeWidth={2} />}>
-          {t('Create Workspace')}
+        <Button
+          size="sm"
+          onClick={handleCreateWorkspace}
+          icon={<IconPlus size={14} strokeWidth={2} />}
+          data-testid="manage-workspace-create"
+        >
+          Create Workspace
         </Button>
       </div>
 
       <div className="workspace-list">
         {sortedWorkspaces.length === 0 ? (
           <div className="empty-state">
-            <span>{t('No workspaces found')}</span>
+            <span>No workspaces found</span>
           </div>
         ) : (
           sortedWorkspaces.map((workspace) => {
@@ -121,7 +124,7 @@ const ManageWorkspace = () => {
             const isActive = workspace.uid === activeWorkspaceUid;
 
             return (
-              <div key={workspace.uid} className="workspace-item">
+              <div key={workspace.uid} className="workspace-item" data-testid={`workspace-item-${workspace.name}`}>
                 <div className="workspace-info">
                   <div className="workspace-name-row">
                     <span className={`workspace-icon ${isDefault ? 'default' : 'regular'}`}>
@@ -131,11 +134,11 @@ const ManageWorkspace = () => {
                         <IconCategory size={14} strokeWidth={1.5} />
                       )}
                     </span>
-                    <span className="workspace-name">{workspace.name}</span>
-                    {isDefault && <span className="default-badge">{t('Default')}</span>}
+                    <span className="workspace-name" data-testid="workspace-row-name">{workspace.name}</span>
+                    {isDefault && <span className="default-badge" data-testid="workspace-default-badge">Default</span>}
                   </div>
                   {workspace.pathname && (
-                    <div className="workspace-path">{workspace.pathname}</div>
+                    <div className="workspace-path" data-testid="workspace-path">{workspace.pathname}</div>
                   )}
                 </div>
 
@@ -145,7 +148,7 @@ const ManageWorkspace = () => {
                     onClick={() => handleOpenWorkspace(workspace)}
                   >
                     <IconLogin size={14} strokeWidth={1.5} />
-                    <span>{t('Open')}</span>
+                    <span>Open</span>
                   </button>
                   {workspace.pathname && workspace.type !== 'default' && (
                     <button
@@ -160,12 +163,12 @@ const ManageWorkspace = () => {
                     <MenuDropdown
                       placement="bottom-end"
                       items={[
-                        { id: 'open-in-terminal', label: t('Open in Terminal'), onClick: () => openDevtoolsAndSwitchToTerminal(dispatch, workspace.pathname) },
-                        { id: 'rename', label: t('Rename'), onClick: () => handleRenameClick(workspace) },
-                        { id: 'remove', label: t('Remove'), onClick: () => handleCloseClick(workspace) }
+                        { id: 'open-in-terminal', label: 'Open in Terminal', onClick: () => openDevtoolsAndSwitchToTerminal(dispatch, workspace.pathname) },
+                        { id: 'rename', label: 'Rename', onClick: () => handleRenameClick(workspace) },
+                        { id: 'remove', label: 'Remove', onClick: () => handleCloseClick(workspace) }
                       ]}
                     >
-                      <button className="more-actions-btn">
+                      <button className="more-actions-btn" data-testid="workspace-actions-trigger">
                         <IconDots size={14} strokeWidth={1.5} />
                       </button>
                     </MenuDropdown>

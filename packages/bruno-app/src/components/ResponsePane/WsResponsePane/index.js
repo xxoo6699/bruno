@@ -17,8 +17,8 @@ import WSMessagesList from './WSMessagesList';
 import WSResponseHeaders from './WSResponseHeaders';
 import { useTranslation } from 'react-i18next';
 
-const WSResult = ({ response }) => {
-  return <WSMessagesList messages={response.responses || []} />;
+const WSResult = ({ response, item, collection }) => {
+  return <WSMessagesList messages={response.responses || []} item={item} collection={collection} />;
 };
 
 const WSResponsePane = ({ item, collection }) => {
@@ -68,7 +68,7 @@ const WSResponsePane = ({ item, collection }) => {
   const getTabPanel = (tab) => {
     switch (tab) {
       case 'response': {
-        return <WSResult response={response} />;
+        return <WSResult response={response} item={item} collection={collection} />;
       }
       case 'headers': {
         return <WSResponseHeaders response={response} />;

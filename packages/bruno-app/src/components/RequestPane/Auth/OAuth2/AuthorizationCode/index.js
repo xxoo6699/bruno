@@ -16,7 +16,7 @@ import { savePreferences } from 'providers/ReduxStore/slices/app';
 import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
-const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAuth, collection, folder }) => {
+const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAuth, collection, folder, disabled }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const preferences = useSelector((state) => state.app.preferences);
@@ -52,9 +52,14 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
   const refreshTokenUrlAvailable = refreshTokenUrl?.trim() !== '';
   const isAutoRefreshDisabled = !refreshTokenUrlAvailable;
 
-  const handleSave = () => { save(); };
+  const handleSave = () => {
+    save();
+  };
 
   const handleChange = (key, value) => {
+    if (disabled) {
+      return;
+    }
     dispatch(
       updateAuth({
         mode: 'oauth2',
@@ -116,6 +121,9 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
   };
 
   const handleUseSystemBrowserToggle = (e) => {
+    if (disabled) {
+      return;
+    }
     const newValue = e.target.checked;
     dispatch(
       savePreferences({
@@ -162,6 +170,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
               collection={collection}
               item={item}
               placeholder={useSystemBrowser ? 'https://oauth.usebruno.com/callback' : undefined}
+              readOnly={disabled}
               isCompact
             />
           </div>
@@ -175,6 +184,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
             checked={Boolean(useSystemBrowser)}
             onChange={handleUseSystemBrowserToggle}
             className="cursor-pointer"
+            disabled={disabled}
           />
           <label
             className="block cursor-pointer"
@@ -215,6 +225,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
                 collection={collection}
                 item={item}
                 isSecret={isSecret}
+                readOnly={disabled}
                 isCompact
               />
               {isSecret && showWarning && <SensitiveFieldWarning fieldName={key} warningMessage={warningMessage} />}
@@ -247,6 +258,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
           type="checkbox"
           checked={Boolean(oAuth?.['pkce'])}
           onChange={handlePKCEToggle}
+          disabled={disabled}
         />
       </div>
       <div className="flex items-center gap-2.5 mt-2">
@@ -286,6 +298,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
             onRun={handleRun}
             collection={collection}
             item={item}
+            readOnly={disabled}
             isCompact
           />
         </div>
@@ -321,6 +334,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
                     onChange={(val) => handleChange('tokenHeaderPrefix', val)}
                     onRun={handleRun}
                     collection={collection}
+                    readOnly={disabled}
                     isCompact
                   />
                 </div>
@@ -337,6 +351,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
                     onChange={(val) => handleChange('tokenQueryKey', val)}
                     onRun={handleRun}
                     collection={collection}
+                    readOnly={disabled}
                     isCompact
                   />
                 </div>
@@ -362,6 +377,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
             onChange={(val) => handleChange('refreshTokenUrl', val)}
             collection={collection}
             item={item}
+            readOnly={disabled}
             isCompact
           />
         </div>
@@ -381,6 +397,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
           checked={Boolean(autoFetchToken)}
           onChange={(e) => handleChange('autoFetchToken', e.target.checked)}
           className="cursor-pointer ml-1"
+          disabled={disabled}
         />
         <label className="block min-w-[140px]">{t('Automatically fetch token if not found')}</label>
         <div className="flex items-center gap-2">
@@ -400,7 +417,7 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
           checked={Boolean(autoRefreshToken)}
           onChange={(e) => handleChange('autoRefreshToken', e.target.checked)}
           className={`cursor-pointer ml-1 ${isAutoRefreshDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={isAutoRefreshDisabled}
+          disabled={isAutoRefreshDisabled || disabled}
         />
         <label className={`block min-w-[140px] ${isAutoRefreshDisabled ? 'text-gray-500' : ''}`}>{t('Auto refresh token (with refresh URL)')}</label>
         <div className="flex items-center gap-2">
@@ -418,8 +435,9 @@ const OAuth2AuthorizationCode = ({ save, item = {}, request, handleRun, updateAu
         collection={collection}
         updateAuth={updateAuth}
         handleSave={handleSave}
+        disabled={disabled}
       />
-      <Oauth2ActionButtons item={item} request={request} collection={collection} url={accessTokenUrl} credentialsId={credentialsId} />
+      <Oauth2ActionButtons item={item} request={request} collection={collection} url={accessTokenUrl} credentialsId={credentialsId} disabled={disabled} />
     </StyledWrapper>
   );
 };

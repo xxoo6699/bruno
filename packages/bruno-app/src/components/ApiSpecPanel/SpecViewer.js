@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import get from 'lodash/get';
 import jsyaml from 'js-yaml';
@@ -39,13 +38,15 @@ const MIN_RIGHT_PANE_WIDTH = 450;
  *
  * Props:
  *  - content               (string)  The spec content (YAML/JSON string)
+ *  - resolvedSpec          (object|null) The same spec with the files it references inlined, for
+ *                          multi-file specs. The preview renders this when present, since it cannot
+ *                          resolve `./sibling.yaml` itself; the editor always shows `content`.
  *  - readOnly              (boolean) If true, editor is not editable and save icon is hidden
  *  - onSave                (fn)      Called with current editor content on save (editable mode only)
  *  - leftPaneWidth         (number|null) Persisted left pane width in px; null = use 50/50 default
  *  - onLeftPaneWidthChange (fn)      Persist the new width (called on mouseup / double-click / resize-clamp)
  */
-const SpecViewer = ({ content, readOnly, onSave, leftPaneWidth, onLeftPaneWidthChange }) => {
-  const { t } = useTranslation();
+const SpecViewer = ({ content, resolvedSpec, readOnly, onSave, leftPaneWidth, onLeftPaneWidthChange }) => {
   const { displayedTheme, theme } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
 
@@ -163,7 +164,7 @@ const SpecViewer = ({ content, readOnly, onSave, leftPaneWidth, onLeftPaneWidthC
         ) : (
           <>
             <div style={{ visibility: swaggerReady ? 'visible' : 'hidden', height: '100%' }}>
-              <Swagger spec={content} onComplete={handleSwaggerComplete} />
+              <Swagger spec={resolvedSpec || content} onComplete={handleSwaggerComplete} />
             </div>
             {!swaggerReady && (
               <div
@@ -172,7 +173,7 @@ const SpecViewer = ({ content, readOnly, onSave, leftPaneWidth, onLeftPaneWidthC
               >
                 <div className="flex items-center justify-center gap-2 opacity-70">
                   <IconLoader2 size={20} className="animate-spin" />
-                  <span>{t('Generating preview…')}</span>
+                  <span>Generating preview…</span>
                 </div>
               </div>
             )}

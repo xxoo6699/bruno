@@ -14,7 +14,7 @@ import Oauth2ActionButtons from '../Oauth2ActionButtons/index';
 import AdditionalParams from '../AdditionalParams/index';
 import SensitiveFieldWarning from 'components/SensitiveFieldWarning/index';
 
-const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, updateAuth, collection }) => {
+const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, updateAuth, collection, disabled }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const { storedTheme } = useTheme();
@@ -43,9 +43,14 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
   const refreshTokenUrlAvailable = refreshTokenUrl?.trim() !== '';
   const isAutoRefreshDisabled = !refreshTokenUrlAvailable;
 
-  const handleSave = () => { save(); };
+  const handleSave = () => {
+    save();
+  };
 
   const handleChange = (key, value) => {
+    if (disabled) {
+      return;
+    }
     dispatch(
       updateAuth({
         mode: 'oauth2',
@@ -104,6 +109,7 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
                 collection={collection}
                 item={item}
                 isSecret={isSecret}
+                readOnly={disabled}
                 isCompact
               />
               {isSecret && showWarning && <SensitiveFieldWarning fieldName={key} warningMessage={warningMessage} />}
@@ -166,6 +172,7 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
             onRun={handleRun}
             collection={collection}
             item={item}
+            readOnly={disabled}
             isCompact
           />
         </div>
@@ -201,6 +208,7 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
                     onChange={(val) => handleChange('tokenHeaderPrefix', val)}
                     onRun={handleRun}
                     collection={collection}
+                    readOnly={disabled}
                     isCompact
                   />
                 </div>
@@ -217,6 +225,7 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
                     onChange={(val) => handleChange('tokenQueryKey', val)}
                     onRun={handleRun}
                     collection={collection}
+                    readOnly={disabled}
                     isCompact
                   />
                 </div>
@@ -242,6 +251,7 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
             onChange={(val) => handleChange('refreshTokenUrl', val)}
             collection={collection}
             item={item}
+            readOnly={disabled}
             isCompact
           />
         </div>
@@ -261,6 +271,7 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
           checked={Boolean(autoFetchToken)}
           onChange={(e) => handleChange('autoFetchToken', e.target.checked)}
           className="cursor-pointer ml-1"
+          disabled={disabled}
         />
         <label className="block min-w-[140px]">{t('Automatically fetch token if not found')}</label>
         <div className="flex items-center gap-2">
@@ -280,7 +291,7 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
           checked={Boolean(autoRefreshToken)}
           onChange={(e) => handleChange('autoRefreshToken', e.target.checked)}
           className={`cursor-pointer ml-1 ${isAutoRefreshDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={isAutoRefreshDisabled}
+          disabled={isAutoRefreshDisabled || disabled}
         />
         <label className={`block min-w-[140px] ${isAutoRefreshDisabled ? 'text-gray-500' : ''}`}>{t('Auto refresh token (with refresh URL)')}</label>
         <div className="flex items-center gap-2">
@@ -298,8 +309,9 @@ const OAuth2PasswordCredentials = ({ save, item = {}, request, handleRun, update
         collection={collection}
         updateAuth={updateAuth}
         handleSave={handleSave}
+        disabled={disabled}
       />
-      <Oauth2ActionButtons item={item} request={request} collection={collection} url={accessTokenUrl} credentialsId={credentialsId} />
+      <Oauth2ActionButtons item={item} request={request} collection={collection} url={accessTokenUrl} credentialsId={credentialsId} disabled={disabled} />
     </StyledWrapper>
   );
 };

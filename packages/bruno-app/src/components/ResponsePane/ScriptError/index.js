@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import i18n from 'i18n';
 import { IconX, IconChevronDown, IconChevronRight, IconExternalLink } from '@tabler/icons';
+import { SCRIPT_TYPES } from '@usebruno/common';
 import ErrorBanner from 'ui/ErrorBanner';
 import CodeSnippet from 'components/CodeSnippet';
 import { getTreePathFromCollectionToItem } from 'utils/collections';
@@ -10,6 +9,9 @@ import { normalizePath } from 'utils/common/path';
 import { addTab, updateRequestPaneTab, updateScriptPaneTab, setFocusErrorLine } from 'providers/ReduxStore/slices/tabs';
 import { updateSettingsSelectedTab, updatedFolderSettingsSelectedTab } from 'providers/ReduxStore/slices/collections';
 import StyledWrapper from './StyledWrapper';
+import classnames from 'classnames';
+import { IconArrowsDiagonal, IconArrowsDiagonalMinimize2, IconCheck, IconCopy } from '@tabler/icons';
+import useCopyToClipboard from 'hooks/useCopyToClipboard';
 
 /**
  * Determines the source of a script error (request, folder, or collection)
@@ -46,7 +48,7 @@ const getErrorSourceInfo = (filePath, item, collection, getTreePath) => {
 
   // Folder level (check before collection to avoid folder.yml matching as collection)
   if (isFolderFile) {
-    const info = { sourceType: 'folder', label: i18n.t('Folder') };
+    const info = { sourceType: 'folder', label: 'Folder' };
     const folderFileName = normalizedPath.split('/').pop();
 
     // Try to find the folder UID and name from the tree path
@@ -62,7 +64,7 @@ const getErrorSourceInfo = (filePath, item, collection, getTreePath) => {
               : folderFileName;
             if (folderRelPath === normalizedPath) {
               info.sourceUid = node.uid;
-              info.label = i18n.t('Folder: {{name}}', { name: node.name });
+              info.label = `Folder: ${node.name}`;
               break;
             }
           }
@@ -75,17 +77,32 @@ const getErrorSourceInfo = (filePath, item, collection, getTreePath) => {
 
   // Collection level
   if (isCollectionFile) {
-    return { sourceType: 'collection', label: i18n.t('Collection') };
+    return { sourceType: 'collection', label: 'Collection' };
   }
 
   // Request level
-  return { sourceType: 'request', label: i18n.t('Request') };
+  return { sourceType: 'request', label: 'Request' };
+};
+
+const formatErrorForClipboard = (errorContext, message, displayFilePath) => {
+  const { errorLine, errorType, stack } = errorContext;
+
+  const lineSuffix = typeof errorLine === 'number' ? `:${errorLine}` : '';
+
+  return [
+    displayFilePath && `File: ${displayFilePath}${lineSuffix}`,
+    `${errorType || 'Error'}: ${message}`,
+    stack && `Stack trace:\n${stack}`
+  ]
+    .filter(Boolean)
+    .join('\n\n');
 };
 
 const ScriptErrorCard = ({ title, message, errorContext, item, collection, scriptPhase, onClose }) => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const [showStack, setShowStack] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const { copied, copyToClipboard } = useCopyToClipboard(1500);
 
   const displayFilePath = errorContext?.filePath ? normalizePath(errorContext.filePath) : null;
 
@@ -152,125 +169,135 @@ const ScriptErrorCard = ({ title, message, errorContext, item, collection, scrip
     }
   };
 
+  const handleCopy = () => {
+    const errorText = formatErrorForClipboard(errorContext, message, displayFilePath);
+    copyToClipboard(errorText);
+  };
+
   if (!errorContext) {
-    return <ErrorBanner errors={[{ title: t(title), message }]} onClose={onClose} />;
+    return <ErrorBanner errors={[{ title, message }]} onClose={onClose} />;
+  }
+
+  return (
+    <div className={classnames('script-error', { expanded: isExpanded })}>
+      <div className="script-error-card" data-testid="script-error-card">
+        <div className="script-error-header">
+          <div className="error-title" data-testid="script-error-title">{title}</div>
+          <div className="script-error-header-actions">
+            <button
+              className="icon-button flex-shrink-0 cursor-pointer"
+              data-testid="script-error-copy"
+              onClick={handleCopy}
+              aria-label="Copy script error"
+              title={copied ? 'Copied' : 'Copy script error'}
+            >
+              {copied ? <IconCheck size={16} strokeWidth={1.5} /> : <IconCopy size={16} strokeWidth={1.5} />}
+            </button>
+            <button
+              className="icon-button flex-shrink-0 cursor-pointer"
+              data-testid="script-error-expand-toggle"
+              onClick={() => setIsExpanded(!isExpanded)}
+              aria-expanded={isExpanded}
+              aria-label={isExpanded ? 'Collapse script error' : 'Expand script error'}
+              title={isExpanded ? 'Collapse' : 'Expand'}
+            >
+              {isExpanded ? <IconArrowsDiagonalMinimize2 size={16} strokeWidth={1.5} /> : <IconArrowsDiagonal size={16} strokeWidth={1.5} />}
+            </button>
+
+            {onClose && (
+              <button className="icon-button flex-shrink-0 cursor-pointer" data-testid="script-error-close" onClick={onClose} aria-label="Close script error">
+                <IconX size={16} strokeWidth={1.5} />
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="script-error-body scrollbar-hover" data-testid="script-error-body">
+          {(sourceInfo || displayFilePath) && (
+            <div className="script-error-source-label" data-testid="script-error-source-label">
+              {sourceInfo && <span>{sourceInfo.label}</span>}
+              {displayFilePath && (
+                <span
+                  className={`script-error-file-path${canNavigate ? ' navigable' : ''}`}
+                  data-testid="script-error-file-path"
+                  role={canNavigate ? 'button' : undefined}
+                  tabIndex={canNavigate ? 0 : undefined}
+                  onClick={handleNavigate}
+                  onKeyDown={handleNavigateKeyDown}
+                  title={canNavigate ? `Open ${displayFilePath}` : undefined}
+                >
+                  <span>{displayFilePath}</span>
+                  {canNavigate && <IconExternalLink size={12} className="flex-shrink-0" />}
+                </span>
+              )}
+            </div>
+          )}
+          <CodeSnippet lines={errorContext.lines} variant="error" />
+          <div className="script-error-message" data-testid="script-error-message">
+            {errorContext.errorType || 'Error'}: {message}
+          </div>
+          {errorContext.stack && (
+            <div>
+              <button
+                className="script-error-stack-toggle"
+                data-testid="script-error-stack-toggle"
+                onClick={() => setShowStack(!showStack)}
+                aria-expanded={showStack}
+                aria-label={`${showStack ? 'Hide' : 'Show'} stack trace`}
+              >
+                {showStack ? <IconChevronDown size={14} /> : <IconChevronRight size={14} />}
+                <span>{showStack ? 'Hide' : 'Show'} stack trace</span>
+              </button>
+              {showStack && (
+                <pre className="script-error-stack" data-testid="script-error-stack">{errorContext.stack}</pre>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// phase key matches with the CodeEditor scriptType so the error stack navigates back to the right editor.
+const SCRIPT_PHASES = [
+  { phase: SCRIPT_TYPES.PRE_REQUEST, title: 'Pre-Request Script Error', messageKey: 'preRequestScriptErrorMessage', contextKey: 'preRequestScriptErrorContext' },
+  { phase: SCRIPT_TYPES.POST_RESPONSE, title: 'Post-Response Script Error', messageKey: 'postResponseScriptErrorMessage', contextKey: 'postResponseScriptErrorContext' },
+  { phase: SCRIPT_TYPES.TEST, title: 'Test Script Error', messageKey: 'testScriptErrorMessage', contextKey: 'testScriptErrorContext' },
+  { phase: SCRIPT_TYPES.BEFORE_CALL_START, title: 'Before Call Start Script Error', messageKey: 'beforeCallStartScriptErrorMessage', contextKey: 'beforeCallStartScriptErrorContext' },
+  { phase: SCRIPT_TYPES.BEFORE_MESSAGE_SEND, title: 'Before Message Send Script Error', messageKey: 'beforeMessageSendScriptErrorMessage', contextKey: 'beforeMessageSendScriptErrorContext' },
+  { phase: SCRIPT_TYPES.AFTER_MESSAGE_RECEIVE, title: 'After Message Receive Script Error', messageKey: 'afterMessageReceiveScriptErrorMessage', contextKey: 'afterMessageReceiveScriptErrorContext' },
+  { phase: SCRIPT_TYPES.AFTER_CALL_END, title: 'After Call End Script Error', messageKey: 'afterCallEndScriptErrorMessage', contextKey: 'afterCallEndScriptErrorContext' }
+];
+
+export const hasScriptError = (item) => SCRIPT_PHASES.some(({ messageKey }) => Boolean(item?.[messageKey]));
+
+const ScriptError = ({ item, collection, onClose }) => {
+  const errors = SCRIPT_PHASES
+    .map((phase) => ({ ...phase, message: item?.[phase.messageKey], errorContext: item?.[phase.contextKey] }))
+    .filter(({ message }) => Boolean(message));
+
+  if (!errors.length) return null;
+
+  // If no error context is available for any error, fall back to ErrorBanner
+  if (!errors.some(({ errorContext }) => Boolean(errorContext))) {
+    return <ErrorBanner errors={errors.map(({ title, message }) => ({ title, message }))} onClose={onClose} className="mb-2" />;
   }
 
   return (
     <StyledWrapper>
-      <div className="script-error-card" data-testid="script-error-card">
-        <div className="script-error-header">
-          <div className="error-title" data-testid="script-error-title">{t(title)}</div>
-          {onClose && (
-            <button className="close-button flex-shrink-0 cursor-pointer" data-testid="script-error-close" onClick={onClose} aria-label={t('Close error')}>
-              <IconX size={16} strokeWidth={1.5} />
-            </button>
-          )}
-        </div>
-        {(sourceInfo || displayFilePath) && (
-          <div className="script-error-source-label" data-testid="script-error-source-label">
-            {sourceInfo && <span>{sourceInfo.label}</span>}
-            {displayFilePath && (
-              <span
-                className={`script-error-file-path${canNavigate ? ' navigable' : ''}`}
-                data-testid="script-error-file-path"
-                role={canNavigate ? 'button' : undefined}
-                tabIndex={canNavigate ? 0 : undefined}
-                onClick={handleNavigate}
-                onKeyDown={handleNavigateKeyDown}
-                title={canNavigate ? `Open ${displayFilePath}` : undefined}
-              >
-                <span>{displayFilePath}</span>
-                {canNavigate && <IconExternalLink size={12} className="flex-shrink-0" />}
-              </span>
-            )}
-          </div>
-        )}
-        <CodeSnippet lines={errorContext.lines} variant="error" />
-        <div className="script-error-message" data-testid="script-error-message">
-          {errorContext.errorType || 'Error'}: {message}
-        </div>
-        {errorContext.stack && (
-          <div>
-            <button
-              className="script-error-stack-toggle"
-              data-testid="script-error-stack-toggle"
-              onClick={() => setShowStack(!showStack)}
-              aria-expanded={showStack}
-              aria-label={t(showStack ? 'Hide stack trace' : 'Show stack trace')}
-            >
-              {showStack ? <IconChevronDown size={14} /> : <IconChevronRight size={14} />}
-              <span>{t(showStack ? 'Hide stack trace' : 'Show stack trace')}</span>
-            </button>
-            {showStack && (
-              <pre className="script-error-stack" data-testid="script-error-stack">{errorContext.stack}</pre>
-            )}
-          </div>
-        )}
-      </div>
+      {errors.map(({ phase, title, message, errorContext }) => (
+        <ScriptErrorCard
+          key={phase}
+          title={title}
+          message={message}
+          errorContext={errorContext}
+          item={item}
+          collection={collection}
+          scriptPhase={phase}
+          onClose={onClose}
+        />
+      ))}
     </StyledWrapper>
-  );
-};
-
-const ScriptError = ({ item, collection, onClose }) => {
-  const { t } = useTranslation();
-  const preRequestError = item?.preRequestScriptErrorMessage;
-  const postResponseError = item?.postResponseScriptErrorMessage;
-  const testScriptError = item?.testScriptErrorMessage;
-
-  if (!preRequestError && !postResponseError && !testScriptError) return null;
-
-  const preRequestContext = item?.preRequestScriptErrorContext;
-  const postResponseContext = item?.postResponseScriptErrorContext;
-  const testContext = item?.testScriptErrorContext;
-
-  const hasAnyContext = preRequestContext || postResponseContext || testContext;
-
-  // If no error context available for any error, fall back to ErrorBanner
-  if (!hasAnyContext) {
-    const errors = [];
-    if (preRequestError) errors.push({ title: t('Pre-Request Script Error'), message: preRequestError });
-    if (postResponseError) errors.push({ title: t('Post-Response Script Error'), message: postResponseError });
-    if (testScriptError) errors.push({ title: t('Test Script Error'), message: testScriptError });
-    return <ErrorBanner errors={errors} onClose={onClose} className="mb-2" />;
-  }
-
-  return (
-    <div className="mb-2 flex flex-col gap-2">
-      {preRequestError && (
-        <ScriptErrorCard
-          title={t('Pre-Request Script Error')}
-          message={preRequestError}
-          errorContext={preRequestContext}
-          item={item}
-          collection={collection}
-          scriptPhase="pre-request"
-          onClose={onClose}
-        />
-      )}
-      {postResponseError && (
-        <ScriptErrorCard
-          title={t('Post-Response Script Error')}
-          message={postResponseError}
-          errorContext={postResponseContext}
-          item={item}
-          collection={collection}
-          scriptPhase="post-response"
-          onClose={onClose}
-        />
-      )}
-      {testScriptError && (
-        <ScriptErrorCard
-          title={t('Test Script Error')}
-          message={testScriptError}
-          errorContext={testContext}
-          item={item}
-          collection={collection}
-          scriptPhase="test"
-          onClose={onClose}
-        />
-      )}
-    </div>
   );
 };
 

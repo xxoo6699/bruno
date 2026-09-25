@@ -5,7 +5,6 @@ import { IconExclamationCircle, IconChevronRight, IconInfoCircle, IconChevronDow
 import CodeEditor from 'components/CodeEditor/index';
 import { useTheme } from 'providers/Theme';
 import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { Virtuoso } from 'react-virtuoso';
 
 const getContentMeta = (content) => {
@@ -60,7 +59,7 @@ const TypeIcon = ({ type }) => {
   }[type];
 };
 
-const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
+const WSMessageItem = memo(({ message, isOpen, onToggle, item, collection }) => {
   const [showHex, setShowHex] = useState(false);
   const preferences = useSelector((state) => state.app.preferences);
   const { displayedTheme } = useTheme();
@@ -168,6 +167,8 @@ const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
               enableLineWrapping={showHex ? false : true}
               font={preferences.codeFont || 'default'}
               value={showHex ? contentHexdump : parsedContent.content}
+              item={item}
+              collection={collection}
               readOnly
             />
           </div>
@@ -177,8 +178,7 @@ const WSMessageItem = memo(({ message, isOpen, onToggle }) => {
   );
 });
 
-const WSMessagesList = ({ messages = [] }) => {
-  const { t } = useTranslation();
+const WSMessagesList = ({ messages = [], item, collection }) => {
   const virtuosoRef = useRef(null);
   const [scrollerElement, setScrollerElement] = useState(null);
   const [openMessages, setOpenMessages] = useState(new Set());
@@ -234,15 +234,15 @@ const WSMessagesList = ({ messages = [] }) => {
 
   const renderItem = useCallback((_, msg) => {
     const isOpen = openMessages.has(msg.timestamp);
-    return <WSMessageItem message={msg} isOpen={isOpen} onToggle={handleMessageToggle} />;
-  }, [openMessages, handleMessageToggle]);
+    return <WSMessageItem message={msg} isOpen={isOpen} onToggle={handleMessageToggle} item={item} collection={collection} />;
+  }, [openMessages, handleMessageToggle, item, collection]);
 
   const computeItemKey = useCallback((_, msg) => {
     return msg.seq ?? msg.timestamp;
   }, []);
 
   if (!messages.length) {
-    return <StyledWrapper><div className="empty-state">{t('No messages yet.')}</div></StyledWrapper>;
+    return <StyledWrapper><div className="empty-state">No messages yet.</div></StyledWrapper>;
   }
 
   return (

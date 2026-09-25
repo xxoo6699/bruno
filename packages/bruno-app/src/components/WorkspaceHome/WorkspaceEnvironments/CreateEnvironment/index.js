@@ -68,6 +68,7 @@ const CreateEnvironment = ({ onClose, onEnvironmentCreated }) => {
         confirmText={t('Create')}
         handleConfirm={onSubmit}
         handleCancel={onClose}
+        dataTestId="create-global-environment-modal"
       >
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
@@ -80,6 +81,7 @@ const CreateEnvironment = ({ onClose, onEnvironmentCreated }) => {
                 type="text"
                 name="name"
                 ref={inputRef}
+                data-testid="environment-name-input"
                 className="block textbox w-full"
                 autoComplete="off"
                 autoCorrect="off"

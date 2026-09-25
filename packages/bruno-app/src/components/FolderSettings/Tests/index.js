@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import get from 'lodash/get';
 import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import CodeEditor from 'components/CodeEditor';
 import { updateFolderTests } from 'providers/ReduxStore/slices/collections';
 import { saveFolderRoot } from 'providers/ReduxStore/slices/collections/actions';
@@ -13,7 +12,6 @@ import { useFocusErrorLine } from 'hooks/useFocusErrorLine';
 
 const Tests = ({ collection, folder }) => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const testsEditorRef = useRef(null);
   const tests = folder.draft ? get(folder, 'draft.request.tests', '') : get(folder, 'root.request.tests', '');
 
@@ -41,7 +39,7 @@ const Tests = ({ collection, folder }) => {
 
   return (
     <StyledWrapper className="w-full flex flex-col h-full">
-      <div className="text-xs mb-4 text-muted">{t('These tests will run any time a request in this collection is sent.')}</div>
+      <div className="text-xs mb-4 text-muted">These tests will run any time a request in this folder is sent.</div>
       <div className="relative h-full">
         <CodeEditor
           ref={testsEditorRef}
@@ -62,7 +60,7 @@ const Tests = ({ collection, folder }) => {
 
       <div className="mt-6">
         <Button type="submit" size="sm" onClick={handleSave}>
-          {t('Save')}
+          Save
         </Button>
       </div>
     </StyledWrapper>

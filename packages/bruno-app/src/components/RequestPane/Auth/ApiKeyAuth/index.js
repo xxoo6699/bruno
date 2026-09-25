@@ -10,7 +10,7 @@ import { sendRequest } from 'providers/ReduxStore/slices/collections/actions';
 import StyledWrapper from './StyledWrapper';
 import { humanizeRequestAPIKeyPlacement } from 'utils/collections';
 
-const ApiKeyAuth = ({ item, collection, updateAuth, request, save }) => {
+const ApiKeyAuth = ({ item, collection, updateAuth, request, save, disabled }) => {
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const { t } = useTranslation();
@@ -35,6 +35,9 @@ const ApiKeyAuth = ({ item, collection, updateAuth, request, save }) => {
   });
 
   const handleAuthChange = (property, value) => {
+    if (disabled) {
+      return;
+    }
     dispatch(
       updateAuth({
         mode: 'apikey',
@@ -49,7 +52,8 @@ const ApiKeyAuth = ({ item, collection, updateAuth, request, save }) => {
   };
 
   useEffect(() => {
-    !apikeyAuth?.placement
+    !disabled
+    && !apikeyAuth?.placement
     && dispatch(
       updateAuth({
         mode: 'apikey',
@@ -60,7 +64,7 @@ const ApiKeyAuth = ({ item, collection, updateAuth, request, save }) => {
         }
       })
     );
-  }, [apikeyAuth]);
+  }, [apikeyAuth, disabled]);
 
   return (
     <StyledWrapper className="w-full">
@@ -73,6 +77,7 @@ const ApiKeyAuth = ({ item, collection, updateAuth, request, save }) => {
           onChange={(val) => handleAuthChange('key', val)}
           onRun={handleRun}
           collection={collection}
+          readOnly={disabled}
           isCompact
         />
       </div>
@@ -87,6 +92,7 @@ const ApiKeyAuth = ({ item, collection, updateAuth, request, save }) => {
           onRun={handleRun}
           collection={collection}
           isCompact
+          readOnly={disabled}
         />
       </div>
 

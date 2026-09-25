@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback, useMemo } from 'react';
 import cloneDeep from 'lodash/cloneDeep';
 import { useDispatch } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import { resolveEnvironmentInheritance } from '@usebruno/common/utils';
 import { sendNetworkRequest } from 'utils/network/index';
 import { findEnvironmentInCollection } from 'utils/collections';
 import {
@@ -13,17 +13,16 @@ import { updateRequestPaneTab, setTabAppPreview } from 'providers/ReduxStore/sli
 import { addLog } from 'providers/ReduxStore/slices/logs';
 import { uuid } from 'utils/common';
 import { useTheme } from 'providers/Theme';
-import Button from 'ui/Button';
+import AppWebviewPane from 'components/AppWebviewPane';
+import EmptyAppState from 'components/EmptyAppState';
 import StyledWrapper from './StyledWrapper';
-import EmptyAppState from './EmptyAppState';
 import { buildVariables } from './buildVariables';
 import {
   SENTINEL,
-  wrapHtml,
-  toDataUrl,
   serializeTimeline,
   projectResponse,
-  useAppWebview
+  useAppWebview,
+  useAppDocumentUrl
 } from './webview-bridge';
 
 // Request-level ctx bootstrap. Injected into the guest so window.bru exists
@@ -148,9 +147,8 @@ const REQUEST_CTX_BOOTSTRAP = `<script>
 
 const AppView = ({ item, collection, code }) => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const { displayedTheme, theme, themeVariantLight, themeVariantDark } = useTheme();
-  const src = useMemo(() => toDataUrl(wrapHtml(REQUEST_CTX_BOOTSTRAP, code || '')), [code]);
+  const { url: src, error: appDocumentError } = useAppDocumentUrl(`request:${item.uid}`, REQUEST_CTX_BOOTSTRAP, code);
 
   const themePayload = useMemo(
     () => ({
@@ -162,7 +160,11 @@ const AppView = ({ item, collection, code }) => {
   );
 
   const environment = useMemo(
-    () => findEnvironmentInCollection(collection, collection.activeEnvironmentUid),
+    () =>
+      resolveEnvironmentInheritance({
+        environments: collection.environments,
+        targetEnvironment: findEnvironmentInCollection(collection, collection.activeEnvironmentUid)
+      }),
     [collection]
   );
   const variables = useMemo(() => buildVariables(collection, item), [collection, item]);
@@ -297,54 +299,22 @@ const AppView = ({ item, collection, code }) => {
     dispatch(setTabAppPreview({ uid: item.uid, appPreview: false }));
   }, [dispatch, item.uid]);
 
-  const openAppsDocs = useCallback(() => {
-    window?.ipcRenderer?.openExternal('https://link.usebruno.com/apps');
-  }, []);
-
   return (
     <StyledWrapper data-testid="app-view">
       <div className="app-view-toolbar">
-        <span>{t('App mode - {{name}}', { name: item.name })}</span>
+        <span>App mode - {item.name}</span>
         <button type="button" className="app-exit-btn" data-testid="app-exit-button" onClick={disableApp}>
-          {t('Exit to editor')}
+          Exit to editor
         </button>
       </div>
       {code && code.trim().length ? (
         <div className="app-webview-container">
-          <webview
-            ref={webviewRef}
-            src={src}
-            partition="persist:bruno-app-view"
-            webpreferences="disableDialogs=true, javascript=yes"
-            className="app-webview"
-          />
+          <AppWebviewPane src={src} error={appDocumentError} webviewRef={webviewRef} />
         </div>
       ) : (
         <EmptyAppState
-          title={t('No app yet')}
-          hint={t('Add HTML/JS in the App tab to render a custom UI for this request.')}
-          actions={(
-            <>
-              <Button
-                size="sm"
-                variant="filled"
-                color="primary"
-                onClick={goToAppTab}
-                data-testid="empty-app-add-code"
-              >
-                {t('Add app code')}
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                color="secondary"
-                onClick={openAppsDocs}
-                data-testid="empty-app-learn-more"
-              >
-                {t('Learn more')}
-              </Button>
-            </>
-          )}
+          hint="Add HTML/JS in the App tab to render a custom UI for this request."
+          onAddCode={goToAppTab}
         />
       )}
     </StyledWrapper>

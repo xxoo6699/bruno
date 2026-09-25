@@ -1,16 +1,16 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import Modal from 'components/Modal';
 import Help from 'components/Help';
+import { getItemTypeLabel } from 'utils/collections';
 
 const CollectionItemInfo = ({ item, onClose }) => {
   const { name, filename, type } = item;
-  const { t } = useTranslation();
+  const itemTypeLabel = getItemTypeLabel(item);
 
   return (
     <Modal
       size="md"
-      title={t('Info')}
+      title="Info"
       handleCancel={onClose}
       hideCancel={true}
       hideFooter={true}
@@ -20,7 +20,7 @@ const CollectionItemInfo = ({ item, onClose }) => {
           <tbody>
             <tr className="">
               <td className="py-2 px-2 text-left text-muted ">
-                {type == 'folder' ? t('Folder Name') : t('Request Name')}
+                {itemTypeLabel} Name
               </td>
               <td className="py-2 px-2 text-nowrap truncate max-w-[500px]" title={name}>
                 <span className="mr-2">:</span>{name}
@@ -28,18 +28,18 @@ const CollectionItemInfo = ({ item, onClose }) => {
             </tr>
             <tr className="">
               <td className="py-2 px-2 text-left text-muted flex items-center">
-                {type == 'folder' ? t('Folder Name') : t('File Name')}
-                <small className="font-normal text-muted ml-1">{t('(on filesystem)')}</small>
+                {type == 'folder' ? 'Folder Name' : 'File Name'}
+                <small className="font-normal text-muted ml-1">(on filesystem)</small>
                 {type == 'folder' ? (
                   <Help width="300">
                     <p>
-                      {t('The name of the folder on your filesystem.')}
+                      The name of the folder on your filesystem.
                     </p>
                   </Help>
                 ) : (
                   <Help width="300">
                     <p>
-                      {t('Bruno saves each request as a file in your collection\'s folder.')}
+                      Bruno saves each request as a file in your collection's folder.
                     </p>
                   </Help>
                 )}

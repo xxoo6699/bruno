@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useMemo, useState, useRef } from 'react';
 import CodeEditor from 'components/CodeEditor/index';
 import { get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +15,7 @@ import TextPreview from './TextPreview';
 import HtmlPreview from './HtmlPreview';
 import VideoPreview from './VideoPreview';
 import JsonPreview from './JsonPreview';
+import { resolveLinkClickHandler } from 'utils/codemirror/linkClickHandler';
 
 const QueryResultPreview = ({
   selectedTab,
@@ -33,7 +33,6 @@ const QueryResultPreview = ({
 }) => {
   const preferences = useSelector((state) => state.app.preferences);
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const editorRef = useRef(null);
   const [responseScroll, setResponseScroll] = usePersistedState({ key: `response-body-scroll-${item.uid}`, default: 0 });
 
@@ -52,6 +51,12 @@ const QueryResultPreview = ({
 
   const onSave = () => dispatch(saveRequest(item.uid, collection.uid));
 
+  // Same type as the request this response belongs to (HTTP -> HTTP, GraphQL -> GraphQL).
+  const handleResponseLinkClick = useMemo(
+    () => resolveLinkClickHandler(item, collection),
+    [item, collection]
+  );
+
   if (selectedTab === 'editor') {
     return (
       <CodeEditor
@@ -67,6 +72,7 @@ const QueryResultPreview = ({
         mode={codeMirrorMode}
         initialScroll={responseScroll}
         onScroll={setResponseScroll}
+        onLinkClick={handleResponseLinkClick}
         readOnly
       />
     );
@@ -100,25 +106,25 @@ const QueryResultPreview = ({
       return <VideoPreview contentType={contentType} dataBuffer={dataBuffer} />;
     }
     case 'preview-json': {
-      return <JsonPreview data={data} displayedTheme={displayedTheme} />;
+      return <JsonPreview data={data} displayedTheme={displayedTheme} onLinkClick={handleResponseLinkClick} />;
     }
 
     case 'preview-text': {
-      return <TextPreview data={data} />;
+      return <TextPreview data={data} onLinkClick={handleResponseLinkClick} />;
     }
 
     case 'preview-xml': {
-      return <XmlPreview data={data} />;
+      return <XmlPreview data={data} onLinkClick={handleResponseLinkClick} />;
     }
 
     default:
       return (
         <div className="p-4 flex flex-col items-center justify-center h-full text-center">
           <div className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
-            {t('No Preview Available')}
+            No Preview Available
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
-            {t('Sorry, no preview is available for this content type.')}
+            Sorry, no preview is available for this content type.
           </div>
         </div>
       );

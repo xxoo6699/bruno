@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Modal from 'components/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { isItemAFolder } from 'utils/tabs';
+import { getItemTypeLabel } from 'utils/collections';
 import { cloneItem } from 'providers/ReduxStore/slices/collections/actions';
 import { IconArrowBackUp, IconEdit, IconCaretDown } from '@tabler/icons';
 import { sanitizeName, validateName, validateNameError } from 'utils/common/regex';
@@ -19,13 +19,13 @@ import Button from 'ui/Button';
 
 const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const collection = useSelector((state) => state.collections.collections?.find((c) => c.uid === collectionUid));
   const isFolder = isItemAFolder(item);
   const inputRef = useRef();
   const [isEditing, toggleEditing] = useState(false);
   const itemName = item?.name;
   const itemType = item?.type;
+  const itemTypeLabel = getItemTypeLabel(item);
   const [showFilesystemName, toggleShowFilesystemName] = useState(false);
 
   const dropdownTippyRef = useRef();
@@ -34,32 +34,32 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: `${itemName} ${t('copy')}`,
-      filename: `${sanitizeName(itemName)} ${t('copy')}`
+      name: `${itemName} copy`,
+      filename: `${sanitizeName(itemName)} copy`
     },
     validationSchema: Yup.object({
       name: Yup.string()
-        .min(1, t('must be at least 1 character'))
-        .max(255, t('must be 255 characters or less'))
-        .required(t('name is required')),
+        .min(1, 'must be at least 1 character')
+        .max(255, 'must be 255 characters or less')
+        .required('name is required'),
       filename: Yup.string()
-        .min(1, t('must be at least 1 character'))
-        .max(255, t('must be 255 characters or less'))
-        .required(t('name is required'))
+        .min(1, 'must be at least 1 character')
+        .max(255, 'must be 255 characters or less')
+        .required('name is required')
         .test('is-valid-name', function (value) {
           const isValid = validateName(value);
           return isValid ? true : this.createError({ message: validateNameError(value) });
         })
-        .test('not-reserved', t('The file names "collection" and "folder" are reserved in bruno'), (value) => !['collection', 'folder'].includes(value))
+        .test('not-reserved', `The file names "collection" and "folder" are reserved in bruno`, (value) => !['collection', 'folder'].includes(value))
     }),
     onSubmit: (values) => {
       dispatch(cloneItem(values.name, values.filename, item.uid, collectionUid))
         .then(() => {
-          toast.success(t('Request cloned!'));
+          toast.success(`${itemTypeLabel} cloned!`);
           onClose();
         })
         .catch((err) => {
-          toast.error(err ? err.message : t('An error occurred while cloning the request'));
+          toast.error(err ? err.message : `An error occurred while cloning the ${itemTypeLabel.toLowerCase()}`);
         });
     }
   });
@@ -77,7 +77,7 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
           className="btn-advanced"
           type="button"
         >
-          {t('Options')}
+          Options
         </button>
         <IconCaretDown className="caret ml-1" size={14} strokeWidth={2} />
       </div>
@@ -89,20 +89,20 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
       <StyledWrapper>
         <Modal
           size="md"
-          title={t(isFolder ? 'Clone Folder' : 'Clone Request')}
+          title={`Clone ${itemTypeLabel}`}
           handleCancel={onClose}
           hideFooter
         >
           <form className="bruno-form" onSubmit={formik.handleSubmit}>
             <div>
               <label htmlFor="name" className="block font-medium">
-                {t(isFolder ? 'Folder Name' : 'Request Name')}
+                {itemTypeLabel} Name
               </label>
               <input
                 id="collection-item-name"
                 type="text"
                 name="name"
-                placeholder={t('Enter Item name')}
+                placeholder="Enter Item name"
                 ref={inputRef}
                 className="block textbox mt-2 w-full"
                 autoComplete="off"
@@ -122,20 +122,20 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
               <div className="mt-4">
                 <div className="flex items-center justify-between">
                   <label htmlFor="filename" className="flex items-center font-medium">
-                    {t(isFolder ? 'Folder Name' : 'File Name')} <small className="font-normal text-muted ml-1">{t('(on filesystem)')}</small>
+                    {isFolder ? 'Folder' : 'File'} Name <small className="font-normal text-muted ml-1">(on filesystem)</small>
                     { isFolder ? (
                       <Help width="300">
                         <p>
-                          {t('You can choose to save the folder as a different name on your file system versus what is displayed in the app.')}
+                          You can choose to save the folder as a different name on your file system versus what is displayed in the app.
                         </p>
                       </Help>
                     ) : (
                       <Help width="300">
                         <p>
-                          {t('Bruno saves each request as a file in your collection\'s folder.')}
+                          Bruno saves each request as a file in your collection's folder.
                         </p>
                         <p className="mt-2">
-                          {t('You can choose a file name different from your request\'s name or one compatible with filesystem rules.')}
+                          You can choose a file name different from your request's name or one compatible with filesystem rules.
                         </p>
                       </Help>
                     )}
@@ -162,7 +162,7 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
                       id="file-name"
                       type="text"
                       name="filename"
-                      placeholder={isFolder ? t('Folder Name') : t('File Name')}
+                      placeholder={isFolder ? 'Folder Name' : 'File Name'}
                       className="!pr-10 block textbox mt-2 w-full"
                       autoComplete="off"
                       autoCorrect="off"
@@ -197,16 +197,16 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
                       toggleShowFilesystemName(!showFilesystemName);
                     }}
                   >
-                    {showFilesystemName ? t('Hide Filesystem Name') : t('Show Filesystem Name')}
+                    {showFilesystemName ? 'Hide Filesystem Name' : 'Show Filesystem Name'}
                   </div>
                 </Dropdown>
               </div>
               <div className="flex justify-end">
                 <Button type="button" color="secondary" variant="ghost" onClick={onClose} className="mr-2">
-                  {t('Cancel')}
+                  Cancel
                 </Button>
                 <Button type="submit" data-testid="clone-item-button">
-                  {t('Clone')}
+                  Clone
                 </Button>
               </div>
             </div>

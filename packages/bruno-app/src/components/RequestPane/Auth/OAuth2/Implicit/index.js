@@ -16,7 +16,7 @@ import { interpolate } from '@usebruno/common';
 import { savePreferences } from 'providers/ReduxStore/slices/app';
 import toast from 'react-hot-toast';
 
-const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, collection, folder }) => {
+const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, collection, folder, disabled }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const preferences = useSelector((state) => state.app.preferences);
@@ -42,9 +42,14 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
     return interpolate(authorizationUrl, variables);
   }, [collection, item, authorizationUrl]);
 
-  const handleSave = () => { save(); };
+  const handleSave = () => {
+    save();
+  };
 
   const handleChange = (key, value) => {
+    if (disabled) {
+      return;
+    }
     dispatch(
       updateAuth({
         mode: 'oauth2',
@@ -74,6 +79,9 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
   };
 
   const handleUseSystemBrowserToggle = (e) => {
+    if (disabled) {
+      return;
+    }
     const newValue = e.target.checked;
     dispatch(
       savePreferences({
@@ -120,6 +128,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
               collection={collection}
               item={item}
               placeholder={useSystemBrowser ? 'https://oauth.usebruno.com/callback' : undefined}
+              readOnly={disabled}
               isCompact
             />
           </div>
@@ -133,6 +142,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
             checked={Boolean(useSystemBrowser)}
             onChange={handleUseSystemBrowserToggle}
             className="cursor-pointer"
+            disabled={disabled}
           />
           <label
             className="block cursor-pointer"
@@ -160,6 +170,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
                 collection={collection}
                 item={item}
                 isSecret={isSecret}
+                readOnly={disabled}
                 isCompact
               />
             </div>
@@ -206,6 +217,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
             onRun={handleRun}
             collection={collection}
             item={item}
+            readOnly={disabled}
             isCompact
           />
         </div>
@@ -242,6 +254,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
               onRun={handleRun}
               collection={collection}
               item={item}
+              readOnly={disabled}
               isCompact
             />
           </div>
@@ -258,6 +271,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
               onRun={handleRun}
               collection={collection}
               item={item}
+              readOnly={disabled}
               isCompact
             />
           </div>
@@ -279,6 +293,7 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
           checked={oAuth.autoFetchToken !== false}
           onChange={handleAutoFetchTokenToggle}
           className="cursor-pointer ml-1"
+          disabled={disabled}
         />
         <label className="block min-w-[140px]">{t('Auto fetch token')}</label>
         <div className="flex items-center gap-2">
@@ -297,8 +312,9 @@ const OAuth2Implicit = ({ save, item = {}, request, handleRun, updateAuth, colle
         collection={collection}
         updateAuth={updateAuth}
         handleSave={handleSave}
+        disabled={disabled}
       />
-      <Oauth2ActionButtons item={item} request={request} collection={collection} url={interpolatedAuthUrl} credentialsId={credentialsId} />
+      <Oauth2ActionButtons item={item} request={request} collection={collection} url={interpolatedAuthUrl} credentialsId={credentialsId} disabled={disabled} />
     </Wrapper>
   );
 };

@@ -10,7 +10,7 @@ import { updateAuth } from 'providers/ReduxStore/slices/collections';
 import { sendRequest, saveRequest } from 'providers/ReduxStore/slices/collections/actions';
 import StyledWrapper from './StyledWrapper';
 
-const NTLMAuth = ({ item, collection, request, save, updateAuth }) => {
+const NTLMAuth = ({ item, collection, request, save, updateAuth, disabled }) => {
   const dispatch = useDispatch();
   const { storedTheme } = useTheme();
   const { t } = useTranslation();
@@ -82,6 +82,7 @@ const NTLMAuth = ({ item, collection, request, save, updateAuth }) => {
           onRun={handleRun}
           collection={collection}
           item={item}
+          readOnly={disabled}
           isCompact
         />
       </div>
@@ -97,6 +98,7 @@ const NTLMAuth = ({ item, collection, request, save, updateAuth }) => {
           collection={collection}
           item={item}
           isSecret={true}
+          readOnly={disabled}
           isCompact
         />
         {showWarning && <SensitiveFieldWarning fieldName="ntlm-password" warningMessage={warningMessage} />}
@@ -112,6 +114,7 @@ const NTLMAuth = ({ item, collection, request, save, updateAuth }) => {
           onRun={handleRun}
           collection={collection}
           item={item}
+          readOnly={disabled}
           isCompact
         />
       </div>

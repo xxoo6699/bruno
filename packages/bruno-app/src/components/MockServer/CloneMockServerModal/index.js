@@ -3,7 +3,6 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
 import Portal from 'components/Portal';
 import Modal from 'components/Modal';
 import { loadMockResponses } from 'providers/ReduxStore/slices/mock-server/index';
@@ -14,6 +13,7 @@ import {
   getMockServerInstances,
   getMockServerNameError,
   getMockServerPortError,
+  getMockServerPortRangeError,
   isMockServerNameTaken,
   isMockServerPortTaken,
   openMockServerDashboard,
@@ -30,7 +30,6 @@ const CloneMockServerModal = ({
   onClose
 }) => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const inputRef = useRef();
   const activeWorkspaceUid = useSelector((state) => state.workspaces.activeWorkspaceUid);
   const configuredInstances = useSelector((state) => getMockServerInstances(state), shallowEqual);
@@ -55,12 +54,11 @@ const CloneMockServerModal = ({
         .test('duplicate-name', 'A mock server with this name already exists', (value) => (
           !isMockServerNameTaken(existingInstances, value)
         )),
-      port: Yup.number()
-        .typeError('Port is required')
-        .required('Port is required')
-        .integer('Port must be a whole number')
-        .min(1, 'Port must be at least 1')
-        .max(65535, 'Port must be 65535 or less')
+      port: Yup.mixed()
+        .test('port-range', function (value) {
+          const error = getMockServerPortRangeError(value);
+          return error ? this.createError({ message: error }) : true;
+        })
         .test('duplicate-port', 'This port is already used by another mock server', (value) => {
           const normalizedPort = Number(value);
           if (!normalizedPort) {
@@ -77,11 +75,15 @@ const CloneMockServerModal = ({
       }
 
       const resolvedPort = Number(values.port);
-      const portCheck = await checkMockServerPortAvailable(resolvedPort, configuredInstances);
-      const portError = getMockServerPortError(portCheck, resolvedPort);
-      if (portError) {
-        setFieldError('port', portError);
-        toast.error(portError);
+      try {
+        const portCheck = await checkMockServerPortAvailable(resolvedPort, configuredInstances);
+        const availabilityError = getMockServerPortError(portCheck, resolvedPort);
+        if (availabilityError) {
+          setFieldError('port', availabilityError);
+          return;
+        }
+      } catch (err) {
+        setFieldError('port', err.message || 'Failed to validate port');
         return;
       }
 
@@ -150,16 +152,27 @@ const CloneMockServerModal = ({
     <Portal>
       <Modal
         size="md"
-        title={t('Clone Mock Server')}
-        confirmText={t('Clone')}
-        handleConfirm={() => formik.handleSubmit()}
+        title="Clone Mock Server"
+        confirmText="Clone"
+        handleConfirm={async () => {
+          const errors = await formik.validateForm();
+          if (Object.keys(errors).length > 0) {
+            formik.setTouched(Object.keys(errors).reduce((touched, key) => ({
+              ...touched,
+              [key]: true
+            }), formik.touched));
+            return;
+          }
+
+          formik.handleSubmit();
+        }}
         handleCancel={onClose}
         dataTestId="mock-server-clone-modal"
       >
         <form className="bruno-form" onSubmit={(event) => event.preventDefault()}>
           <div>
             <label htmlFor="mock-server-clone-name" className="block font-medium">
-              {t('Name')}
+              Name
             </label>
             <input
               id="mock-server-clone-name"
@@ -183,7 +196,7 @@ const CloneMockServerModal = ({
 
           <div className="mt-4">
             <label htmlFor="mock-server-clone-port" className="block font-medium">
-              {t('Port')}
+              Port
             </label>
             <input
               id="mock-server-clone-port"
@@ -195,6 +208,9 @@ const CloneMockServerModal = ({
               value={formik.values.port || ''}
               onChange={(event) => {
                 formik.setFieldValue('port', event.target.value ? Number(event.target.value) : '');
+                if (formik.errors.port) {
+                  formik.setFieldError('port', undefined);
+                }
               }}
               onBlur={formik.handleBlur}
               data-testid="mock-server-clone-port-input"
@@ -205,7 +221,7 @@ const CloneMockServerModal = ({
           </div>
 
           <p className="text-xs opacity-70 mt-4">
-            {t('Clones mock responses and server settings. The clone starts stopped.')}
+            Clones mock responses and server settings. The clone starts stopped.
           </p>
         </form>
       </Modal>

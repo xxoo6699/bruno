@@ -1,19 +1,21 @@
 import React, { useState, useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { IconCopy, IconCheck } from '@tabler/icons';
 import toast from 'react-hot-toast';
+import { updateTableColumnWidths } from 'providers/ReduxStore/slices/tabs';
 import EditableTable from 'components/EditableTable';
 import FilterDropdown from 'components/FilterDropdown';
 import MockSearchInput from 'components/MockServer/MockSearchInput';
 import MethodBadge from 'ui/MethodBadge';
 import { buildMockRouteTable, countMatchedRouteHits } from 'utils/mock-server/mock-responses';
 import StyledWrapper from './StyledWrapper';
-import { useTranslation } from 'react-i18next';
 
 const RouteTable = ({ mockServerUid }) => {
-  const { t } = useTranslation();
+  const dispatch = useDispatch();
   const responses = useSelector((state) => state.mockServer.mockResponses[mockServerUid]) || [];
   const requestLogs = useSelector((state) => state.mockServer.requestLogs[mockServerUid]) || [];
+  const tabs = useSelector((state) => state.tabs.tabs);
+  const activeTabUid = useSelector((state) => state.tabs.activeTabUid);
   const [searchQuery, setSearchQuery] = useState('');
   const [methodFilter, setMethodFilter] = useState(null);
   const [copiedRouteUid, setCopiedRouteUid] = useState(null);
@@ -45,6 +47,13 @@ const RouteTable = ({ mockServerUid }) => {
     const unique = new Set(routes.map((r) => r.method));
     return Array.from(unique).sort().map((m) => ({ value: m, label: m }));
   }, [routes]);
+
+  const focusedTab = tabs?.find((tab) => tab.uid === activeTabUid);
+  const routeWidths = focusedTab?.tableColumnWidths?.['mock-server-routes'] || {};
+
+  const handleColumnWidthsChange = (widths) => {
+    dispatch(updateTableColumnWidths({ uid: activeTabUid, tableId: 'mock-server-routes', widths }));
+  };
 
   const handleCopyRouteUrl = async (routeUid, path) => {
     if (!baseUrl) return;
@@ -84,8 +93,8 @@ const RouteTable = ({ mockServerUid }) => {
                 e.stopPropagation();
                 handleCopyRouteUrl(row.uid, value);
               }}
-              title={t('Copy route URL')}
-              aria-label={t('Copy route URL')}
+              title="Copy route URL"
+              aria-label="Copy route URL"
             >
               {copiedRouteUid === row.uid
                 ? <IconCheck size={13} strokeWidth={2} />
@@ -98,7 +107,7 @@ const RouteTable = ({ mockServerUid }) => {
     {
       key: 'responseCount',
       name: 'Responses',
-      width: '90px',
+      width: '100px',
       render: ({ row }) => <span>{row.responseCount}</span>
     },
     {
@@ -116,7 +125,7 @@ const RouteTable = ({ mockServerUid }) => {
     {
       key: 'hits',
       name: 'Hits',
-      width: '60px',
+      width: '80px',
       render: ({ value }) => <span>{value}</span>
     }
   ];
@@ -136,13 +145,13 @@ const RouteTable = ({ mockServerUid }) => {
       <div className="flex items-center gap-2 mb-4">
         <MockSearchInput
           className="flex-1"
-          placeholder={t('Search routes')}
+          placeholder="Search routes"
           value={searchQuery}
           onChange={setSearchQuery}
           data-testid="mock-server-route-search"
         />
         <FilterDropdown
-          label={t('Method')}
+          label="Method"
           options={methodOptions}
           value={methodFilter}
           onChange={setMethodFilter}
@@ -153,17 +162,20 @@ const RouteTable = ({ mockServerUid }) => {
       </div>
 
       <EditableTable
+        tableId="mock-server-routes"
         columns={columns}
         rows={filteredRoutes}
         onChange={() => {}}
         showCheckbox={false}
         showDelete={false}
         showAddRow={false}
+        columnWidths={routeWidths}
+        onColumnWidthsChange={handleColumnWidthsChange}
         testId="mock-server-routes-table"
       />
 
       {filteredRoutes.length === 0 && routes.length > 0 && (
-        <div className="text-xs text-muted mt-4 empty-state">{t('No routes match your filter.')}</div>
+        <div className="text-xs text-muted mt-4 empty-state">No routes match your filter.</div>
       )}
     </StyledWrapper>
   );

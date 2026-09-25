@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Merge translation batches into zh-CN.json (sorted, 2-space indent)."""
-import json, sys
+import json, os, sys
 
-ZH = '/Users/xts/00aProjects/bruno/packages/bruno-app/src/i18n/translation/zh-CN.json'
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ZH = os.path.join(REPO, 'packages/bruno-app/src/i18n/translation/zh-CN.json')
 
 def merge(pairs):
     with open(ZH, encoding='utf-8') as f:

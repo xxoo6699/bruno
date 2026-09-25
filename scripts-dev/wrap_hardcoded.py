@@ -9,7 +9,8 @@ Reads /tmp/i18n_hardcoded.txt, applies curated decisions, rewrites files.
 """
 import io, os, re, sys
 
-ROOT = '/Users/xts/00aProjects/bruno/packages/bruno-app/src/components'
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.join(REPO, 'packages/bruno-app/src/components')
 SCAN = '/tmp/i18n_hardcoded.txt'
 
 # file -> list of decisions. Each decision: (line_no, kind, exact_text) taken from scan.
@@ -41,7 +42,7 @@ def parse_scan():
             if line.startswith('== '):
                 cur = line[3:].strip()
             elif line.strip() and cur:
-                m = re.match(r'\s*(\d+): \[(\w+)\] (.*)$', line)
+                m = re.match(r'\s*(\d+): \[([^\]]+)\] (.*)$', line)
                 if m:
                     entries.append((cur, int(m.group(1)), m.group(2), m.group(3)))
     return entries
@@ -64,29 +65,20 @@ def main():
                 continue
             if len(t) < 2:
                 continue
-            # locate the line (1-based)
-            lines = src.split('\n')
-            idx = ln - 1
-            if idx >= len(lines):
-                continue
-            line = lines[idx]
-            new_line = None
+            # 整文件匹配：扫描器的行号指向 `>` 所在行，跨行 JSX 文案的文本在
+            # 下一行，按行定位会失配；\s 跨行是安全的（text 本身不含换行）
+            esc = text.replace('\\', '\\\\').replace("'", "\\'")
             if kind == 'JSX':
-                # >text< on a single line
                 pat = re.compile(r'(>\s*)(' + re.escape(text) + r')(\s*<)')
-                if pat.search(line) and '{t(' not in line:
-                    esc = text.replace('\\', '\\\\').replace("'", "\\'")
-                    new_line = pat.sub(lambda m: m.group(1) + "{t('" + text + "')}" + m.group(3), line, count=1)
+                new_src = pat.sub(lambda m: m.group(1) + "{t('" + esc + "')}" + m.group(3), src, count=1)
             elif kind in ('title', 'aria-label', 'placeholder', 'label'):
+                # 生成 JSX 表达式形式: title={t('…')}（去掉原来的引号）
                 pat = re.compile(r'(\b' + kind + r'=")(' + re.escape(text) + r')(")')
-                if pat.search(line):
-                    esc = text.replace('\\', '\\\\').replace("'", "\\'")
-                    new_line = pat.sub(lambda m: m.group(1) + "{t('" + text + "')}" + m.group(3), line, count=1)
-            elif kind == 'tooltip':
+                new_src = pat.sub(lambda m: m.group(1)[:-1] + "{t('" + esc + "')}", src, count=1)
+            else:
                 continue
-            if new_line is not None and new_line != line:
-                lines[idx] = new_line
-                src = '\n'.join(lines)
+            if new_src != src:
+                src = new_src
         if src != orig:
             changed[rel] = src
 

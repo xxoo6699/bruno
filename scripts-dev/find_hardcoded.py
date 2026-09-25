@@ -2,7 +2,8 @@
 """Find hardcoded English UI strings in JSX components that are NOT wrapped in t()."""
 import os, re, sys
 
-ROOT = '/Users/xts/00aProjects/bruno/packages/bruno-app/src/components'
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.join(REPO, 'packages/bruno-app/src/components')
 OUT = '/tmp/i18n_hardcoded.txt'
 
 # heuristic filters

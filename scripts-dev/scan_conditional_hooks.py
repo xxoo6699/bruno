@@ -3,7 +3,7 @@
 Uses @babel/parser via node for accurate parsing."""
 import json, os, subprocess
 
-APP = '/Users/xts/00aProjects/bruno/packages/bruno-app'
+APP = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/packages/bruno-app'
 
 NODE_SCRIPT = r'''
 const parser = require('@babel/parser');

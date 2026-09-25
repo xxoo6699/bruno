@@ -2,8 +2,9 @@
 """Scan bruno-app src for t('key') / i18n.t('key') calls and report keys missing from zh-CN.json."""
 import json, os, re, sys
 
-ROOT = '/Users/xts/00aProjects/bruno/packages/bruno-app/src'
-ZH = '/Users/xts/00aProjects/bruno/packages/bruno-app/src/i18n/translation/zh-CN.json'
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = os.path.join(REPO, 'packages/bruno-app/src')
+ZH = os.path.join(REPO, 'packages/bruno-app/src/i18n/translation/zh-CN.json')
 
 with open(ZH, encoding='utf-8') as f:
     zh = json.load(f)

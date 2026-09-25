@@ -3,7 +3,7 @@
 Class components and lowercase helper functions get i18n.t fallback instead."""
 import io, re, subprocess, json, os
 
-APP = '/Users/xts/00aProjects/bruno/packages/bruno-app'
+APP = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/packages/bruno-app'
 IMPORT_LINE = "import { useTranslation } from 'react-i18next';"
 HOOK_LINE = 'const { t } = useTranslation();'
 

@@ -30,6 +30,15 @@ git checkout zh-CN
 2. 解决完所有冲突并提交后**重跑脚本**
 3. 脚本第 3 步的审计会精确列出上游新增/改动的英文文案，按下一节方法补回
 
+> [!WARNING]
+> **跨文件接口陷阱**：若冲突文件是汉化功能与上游重构的交界点（接口两端分布在
+> 不同文件），简单取上游会破坏一致性。例如 electron 菜单：汉化版
+> `menu-template.js` 导出**函数** `buildMenuTemplate(locale)`（未冲突、保留我方），
+> 而上游重构了 `index.js` 的调用方式（冲突、取上游后当**数组**用 → 启动崩溃
+> "Menu template must be an array"）。解决后务必验证接口两端：
+> `npm run build:web` + `node --check packages/bruno-electron/src/index.js`
+> + 实测模板函数返回值。
+
 ## 合并后补翻流程
 
 两份审计产物：

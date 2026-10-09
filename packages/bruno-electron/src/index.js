@@ -38,7 +38,7 @@ if (isBenchmarkEnabled()) {
   app.commandLine.appendSwitch('enable-precise-memory-info');
 }
 
-const menuTemplate = require('./app/menu-template');
+const buildMenuTemplate = require('./app/menu-template');
 const { openCollection } = require('./app/collections');
 const registerNetworkIpc = require('./ipc/network');
 const registerCollectionsIpc = require('./ipc/collection');
@@ -106,7 +106,13 @@ const contentSecurityPolicy = [
 
 setContentSecurityPolicy(contentSecurityPolicy.join(';') + ';');
 
-const menu = Menu.buildFromTemplate(menuTemplate);
+// Build the application menu with labels localized to the preferred language
+const buildAppMenu = () => {
+  const locale = getPreferences()?.general?.locale || 'en';
+  return Menu.buildFromTemplate(buildMenuTemplate(locale));
+};
+
+const menu = buildAppMenu();
 const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
 const isLinux = process.platform === 'linux';

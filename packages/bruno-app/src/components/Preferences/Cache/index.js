@@ -5,7 +5,7 @@ import { savePreferences, clearHttpHttpsAgentCache } from 'providers/ReduxStore/
 import toast from 'react-hot-toast';
 import get from 'lodash/get';
 import { IconEraser } from '@tabler/icons';
-import { useSqliteQuery, useSqliteMutation } from '@usebruno/sqlite/web';
+import useFileCache from 'hooks/useFileCache';
 import { useTheme } from 'providers/Theme';
 import ToggleSwitch from 'components/ToggleSwitch';
 import ActionIcon from 'ui/ActionIcon';
@@ -21,10 +21,7 @@ const Cache = () => {
   const fileCacheEnabled = get(preferences, 'cache.file.enabled', false);
   const sslSessionEnabled = get(preferences, 'cache.sslSession.enabled', false);
 
-  const { data: fileCacheSizeRow } = useSqliteQuery('file_index_size');
-  const fileCacheSize = fileCacheSizeRow?.bytes ?? null;
-
-  const clearFileCache = useSqliteMutation('file_index_clear');
+  const { size: fileCacheSize, clear: clearFileCache } = useFileCache();
 
   const persist = (next) => {
     dispatch(savePreferences({ ...preferences, cache: next })).catch(() => {
@@ -52,7 +49,7 @@ const Cache = () => {
 
   const handleClearFileCache = async () => {
     try {
-      await clearFileCache.mutateAsync({});
+      await clearFileCache();
       toast.success('File cache cleared');
     } catch (error) {
       toast.error('Failed to clear file cache');

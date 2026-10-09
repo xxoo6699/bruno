@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import get from 'lodash/get';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,10 +39,10 @@ import Collections from 'components/Sidebar/Collections';
 import SidebarSection from 'components/Sidebar/SidebarSection';
 import { openDevtoolsAndSwitchToTerminal } from 'utils/terminal';
 import useKeybinding from 'hooks/useKeybinding';
+import useKeybindingDisplayText from 'hooks/useKeybindingDisplayText';
 
 const CollectionsSection = () => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
   const showSearch = useSelector((state) => state.app.showSidebarSearch);
 
   const { workspaces, activeWorkspaceUid } = useSelector((state) => state.workspaces);
@@ -69,6 +68,7 @@ const CollectionsSection = () => {
     setImportCollectionModalOpen(true);
     return false;
   });
+  const getKeybindingDisplayText = useKeybindingDisplayText();
 
   // Default to true (don't show modal) so that:
   // 1. Existing users who upgrade (no hasSeenWelcomeModal in their prefs) don't see it
@@ -86,7 +86,7 @@ const CollectionsSection = () => {
       }
     };
     dispatch(savePreferences(updatedPreferences)).catch(() => {
-      toast.error(t('Failed to save preferences'));
+      toast.error('Failed to save preferences');
     });
   };
 
@@ -169,11 +169,11 @@ const CollectionsSection = () => {
   const getSortLabel = () => {
     switch (collectionSortOrder) {
       case 'alphabetical':
-        return t('Sort Z-A');
+        return 'Sort Z-A';
       case 'reverseAlphabetical':
-        return t('Clear sort');
+        return 'Clear sort';
       default:
-        return t('Sort A-Z');
+        return 'Sort A-Z';
     }
   };
 
@@ -192,13 +192,13 @@ const CollectionsSection = () => {
   const handleStartRequest = () => {
     const scratchCollectionUid = activeWorkspace?.scratchCollectionUid;
     if (!scratchCollectionUid) {
-      toast.error(t('Unable to create request'));
+      toast.error('Unable to create request');
       return;
     }
 
     const scratchCollection = collections.find((c) => c.uid === scratchCollectionUid);
     if (!scratchCollection) {
-      toast.error(t('Unable to create request'));
+      toast.error('Unable to create request');
       return;
     }
 
@@ -229,7 +229,7 @@ const CollectionsSection = () => {
         isTransient: true
       })
     ).catch((err) => {
-      toast.error(t('An error occurred while creating the request'));
+      toast.error('An error occurred while creating the request');
     });
   };
 
@@ -243,7 +243,7 @@ const CollectionsSection = () => {
     {
       id: 'create',
       leftSection: IconPlus,
-      label: t('Create collection'),
+      label: 'Create collection',
       onClick: () => {
         dispatch(setIsCreatingCollection(true));
       }
@@ -251,7 +251,7 @@ const CollectionsSection = () => {
     {
       id: 'open',
       leftSection: IconFolder,
-      label: t('Open collection'),
+      label: 'Open collection',
       onClick: () => {
         handleOpenCollection();
       }
@@ -259,7 +259,8 @@ const CollectionsSection = () => {
     {
       id: 'import',
       leftSection: IconDownload,
-      label: t('Import collection'),
+      label: 'Import collection',
+      shortcut: getKeybindingDisplayText('importCollection'),
       onClick: () => {
         setImportCollectionModalOpen(true);
       }
@@ -278,7 +279,7 @@ const CollectionsSection = () => {
     {
       id: 'close-all',
       leftSection: IconSquareX,
-      label: t('Close all'),
+      label: 'Close all',
       onClick: () => {
         selectAllCollectionsToClose();
       }
@@ -286,7 +287,7 @@ const CollectionsSection = () => {
     {
       id: 'open-in-terminal',
       leftSection: IconTerminal2,
-      label: t('Open in Terminal'),
+      label: 'Open in Terminal',
       onClick: () => {
         openDevtoolsAndSwitchToTerminal(dispatch, activeWorkspace?.pathname);
       }
@@ -297,7 +298,7 @@ const CollectionsSection = () => {
     <>
       <ActionIcon
         onClick={handleToggleSearch}
-        label={t('Search requests')}
+        label="Search requests"
       >
         <IconSearch size={14} stroke={1.5} aria-hidden="true" />
       </ActionIcon>
@@ -308,7 +309,7 @@ const CollectionsSection = () => {
         placement="bottom-end"
       >
         <ActionIcon
-          label={t('Add new collection')}
+          label="Add new collection"
         >
           <IconPlus size={14} stroke={1.5} aria-hidden="true" />
         </ActionIcon>
@@ -320,7 +321,7 @@ const CollectionsSection = () => {
         placement="bottom-end"
       >
         <ActionIcon
-          label={t('More actions')}
+          label="More actions"
         >
           <IconDotsVertical size={14} stroke={1.5} aria-hidden="true" />
         </ActionIcon>
@@ -405,7 +406,7 @@ const CollectionsSection = () => {
       )}
       <SidebarSection
         id="collections"
-        title={t('Collections')}
+        title="Collections"
         icon={IconBox}
         actions={sectionActions}
       >

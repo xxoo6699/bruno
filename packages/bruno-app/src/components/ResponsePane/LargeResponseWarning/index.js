@@ -1,30 +1,30 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { IconDownload, IconCopy, IconEye, IconAlertTriangle } from '@tabler/icons';
 import toast from 'react-hot-toast';
 import get from 'lodash/get';
 import StyledWrapper from './StyledWrapper';
 import { formatSize } from 'utils/common/index';
 import Button from 'ui/Button/index';
+import { MAX_RENDERABLE_RESPONSE_BYTES } from 'utils/common/constants';
 
 const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
-  const { t } = useTranslation();
   const { ipcRenderer } = window;
   const response = item.response || {};
+  const isDownloadOnly = responseSize > MAX_RENDERABLE_RESPONSE_BYTES;
 
   const downloadResponseToFile = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       ipcRenderer
         .invoke('renderer:save-response-to-file', response, item.requestSent.url, item.pathname)
         .then((result) => {
           if (result && result.success) {
-            toast.success(t('Response downloaded to file'));
+            toast.success('Response downloaded to file');
           }
           resolve();
         })
         .catch((err) => {
-          toast.error(get(err, 'error.message') || t('Something went wrong!'));
-          reject(err);
+          toast.error(get(err, 'error.message') || 'Something went wrong!');
+          resolve();
         });
     });
   };
@@ -36,12 +36,12 @@ const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
         : JSON.stringify(response.data, null, 2);
 
       navigator.clipboard.writeText(textToCopy).then(() => {
-        toast.success(t('Response copied to clipboard'));
+        toast.success('Response copied to clipboard');
       }).catch(() => {
-        toast.error(t('Failed to copy response'));
+        toast.error('Failed to copy response');
       });
     } catch (error) {
-      toast.error(t('Failed to copy response'));
+      toast.error('Failed to copy response');
     }
   };
 
@@ -53,12 +53,20 @@ const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
         </div>
         <div className="warning-content">
           <div className="warning-title">
-            {t('Large Response Warning')}
+            Large Response Warning
           </div>
           <div className="warning-description">
-            {t('Handling responses over')} <span className="size-highlight supported-size">{formatSize(10 * 1024 * 1024)}</span> {t('could degrade performance.')}
+            Handling responses over <span className="size-highlight supported-size">{formatSize(10 * 1024 * 1024)}</span> could degrade performance.
             <br />
-            {t('Size of current response:')} <span className="size-highlight current-size">{formatSize(responseSize)}</span>
+            Size of current response: <span className="size-highlight current-size">{formatSize(responseSize)}</span>
+            {isDownloadOnly ? (
+              <>
+                <br />
+                <span data-testid="large-response-download-only">
+                  Responses over <span className="size-highlight">{formatSize(MAX_RENDERABLE_RESPONSE_BYTES)}</span> can only be downloaded.
+                </span>
+              </>
+            ) : null}
           </div>
         </div>
       </div>
@@ -67,33 +75,37 @@ const LargeResponseWarning = ({ item, responseSize, onRevealResponse }) => {
           icon={<IconEye size={18} strokeWidth={1.5} />}
           iconPosition="left"
           onClick={onRevealResponse}
-          title={t('Show response content')}
+          disabled={isDownloadOnly}
+          data-testid="large-response-view"
+          title="Show response content"
           color="secondary"
           size="sm"
         >
-          {t('View')}
+          View
         </Button>
         <Button
           icon={<IconDownload size={18} strokeWidth={1.5} />}
           iconPosition="left"
           onClick={downloadResponseToFile}
-          disabled={!response.dataBuffer}
-          title={t('Download response to file')}
+          disabled={!response.dataBuffer && !response.storedRequestUid}
+          data-testid="large-response-download"
+          title="Download response to file"
           color="secondary"
           size="sm"
         >
-          {t('Download')}
+          Download
         </Button>
         <Button
           icon={<IconCopy size={18} strokeWidth={1.5} />}
           iconPosition="left"
           onClick={copyResponse}
-          disabled={!response.data}
-          title={t('Copy response to clipboard')}
+          disabled={isDownloadOnly || !response.data}
+          data-testid="large-response-copy"
+          title="Copy response to clipboard"
           color="secondary"
           size="sm"
         >
-          {t('Copy')}
+          Copy
         </Button>
       </div>
     </StyledWrapper>

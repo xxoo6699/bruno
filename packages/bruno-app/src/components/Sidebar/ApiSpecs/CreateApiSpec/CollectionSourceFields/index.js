@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { Tooltip } from 'react-tooltip';
 import MenuDropdown from 'ui/MenuDropdown';
@@ -23,6 +24,7 @@ const CollectionSourceFields = ({
   onSelectEnvironment,
   onBrowseCollection
 }) => {
+  const { t } = useTranslation();
   const hasWorkspaceCollections = workspaceCollections.length > 0;
 
   const sourceItems = COLLECTION_SOURCE_ITEMS.map((item) => (
@@ -102,7 +104,7 @@ const CollectionSourceFields = ({
             type="text"
             name="collectionLocation"
             readOnly={true}
-            placeholder="Choose file..."
+            placeholder={t('Choose file...')}
             className="block textbox mt-1 w-full cursor-pointer"
             autoComplete="off"
             autoCorrect="off"
@@ -136,7 +138,7 @@ const CollectionSourceFields = ({
       {environmentNames.length ? (
         <>
           <label htmlFor="api-spec-environment" className="flex items-center font-semibold mt-3">
-            Environment
+            {t('Environment')}
           </label>
           <MenuDropdown
             items={environmentItems}

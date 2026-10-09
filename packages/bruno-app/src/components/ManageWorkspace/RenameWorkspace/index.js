@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useEffect, useRef } from 'react';
 import Portal from 'components/Portal/index';
 import Modal from 'components/Modal/index';
@@ -8,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { renameWorkspaceAction } from 'providers/ReduxStore/slices/workspaces/actions';
 
 const RenameWorkspace = ({ onClose, workspace }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const inputRef = useRef();
 
@@ -54,7 +56,7 @@ const RenameWorkspace = ({ onClose, workspace }) => {
     <Portal>
       <Modal
         size="md"
-        title="Rename Workspace"
+        title={t('Rename Workspace')}
         confirmText="Rename"
         handleConfirm={onSubmit}
         handleCancel={onClose}
@@ -63,7 +65,7 @@ const RenameWorkspace = ({ onClose, workspace }) => {
         <form className="bruno-form" onSubmit={(e) => e.preventDefault()}>
           <div>
             <label htmlFor="workspace-name" className="block font-semibold">
-              Workspace Name
+              {t('Workspace Name')}
             </label>
             <input
               id="workspace-name"

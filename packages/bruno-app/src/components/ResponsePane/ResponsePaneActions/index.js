@@ -1,3 +1,5 @@
+import i18n from 'i18n';
+import { useTranslation } from 'react-i18next';
 import React, { forwardRef, useRef } from 'react';
 import styled from 'styled-components';
 import { IconDots, IconDownload, IconEraser, IconBookmark, IconCopy, IconLayoutColumns, IconLayoutRows } from '@tabler/icons';
@@ -29,7 +31,7 @@ const StyledMenuIcon = styled.button`
 const MenuIcon = forwardRef((props, ref) => (
   <StyledMenuIcon
     ref={ref}
-    title="More actions"
+    title={i18n.t('More actions')}
     {...props}
   >
     <IconDots size={16} strokeWidth={1.5} />
@@ -39,6 +41,7 @@ const MenuIcon = forwardRef((props, ref) => (
 MenuIcon.displayName = 'MenuIcon';
 
 const ResponsePaneActions = ({ item, collection, responseSize, selectedFormat, selectedTab, data, dataBuffer }) => {
+  const { t } = useTranslation();
   const { orientation } = useResponseLayoutToggle();
   const getKeybindingDisplayText = useKeybindingDisplayText();
 

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useCallback } from 'react';
 import find from 'lodash/find';
 import { IconLoader2 } from '@tabler/icons';
@@ -9,6 +10,7 @@ import { updateApiSpecTabLeftPaneWidth } from 'providers/ReduxStore/slices/tabs'
 import { findApiSpecByPathname } from 'utils/api-specs';
 
 const ApiSpecTab = ({ tabUid }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const tab = useSelector((state) => find(state.tabs.tabs, (t) => t.uid === tabUid));
@@ -40,7 +42,7 @@ const ApiSpecTab = ({ tabUid }) => {
     return (
       <div className="flex items-center justify-center h-full gap-2 opacity-50" data-testid="api-spec-tab-loading">
         <IconLoader2 size={20} className="animate-spin" />
-        <span>Loading API spec...</span>
+        <span>{t('Loading API spec...')}</span>
       </div>
     );
   }

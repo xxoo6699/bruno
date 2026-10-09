@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Tooltip } from 'react-tooltip';
@@ -10,6 +11,7 @@ import StyledWrapper from './StyledWrapper';
 const MAX_INLINE_NAMES_LENGTH = 40;
 
 const UnresolvedVariableCount = ({ names, popoverId }) => {
+  const { t } = useTranslation();
   const { copied, copyToClipboard } = useCopyToClipboard(1500);
   const [isHovered, setIsHovered] = useState(false);
   const [hasFocusWithin, setHasFocusWithin] = useState(false);
@@ -50,12 +52,12 @@ const UnresolvedVariableCount = ({ names, popoverId }) => {
         isOpen={isPopoverOpen}
       >
         <div className="popover-header">
-          <span>Unresolved variables</span>
+          <span>{t('Unresolved variables')}</span>
           <ActionIcon
             size="xs"
             data-testid="unresolved-variables-copy"
             onClick={() => copyToClipboard(names.join('\n'))}
-            aria-label="Copy unresolved variable names"
+            aria-label={t('Copy unresolved variable names')}
             label={copied ? 'Copied' : 'Copy variable names'}
           >
             {copied ? <IconCheck size={14} strokeWidth={1.5} /> : <IconCopy size={14} strokeWidth={1.5} />}
@@ -72,6 +74,7 @@ const UnresolvedVariableCount = ({ names, popoverId }) => {
 };
 
 const UnresolvedVariablesInfo = ({ item, collection }) => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
 
   const names = item.unresolvedVariables;
@@ -101,7 +104,7 @@ const UnresolvedVariablesInfo = ({ item, collection }) => {
           </>
         ) : (
           <>
-            This request uses <UnresolvedVariableCount names={names} popoverId={`unresolved-variables-${item.uid}`} />{' '}
+            {t('This request uses')} <UnresolvedVariableCount names={names} popoverId={`unresolved-variables-${item.uid}`} />{' '}
             that could not be resolved.
           </>
         )}
@@ -111,7 +114,7 @@ const UnresolvedVariablesInfo = ({ item, collection }) => {
         className="close-button"
         data-testid="unresolved-variables-info-close"
         onClick={handleClose}
-        aria-label="Dismiss unresolved variables info"
+        aria-label={t('Dismiss unresolved variables info')}
       >
         <IconX size={16} strokeWidth={1.5} />
       </ActionIcon>

@@ -1,3 +1,4 @@
+import i18n from 'i18n';
 import React from 'react';
 
 const UrlSourceField = ({ url, validationError, onChange, onBlur, isFetching, error, onUrlChanged, onResolveUrl }) => (
@@ -34,7 +35,7 @@ const UrlSourceField = ({ url, validationError, onChange, onBlur, isFetching, er
     />
     {isFetching ? (
       <div className="text-xs mt-1 opacity-70" data-testid="api-spec-url-loading">
-        Fetching specification…
+        {i18n.t('Fetching specification…')}
       </div>
     ) : null}
     {error ? (

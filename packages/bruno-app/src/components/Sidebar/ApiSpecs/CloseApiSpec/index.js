@@ -39,7 +39,7 @@ const CloseApiSpec = ({ onClose, apiSpec }) => {
         <div className="flex items-start mt-4" data-testid="api-spec-unsaved-warning">
           <IconAlertTriangle size={18} strokeWidth={1.5} className="text-yellow-600 flex-shrink-0" />
           <span className="ml-2">
-            You have unsaved changes in this spec. Closing it here will discard them.
+            {t('You have unsaved changes in this spec. Closing it here will discard them.')}
           </span>
         </div>
       )}

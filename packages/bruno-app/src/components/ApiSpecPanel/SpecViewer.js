@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import get from 'lodash/get';
 import jsyaml from 'js-yaml';
@@ -61,6 +62,7 @@ const SpecViewer = ({
   draftContent,
   onDraftChange
 }) => {
+  const { t } = useTranslation();
   const { displayedTheme, theme } = useTheme();
   const preferences = useSelector((state) => state.app.preferences);
 
@@ -180,7 +182,7 @@ const SpecViewer = ({
               >
                 <div className="flex items-center justify-center gap-2 opacity-70">
                   <IconLoader2 size={20} className="animate-spin" />
-                  <span>Generating preview…</span>
+                  <span>{t('Generating preview…')}</span>
                 </div>
               </div>
             )}

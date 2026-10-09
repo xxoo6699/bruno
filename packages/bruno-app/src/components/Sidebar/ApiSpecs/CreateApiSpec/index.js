@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import React, { useRef, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
@@ -30,6 +31,7 @@ import {
 } from './apiSpecSources';
 
 const CreateApiSpec = ({ onClose }) => {
+  const { t } = useTranslation();
   const sourceRadios = [
     { id: 'api-spec-source-blank', value: API_SPEC_SOURCE.BLANK, label: 'Blank Spec' },
     { id: 'api-spec-source-collection', value: API_SPEC_SOURCE.COLLECTION, label: 'From Bruno Collection' },
@@ -326,7 +328,7 @@ const CreateApiSpec = ({ onClose }) => {
           handleCancel={onClose}
         >
           <form className="bruno-form w-[500px] max-w-full" onSubmit={formik.handleSubmit}>
-            <label className="block font-semibold mb-2">Source</label>
+            <label className="block font-semibold mb-2">{t('Source')}</label>
             <div className="flex items-center gap-[28px]">
               {sourceRadios.map(({ id, value, label }) => (
                 <div key={id} className="flex items-center">
